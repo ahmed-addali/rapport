@@ -2,6 +2,16 @@
 % CHAPITRE 5 — IMPLÉMENTATION DU MOTEUR DE RECOMMANDATION LinUCB (Part 1)
 % ============================================================================
 
+%% ---------- SPRINT PLANNING ----------
+\section*{Sprint Planning}
+\addcontentsline{toc}{section}{Sprint Planning}
+
+Le Sprint 4, couvrant janvier 2025, a pour objectif l'implémentation du moteur
+de recommandation Hybrid LinUCB. Les User Stories US-04 et US-05 constituent
+le cœur du Sprint Backlog. L'objectif est de livrer un moteur de scoring
+opérationnel avec un pipeline de classement en dix étapes et un tracker
+comportemental fonctionnel.
+
 \section{Introduction}
 
 Ce chapitre présente l'implémentation complète du moteur de recommandation Hybrid LinUCB du
@@ -556,3 +566,21 @@ partielle $\lambda = 0.7$ tous les 90~jours), et le rafraîchissement des tags.
 Le chapitre suivant présentera les résultats d'évaluation et de test des deux sous-systèmes,
 incluant les métriques de performance, les tests fonctionnels, et l'analyse de la qualité des
 recommandations.
+
+%% ---------- SPRINT REVIEW & RETROSPECTIVE ----------
+\section*{Sprint Review et Retrospective}
+\addcontentsline{toc}{section}{Sprint Review et Retrospective}
+
+À l'issue du Sprint 4, les User Stories US-04 et US-05 ont été validées.
+Le livrable est le moteur LinUCB complet avec cache matriciel en RAM,
+tracker JavaScript opérationnel et jobs nocturnes configurés.
+
+La Sprint Retrospective a identifié :
+\begin{itemize}
+  \item \textbf{Points positifs} : la latence de scoring inférieure à 100 ms
+        a été atteinte dès la première itération grâce au cache en mémoire vive.
+  \item \textbf{Points d'amélioration} : la gestion de la dérive conceptuelle
+        nécessite un monitoring plus fin des distributions de récompenses.
+  \item \textbf{Action pour Sprint 5} : préparer un jeu de données de simulation
+        pour évaluer la convergence du LinUCB sur 500 sessions.
+\end{itemize}
