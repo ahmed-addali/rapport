@@ -1,0 +1,84 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+title Schéma ER du sous-système agent planificateur
+
+!define table entity
+
+entity "User" as User {
+  * id : UUID <<PK>>
+  --
+  * name : VARCHAR
+  * email : VARCHAR <<UQ>>
+  * country : VARCHAR
+  * city : VARCHAR
+  * createdAt : TIMESTAMP
+}
+
+entity "PlannerConversation" as PC {
+  * id : UUID <<PK>>
+  --
+  * userId : UUID <<FK>>
+  * title : VARCHAR
+  * contextSummary : JSON
+  * isActive : BOOLEAN
+  * createdAt : TIMESTAMP
+  * updatedAt : TIMESTAMP
+}
+
+entity "PlannerMessage" as PM {
+  * id : UUID <<PK>>
+  --
+  * conversationId : UUID <<FK>>
+  * role : VARCHAR
+  * content : TEXT
+  * messageType : VARCHAR
+  * metadata : JSON
+  * createdAt : TIMESTAMP
+}
+
+entity "GeneratedPlan" as GP {
+  * id : UUID <<PK>>
+  --
+  * conversationId : UUID <<FK>>
+  * userId : UUID <<FK>>
+  * planData : JSON
+  * version : INT
+  * isActive : BOOLEAN
+  * createdAt : TIMESTAMP
+}
+
+entity "Activity" as Activity {
+  * id : UUID <<PK>>
+  --
+  * title : VARCHAR
+  * category : VARCHAR
+  * price : DECIMAL
+  * region : VARCHAR
+  * duration : INT
+  * capacity : INT
+}
+
+entity "ActivityIntelligence" as AI {
+  * id : UUID <<PK>>
+  --
+  * activityId : UUID <<FK>> <<UQ>>
+  * enrichmentData : JSON
+  * updatedAt : TIMESTAMP
+}
+
+User ||--o{ PC : "1..*"
+PC ||--o{ PM : "1..*"
+PC ||--o{ GP : "1..*"
+Activity ||--|| AI : "1..1"
+
+note right of PC
+  **Versioning des plans**
+  isActive=False sur l'ancien,
+  nouvelle ligne avec
+  version=N+1 et isActive=True
+end note
+
+@enduml

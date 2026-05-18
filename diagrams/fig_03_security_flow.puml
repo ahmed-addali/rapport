@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+title Flux de sécurité et de validation dans l'endpoint /chat
+
+actor "Client" as Client
+participant "FastAPI POST /chat" as FastAPI
+participant "PostgreSQL User table" as DB
+participant "run_agent()" as Agent
+participant "LLM Provider" as LLM
+
+Client -> FastAPI : POST /chat {user_id, message, model?}
+FastAPI -> DB : SELECT FROM "User" WHERE id = user_id
+
+alt Utilisateur non trouvé
+  DB --> FastAPI : ∅
+  FastAPI --> Client : HTTP 404 {detail: "User not found"}
+else Utilisateur trouvé
+  DB --> FastAPI : User row
+
+  FastAPI -> FastAPI : parse model_id si fourni ("groq/llama-3.3-70b")
+
+  FastAPI -> Agent : run_agent(state)
+
+  Agent -> LLM : System prompt + contexte + tool results
+  note right
+    Aucune PII brute transmise
+    aux LLMs externes :
+    seulement IDs, catégories,
+    features anonymisées
+  end note
+
+  LLM --> Agent : Réponse AIMessage
+  Agent --> FastAPI : PlannerResponse
+  FastAPI --> Client : 200 OK {conversation_id, content, ...}
+end
+
+@enduml

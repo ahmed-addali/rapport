@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+!define RECTANGLE class
+
+rectangle "Input Embeddings + Positional Encoding" as Input #LightBlue
+rectangle "Masked Multi-Head Attention" as MHA #LightGreen
+rectangle "Add & Norm" as Norm1 #LightYellow
+rectangle "Feed Forward (FFN)" as FFN #LightGreen
+rectangle "Add & Norm" as Norm2 #LightYellow
+rectangle "Linear + Softmax" as Output #LightCoral
+rectangle "Next Token Prediction" as Token #White
+
+Input --> MHA : Query, Key, Value
+MHA --> Norm1 : residual + norm
+Norm1 --> FFN
+FFN --> Norm2 : residual + norm
+Norm2 --> Output
+Output --> Token
+
+note right of MHA
+  **Attention Mechanism**
+  Attention(Q,K,V) = softmax(QK^T/√d_k)V
+  - Multiple heads capture different
+    semantic relationships
+  - Masked to prevent looking ahead
+end note
+
+note right of FFN
+  **Position-wise FFN**
+  FFN(x) = max(0, xW1+b1)W2+b2
+  - Applied independently to each position
+  - Increases model capacity
+end note
+
+@enduml

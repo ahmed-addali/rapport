@@ -1,0 +1,75 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+title Diagramme d'états du graphe LangGraph avec conditions de routage
+
+[*] --> THINK
+
+state THINK {
+  THINK : entry / iteration_count += 1
+  THINK : do / Appel LLM avec outils bindés
+  THINK : do / Analyse réponse AIMessage
+}
+
+THINK --> EXECUTE_TOOL : [tool_calls présents]
+THINK --> RESPOND : [needs_more_info = True]
+THINK --> VALIDATE : [is_plan_ready = True et current_plan existe]
+THINK --> RESPOND : [défaut] ou [iteration_count ≥ 15]
+
+state EXECUTE_TOOL {
+  EXECUTE_TOOL : entry / Extraction tool_calls
+  EXECUTE_TOOL : do / Exécution séquentielle
+  EXECUTE_TOOL : do / Création ToolMessages
+  EXECUTE_TOOL : do / Mise à jour state
+  EXECUTE_TOOL : exit / _after_tool_execution()
+}
+
+EXECUTE_TOOL --> THINK : [défaut]
+EXECUTE_TOOL --> RESPOND : [needs_more_info = True]
+
+state VALIDATE {
+  VALIDATE : entry / _validate_plan()
+  VALIDATE : do / Vérification structure
+  VALIDATE : do / Vérification doublons
+  VALIDATE : do / Vérification slots (≤7/jour)
+  VALIDATE : exit / _after_validation()
+}
+
+VALIDATE --> THINK : [erreurs trouvées et iteration_count < 15]
+VALIDATE --> RESPOND : [plan validé] ou [épuisement retries]
+
+state RESPOND {
+  RESPOND : entry / Détermination response_type
+  RESPOND : do / Extraction texte final
+  RESPOND : do / Persistance plan (versionning)
+  RESPOND : do / Sauvegarde metadata
+}
+
+RESPOND --> [*]
+
+note right of THINK
+  **_should_continue(state)**
+  1. iteration_count ≥ 15 → "respond"
+  2. tool_calls présents → "execute_tool"
+  3. needs_more_info → "respond"
+  4. is_plan_ready + current_plan → "validate"
+  5. [défaut] → "respond"
+end note
+
+note right of EXECUTE_TOOL
+  **_after_tool_execution(state)**
+  - needs_more_info → "respond"
+  - [défaut] → "think"
+end note
+
+note right of VALIDATE
+  **_after_validation(state)**
+  - is_plan_ready = False
+    ET iteration_count < 15
+    → "think" (retry)
+  - [défaut] → "respond"
+end note
+
+@enduml

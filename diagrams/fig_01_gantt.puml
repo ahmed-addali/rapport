@@ -1,0 +1,25 @@
+@startgantt
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Arial"
+
+Project starts 2024-10-01
+
+[Analyse des besoins] starts 2024-10-01 and lasts 14 days
+[État de l'art] starts 2024-10-15 and lasts 21 days
+[Conception BD et architecture] starts 2024-11-05 and lasts 14 days
+
+[Implémentation agent LangGraph] starts 2024-11-19 and lasts 28 days
+[Implémentation pipeline RAG] starts 2024-12-10 and lasts 14 days
+[Implémentation LinUCB et tracker] starts 2024-12-17 and lasts 21 days
+
+[Tests et évaluation] starts 2025-01-07 and lasts 21 days
+[Rédaction du rapport] starts 2024-12-01 and lasts 70 days
+[Soutenance] starts 2025-02-01 and lasts 7 days
+
+-- Milestones --
+[M1 - Architecture validée] happens at 2024-11-19
+[M2 - Agent fonctionnel] happens at 2024-12-17
+[M3 - Recommandation temps réel] happens at 2025-01-07
+[M4 - Soutenance] happens at 2025-02-07
+
+@endgantt

@@ -1,0 +1,40 @@
+@startuml fig_05_tracker_flush
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Inter
+skinparam sequenceFontSize 11
+
+actor "Utilisateur" as U
+participant "JS Tracker" as T
+participant "FastAPI\n/api/recommendations/events" as API
+database "RAM\n(_GLOBAL_A, _GLOBAL_B)" as RAM
+database "PostgreSQL\nRecommendationEventUCB" as DB
+
+== Flush normal (toutes les 15s ou 10 events) ==
+
+U -> T : click / scroll / wishlist
+T -> T : _queue.push(event)
+T -> T : _queue.length >= 10 ?
+
+T -> API : POST {session_id, events[], session_state, session_rewards}
+activate API
+
+loop pour chaque event
+    API -> API : compute_reward(delta)
+    API -> RAM : A += outer(phi,phi)\nb += r × phi
+    API -> DB : INSERT RecommendationEventUCB
+    API -> DB : UPDATE BanditArmUCB counters
+end
+
+API --> T : {processed: N, session_rewards: {...}}
+deactivate API
+T -> T : _sessionRewards = response.session_rewards
+
+== Fermeture de page (beforeunload) ==
+
+U -> T : ferme la page
+T -> T : _flushBeacon()
+T -> API : navigator.sendBeacon(Blob)
+note right of T : Fire-and-forget\npas de réponse
+
+@enduml

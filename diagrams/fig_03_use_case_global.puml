@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Touriste" as Tourist
+actor "Administrateur" as Admin
+actor "Système" as System
+
+rectangle "Système Guidni" {
+
+  Tourist --> (Démarrer une conversation)
+  Tourist --> (Envoyer un message de planification)
+  Tourist --> (Recevoir un plan de voyage)
+  Tourist --> (Modifier un plan existant)
+  Tourist --> (Poser une question de suivi)
+  Tourist --> (Consulter l'historique de conversation)
+  Tourist --> (Archiver une conversation)
+
+  (Modifier un plan existant) .-> (Envoyer un message de planification) : <<extend>>
+  (Recevoir un plan de voyage) ..> (Valider le plan) : <<include>>
+
+  Admin --> (Reconstruire l'index RAG)
+  Admin --> (Consulter l'état de santé du système)
+  Admin --> (Choisir le fournisseur LLM)
+
+  System --> (Tracker les événements comportementaux)
+  System --> (Mettre à jour les matrices LinUCB)
+  System --> (Exécuter les jobs nocturnes)
+  System --> (Réindexer automatiquement)
+}
+
+note right of (Valider le plan)
+  VALIDATE node LangGraph
+  Vérifie structure, doublons,
+  nombre de slots
+end note
+
+note right of (Réindexer automatiquement)
+  SQLAlchemy event listeners
+  after_insert/update/delete
+end note
+
+@enduml

@@ -1,0 +1,81 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+title Architecture globale du système Guidni
+
+!define RECTANGLE class
+
+package "Frontend" {
+  rectangle "Next.js (React + Prisma)" as NextJS #LightBlue
+  rectangle "JS Tracker (vanilla, zero deps)" as Tracker #LightGreen
+}
+
+package "Backend FastAPI" {
+  rectangle "LangGraph Agent" as Agent #LightYellow
+  rectangle "RAG Pipeline (LlamaIndex + bge-m3)" as RAG #LightCoral
+  rectangle "LinUCB Engine (scoring + ranker)" as LinUCB #LightBlue
+  rectangle "Nightly Scheduler (APScheduler)" as Scheduler #LightGreen
+}
+
+package "Base de Données" {
+  rectangle "PostgreSQL 15 (Prisma tables + AI tables)" as PG #LightYellow
+}
+
+package "Stockage Vectoriel" {
+  rectangle "LlamaIndex Storage rag_storage/ sur disque" as VecStorage #LightGray
+}
+
+package "APIs Externes" {
+  rectangle "Open-Meteo (météo)" as Weather #LightBlue
+  rectangle "Nominatim OSM (géocodage)" as Geo #LightGreen
+  rectangle "Ollama (local LLM)" as Ollama #LightYellow
+  rectangle "Groq(cloud LLM)" as Groq #LightCoral
+  rectangle "Google Gemini(cloud LLM)" as Gemini #LightBlue
+}
+
+NextJS --> Agent : POST /chat, /plan
+NextJS --> LinUCB : GET /api/recommendations
+Tracker --> LinUCB : POST /api/recommendations/events
+
+Agent --> PG : asyncpg / SQLAlchemy (lecture/écriture)
+Agent --> RAG : Requêtes vectorielles
+Agent --> Weather : HTTPS
+Agent --> Geo : HTTPS
+Agent --> Ollama : HTTP local
+Agent --> Groq : HTTPS
+Agent --> Gemini : HTTPS
+
+RAG --> VecStorage : Lecture/écriture index
+RAG --> PG : SQLAlchemy events (réindexation)
+
+LinUCB --> PG : psycopg2 (lecture bras, écriture events)
+LinUCB --> Scheduler : Jobs nocturnes
+
+Scheduler --> PG : Mise à jour profils, tags
+Scheduler --> LinUCB : Persist matrices, reset drift
+
+note right of NextJS
+  Prisma ORM gère les tables
+  frontend (User, Activity, Stay,
+  Yummy, etc.)
+end note
+
+note right of Agent
+  4 tables AI-owned :
+  PlannerConversation,
+  PlannerMessage,
+  GeneratedPlan,
+  ActivityIntelligence
+end note
+
+note right of LinUCB
+  7 tables reco :
+  BanditArm, LinUCBGlobal,
+  UserProfile, UserSession,
+  RecommendationEvent,
+  ListingTag, SystemConfig
+end note
+
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+actor "Utilisateur" as User
+participant "Frontend Next.js" as Frontend
+participant "main.py FastAPI" as FastAPI
+participant "load_context()" as Context
+participant "run_agent() LangGraph" as Agent
+participant "THINK Node" as Think
+participant "LLM Provider" as LLM
+participant "EXECUTE_TOOL Node" as Exec
+participant "RESPOND Node" as Respond
+participant "PostgreSQL" as DB
+
+User -> Frontend : Message de planification
+Frontend -> FastAPI : POST /chat
+FastAPI -> Context : load_context(user_id, conv_id)
+Context -> DB : SELECT last 8 messages
+DB --> Context : messages[]
+Context -> DB : SELECT active plan
+DB --> Context : current_plan
+Context --> FastAPI : AgentState initialisé
+
+FastAPI -> Agent : run_agent(state)
+Agent -> Think : _should_continue → "think"
+
+Think -> Think : Construit prompt système + contexte dynamique
+Think -> LLM : Appel avec 18 outils bindés
+LLM --> Think : AIMessage(tool_calls=[...])
+
+Think -> Agent : _should_continue → "execute_tool"
+Agent -> Exec : Exécute outils
+Exec -> DB : search_activities, get_weather, etc.
+DB --> Exec : résultats
+Exec -> Exec : Crée ToolMessages
+Exec -> Agent : _after_tool_execution → "think"
+
+Agent -> Think : Ré-évaluation avec résultats outils
+Think -> LLM : Nouvel appel LLM
+LLM --> Think : AIMessage(content="Plan généré...")
+Think -> Agent : _should_continue → "respond"
+
+Agent -> Respond : _after_validation → "respond"
+Respond -> Respond : Détermine response_type
+Respond -> DB : save_plan() (versioning)
+Respond -> DB : INSERT PlannerMessage
+Respond --> Agent : PlannerResponse
+Agent --> FastAPI : return response
+FastAPI --> Frontend : PlannerResponse JSON
+Frontend --> User : Plan affiché + étapes de réflexion
+
+@enduml

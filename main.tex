@@ -1,0 +1,121 @@
+\documentclass[12pt,a4paper]{report}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french,english]{babel}    % English needed for the Abstract page
+\usepackage{csquotes}                 % Required by biblatex with babel
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage[backend=biber, style=numeric]{biblatex}
+\usepackage{longtable}               % For the abbreviations table
+\usepackage{booktabs}                 % For \midrule in tables
+\usepackage{amsmath}                  % For math symbols (Kronecker product)
+\usepackage{amssymb}                  % For \checkmark symbol
+\usepackage[table]{xcolor}            % For colored callout boxes and table rows
+\usepackage{enumitem}                 % For customized lists
+\usepackage{listings}                 % For code listings (system prompt, schema)
+\usepackage{caption}                  % Better caption control
+
+% --- Listings style ---
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=false,
+  frame=single,
+  rulecolor=\color{gray},
+  backgroundcolor=\color{gray!8},
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  aboveskip=8pt,
+  belowskip=4pt,
+  keepspaces=true,
+  showstringspaces=false,
+  columns=fullflexible,
+}
+
+% --- Configuration ---
+\geometry{margin=2.5cm, headheight=14.5pt}
+\onehalfspacing
+\addbibresource{references.bib}
+
+% --- Metadata ---
+\title{Rapport de Projet de Fin d'Études \\ \large Guidni : Application de Planification de Voyages Propulsée par l'IA}
+\author{Ahmed Addali}
+\date{\today}
+
+% --- Header/Footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{PFE Guidni}
+\lhead{\leftmark}
+\cfoot{\thepage}
+
+\begin{document}
+
+% ====================================================================
+% FRONT MATTER — Preliminary pages (roman numerals)
+% ====================================================================
+\pagenumbering{roman}
+\input{chapter_00_preliminaries}
+
+% --- Auto-generated lists ---
+\newpage
+\tableofcontents
+
+\newpage
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des Figures}
+
+\newpage
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des Tableaux}
+
+% ====================================================================
+% MAIN MATTER — Chapters (arabic numerals)
+% ====================================================================
+\newpage
+\pagenumbering{arabic}
+
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+\input{sections/00_introduction}
+
+\chapter{État de l'art et fondements théoriques}
+\input{sections/01_cadre_general}
+
+\chapter{Analyse des besoins et conception du système}
+\input{sections/02_conception}
+
+\chapter{Implémentation de l'agent planificateur IA}
+\input{sections/03_conception}
+
+\chapter{Implémentation du moteur de recommandation Hybrid LinUCB}
+\input{sections/04_realisation}
+
+\chapter{Tests et Évaluation}
+\input{sections/05_tests}
+
+\chapter*{Conclusion et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion et Perspectives}
+\input{sections/06_conclusion}
+
+% ====================================================================
+% BACK MATTER
+% ====================================================================
+\printbibliography
+
+% ====================================================================
+% APPENDICES
+% ====================================================================
+\appendix
+\renewcommand{\chaptername}{Annexe}
+\chapter{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+\input{sections/07_appendices}
+
+\end{document}

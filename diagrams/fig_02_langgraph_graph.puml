@@ -1,0 +1,62 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+[*] --> THINK
+
+state THINK {
+  THINK : - Appelle LLM avec prompt système
+  THINK : - Inclut 18 outils bindés
+  THINK : - Incrémente iteration_count
+}
+
+THINK --> EXECUTE_TOOL : tool_calls dans AIMessage
+THINK --> RESPOND : needs_more_info=True
+THINK --> VALIDATE : is_plan_ready=True et current_plan existe
+THINK --> RESPOND : [défaut / max_iterations]
+
+state EXECUTE_TOOL {
+  EXECUTE_TOOL : - Extrait tool_calls
+  EXECUTE_TOOL : - Exécute outils séquentiellement
+  EXECUTE_TOOL : - Crée ToolMessages
+  EXECUTE_TOOL : - Met à jour rag_context,
+  EXECUTE_TOOL :   activities, weather, stays, etc.
+}
+
+EXECUTE_TOOL --> THINK : [défaut]
+EXECUTE_TOOL --> RESPOND : needs_more_info=True
+
+state VALIDATE {
+  VALIDATE : - Vérifie plan : ≥1 jour,
+  VALIDATE :   ≥1 slot/jour, ≤7 slots/jour,
+  VALIDATE :   pas de doublons
+  VALIDATE : - Injecte erreurs via SystemMessage
+}
+
+VALIDATE --> THINK : erreurs trouvées et iteration_count < 15
+VALIDATE --> RESPOND : plan validé ou épuisement retries
+
+state RESPOND {
+  RESPOND : - Détermine response_type
+  RESPOND : - Extrait texte final
+  RESPOND : - Persiste plan (versionning)
+  RESPOND : - Sauvegarde metadata
+}
+
+RESPOND --> [*]
+
+note right of THINK
+  **MAX_AGENT_ITERATIONS = 15**
+  Hard cap pour éviter les boucles infinies
+  et la consommation excessive de tokens API
+end note
+
+note right of VALIDATE
+  **Injection d'erreurs**
+  Les erreurs de validation sont injectées
+  comme SystemMessage (haute priorité)
+  pour que le LLM les corrige au prochain tour
+end note
+
+@enduml

@@ -1,0 +1,120 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam defaultFontName "Arial"
+
+title Schéma ER du sous-système de recommandation LinUCB
+
+!define table entity
+
+entity "BanditArm" as BA {
+  * id : SERIAL <<PK>>
+  --
+  * listingId : UUID
+  * listingType : VARCHAR
+  * locationZone : VARCHAR
+  * tags : JSON
+  * commissionRate : DECIMAL
+  * impressions : INT
+  * clicks : INT
+  * wishlists : INT
+  * conversions : INT
+  * totalRevenue : DECIMAL
+  * nUpdates : INT
+  * isUnderexposed : BOOLEAN
+  * updatedAt : TIMESTAMP
+  --
+  <<UQ>> (listingId, listingType, locationZone)
+}
+
+entity "LinUCBGlobal" as LG {
+  * id : VARCHAR <<PK>>
+  --
+  * aMatrix : JSON [360×360]
+  * bVector : JSON [360]
+  * d : INT
+  * vocabHash : VARCHAR
+  * nUpdates : INT
+  * updatedAt : TIMESTAMP
+}
+
+entity "UserProfile" as UP {
+  * userId : UUID <<PK>>
+  --
+  * tagAffinity : JSON
+  * avgBookingPrice : DECIMAL
+  * priceStdDev : DECIMAL
+  * dominantTripType : VARCHAR
+  * totalBookings : INT
+  * updatedAt : TIMESTAMP
+}
+
+entity "UserSession" as US {
+  * id : SERIAL <<PK>>
+  --
+  * sessionId : VARCHAR <<UQ>>
+  * userId : UUID <<FK>> (nullable)
+  * locationLat : DECIMAL
+  * locationLon : DECIMAL
+  * deviceType : VARCHAR
+  * entryHour : INT
+  * entryMonth : INT
+  * scrollDepthMax : DECIMAL
+  * dwellSeconds : DECIMAL
+  * clickSequence : JSON
+  * priceRangeViewed : JSON
+  * budgetSegment : VARCHAR
+  * createdAt : TIMESTAMP
+}
+
+entity "RecommendationEvent" as RE {
+  * id : SERIAL <<PK>>
+  --
+  * eventType : VARCHAR
+  * listingId : UUID
+  * listingType : VARCHAR
+  * userId : UUID <<FK>> (nullable)
+  * sessionId : VARCHAR
+  * locationZone : VARCHAR
+  * reward : DECIMAL
+  * rankShown : INT (nullable)
+  * price : DECIMAL (nullable)
+  * metadata : JSON
+  * createdAt : TIMESTAMP
+}
+
+entity "ListingTag" as LT {
+  * id : SERIAL <<PK>>
+  --
+  * listingId : UUID
+  * listingType : VARCHAR
+  * tags : JSON
+  * confidence : DECIMAL
+  --
+  <<UQ>> (listingId, listingType)
+}
+
+entity "SystemConfig" as SC {
+  * key : VARCHAR <<PK>>
+  --
+  * value : TEXT
+  * updatedAt : TIMESTAMP
+}
+
+note right of LG
+  **Matrices globales partagées**
+  Une seule ligne "global"
+  A : 360×360 float64
+  b : 360 float64
+  RAM cache + persistance
+  toutes les 2 minutes
+end note
+
+note right of BA
+  **Compteurs par bras**
+  impressions, clicks, wishlists,
+  conversions pour le scoring
+  et le filtre de diversité
+end note
+
+@enduml

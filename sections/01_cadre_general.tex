@@ -1,0 +1,662 @@
+% ============================================================================
+% CHAPITRE 2 — ÉTAT DE L'ART ET FONDEMENTS THÉORIQUES (Part 1: 2.1–2.3)
+% ============================================================================
+
+\section{Introduction}
+
+Ce chapitre établit les fondements théoriques et bibliographiques sur lesquels repose la
+conception du système Guidni. Il couvre cinq domaines majeurs~: les agents conversationnels
+basés sur les grands modèles de langage (LLM), la génération augmentée par récupération (RAG),
+les systèmes de recommandation classiques, les bandits multi-bras contextuels et en particulier
+l'algorithme LinUCB, ainsi qu'une revue comparative des travaux connexes. Pour chaque domaine,
+la présentation progresse des concepts généraux vers les choix spécifiques retenus pour le
+projet Guidni.
+
+L'objectif de ce chapitre est double~: d'une part, fournir au lecteur les clés de compréhension
+nécessaires pour appréhender les décisions architecturales présentées dans les chapitres suivants~;
+d'autre part, situer la contribution de ce projet par rapport à l'état actuel de la recherche et
+des systèmes industriels dans les domaines de la planification touristique intelligente et de la
+recommandation personnalisée en temps réel.
+
+
+% ────────────────────────────────────────────────────────────────
+\section{Agents LLM et planification conversationnelle}
+% ────────────────────────────────────────────────────────────────
+
+\subsection{Les grands modèles de langage (LLMs)}
+
+L'architecture Transformer, introduite par Vaswani et al. en 2017~\cite{vaswani2017attention},
+constitue le socle de tous les grands modèles de langage modernes. Son innovation centrale réside
+dans le mécanisme d'attention multi-têtes (\textit{multi-head attention}), qui permet au modèle
+de pondérer l'importance relative de chaque token d'entrée par rapport à tous les autres, quelle
+que soit leur distance dans la séquence. Contrairement aux architectures récurrentes qui traitent
+les tokens séquentiellement, le Transformer traite l'ensemble de la séquence en parallèle, ce qui
+permet un entraînement massivement distribué sur des corpus de texte de plusieurs téraoctets.
+
+L'évolution des LLMs a connu une étape décisive avec l'introduction de l'ajustement par
+instructions (\textit{instruction tuning}) et de l'apprentissage par renforcement à partir de
+retours humains (RLHF --- \textit{Reinforcement Learning from Human Feedback}). Ces techniques
+transforment un modèle de prédiction de tokens en un assistant capable de comprendre et d'exécuter
+des instructions formulées en langage naturel. Le modèle n'apprend plus seulement à compléter
+une séquence statistiquement probable, mais à produire des réponses utiles, structurées et
+conformes aux attentes de l'utilisateur.
+
+L'émergence de l'appel d'outils (\textit{tool use} ou \textit{function calling}) constitue une
+avancée fondamentale pour la construction d'agents autonomes. Dans ce paradigme, le LLM n'essaie
+pas de générer la réponse directement depuis sa mémoire paramétrique~; il émet plutôt un objet
+JSON structuré décrivant quelle fonction externe appeler et avec quels arguments. Par exemple,
+au lieu d'inventer les conditions météorologiques à Djerba, le modèle peut appeler explicitement
+\texttt{get\_weather(location="Djerba", date="2025-01-15")} et recevoir en retour des données
+réelles de l'API Open-Meteo.
+
+Cette capacité d'appel d'outils est fondamentale pour la construction d'agents fiables qui
+accèdent à des données en temps réel, des bases de données et des APIs externes. Un LLM sans
+outils est contraint de répondre uniquement à partir de ses données d'entraînement, ce qui
+entraîne inévitablement des hallucinations factuelles~--- des informations plausibles mais
+fausses. Pour un planificateur de voyage, ce problème est particulièrement critique~: recommander
+un hôtel inexistant, un prix erroné ou une activité fermée détruit immédiatement la confiance de
+l'utilisateur. L'accès aux outils transforme le LLM d'un générateur de texte en un orchestrateur
+de données vérifiées.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{diagrams/fig_02_transformer_attention.png}
+    \caption{Architecture simplifiée d'un décodeur Transformer avec mécanisme d'attention}
+    \label{fig:transformer}
+\end{figure}
+
+
+\subsection{Frameworks agentiques~: ReAct et LangGraph}
+
+Le patron ReAct (\textit{Reason + Act}), proposé par Yao et al.~\cite{yao2023react}, formalise
+le cycle de raisonnement agentique~: à chaque étape, le modèle raisonne sur la situation courante,
+décide d'une action à entreprendre (typiquement un appel d'outil), observe le résultat retourné,
+puis raisonne à nouveau sur la base de cette nouvelle information. Ce cycle simple mais puissant
+permet de résoudre des tâches complexes en plusieurs étapes, où chaque étape affine la
+compréhension du problème et rapproche l'agent de la solution finale.
+
+LangGraph, développé par LangChain Inc., étend le concept ReAct avec une machine à états typée
+explicite. L'état de l'agent est défini par un \texttt{TypedDict} Python appelé \texttt{AgentState}
+qui accumule les messages via l'opérateur \texttt{operator.add}, et suit l'ensemble des données
+collectées~: profil utilisateur, activités trouvées, météo, hébergements, restaurants, contexte
+RAG, plan en cours de construction, étapes de raisonnement, outils utilisés, compteur d'itérations,
+et indicateurs de décision (besoin d'information supplémentaire, plan prêt pour validation). Des
+fonctions de routage conditionnel déterminent quel nœud s'exécute ensuite en fonction de l'état
+courant, et le mode streaming permet l'affichage en temps réel des étapes de réflexion dans
+l'interface utilisateur.
+
+Le graphe spécifique construit pour l'agent Guidni comporte quatre nœuds~: \textbf{THINK}
+(le LLM analyse la situation et décide de l'action), \textbf{EXECUTE\_TOOL} (l'outil appelé
+s'exécute et retourne un résultat), \textbf{VALIDATE} (vérification de la cohérence d'un plan
+généré), et \textbf{RESPOND} (formulation de la réponse finale). La topologie du graphe est la
+suivante~: le point d'entrée est THINK~; après THINK, la fonction \texttt{\_should\_continue()}
+route vers EXECUTE\_TOOL si le LLM a émis un appel d'outil, vers RESPOND si l'agent a besoin
+d'informations supplémentaires de l'utilisateur, vers VALIDATE si un plan structuré est prêt
+(\texttt{is\_plan\_ready=True}), ou vers RESPOND par défaut (réponse textuelle ou sortie forcée
+après \texttt{MAX\_AGENT\_ITERATIONS=15}). Après EXECUTE\_TOOL, la fonction
+\texttt{\_after\_tool\_execution()} renvoie à THINK pour réévaluation, sauf si l'outil
+\texttt{ask\_user} a été utilisé, auquel cas l'agent passe directement à RESPOND. Après VALIDATE,
+la fonction \texttt{\_after\_validation()} renvoie à THINK si des erreurs ont été détectées et
+qu'il reste des itérations, ou à RESPOND si la validation a réussi.
+
+LangGraph a été préféré aux alternatives plus simples (chaînes LangChain Expression Language,
+CrewAI) pour plusieurs raisons~: l'état explicite facilite le débogage en rendant visible
+l'ensemble des données accumulées à chaque étape, la boucle de validation garantit la cohérence
+des plans générés avant leur présentation à l'utilisateur, la sortie forcée à 15~itérations
+empêche les boucles infinies en cas de raisonnement circulaire, et le support du streaming
+permet d'afficher les étapes de réflexion (\textit{thinking steps}) de manière progressive dans
+l'interface frontend, offrant une expérience utilisateur transparente.
+
+% --- PlantUML diagram placeholder ---
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{diagrams/fig_02_langgraph_graph.png}
+    \caption{Graphe LangGraph de l'agent planificateur Guidni}
+    \label{fig:langgraph}
+\end{figure}
+
+% --- Sequence diagram placeholder ---
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_agent_sequence.png}
+    \caption{Diagramme de séquence d'un cycle complet de l'agent}
+    \label{fig:agent_sequence}
+\end{figure}
+
+
+\subsection{Abstraction multi-fournisseurs LLM}
+
+L'abstraction de l'accès aux fournisseurs LLM constitue un choix architectural essentiel pour
+tout système agentique destiné à un usage en production. Les coûts varient considérablement
+d'un fournisseur à l'autre~--- Ollama est gratuit mais plus lent car il s'exécute localement,
+Groq offre une inférence ultra-rapide mais impose des quotas d'utilisation, Gemini propose la
+fenêtre de contexte la plus large (jusqu'à un million de tokens) mais engendre des coûts API.
+La latence diffère d'un facteur de dix entre un modèle local à 7~milliards de paramètres et un
+modèle cloud optimisé. De plus, certains environnements de déploiement exigent un fonctionnement
+entièrement hors ligne, rendant indispensable la possibilité de basculer entre fournisseurs sans
+modification du code applicatif.
+
+Le système Guidni implémente un patron fabrique (\textit{factory pattern}) dans le module
+\texttt{provider.py}. La fonction centrale \texttt{get\_llm()} accepte quatre paramètres~:
+\texttt{temperature} (contrôle de la créativité), \texttt{json\_mode} (forçage du format JSON
+en sortie), \texttt{provider} (fournisseur à utiliser) et \texttt{model} (nom du modèle). La
+fonction \texttt{parse\_model\_id()} décompose un identifiant de la forme
+\texttt{"gemini/gemini-2.5-flash"} en un couple (fournisseur, nom du modèle). Chaque fournisseur
+dispose de son propre fichier client~: \texttt{ollama\_client.py} instancie \texttt{ChatOllama},
+\texttt{groq\_client.py} instancie \texttt{ChatGroq}, \texttt{gemini\_client.py} instancie
+\texttt{ChatGoogleGenerativeAI}, et \texttt{lightning\_client.py} instancie le client Lightning AI.
+Le code appelant ne change jamais lorsque le fournisseur change.
+
+Le schéma \texttt{ChatRequest} accepte un champ optionnel \texttt{model} permettant au frontend
+de sélectionner dynamiquement un modèle spécifique pour chaque requête, par exemple
+\texttt{"groq/llama-3.3-70b-versatile"} ou \texttt{"ollama/qwen2.5:7b"}, sans redémarrage du
+serveur. Cette flexibilité permet aux utilisateurs avancés de comparer les performances des
+différents modèles sur la même requête de planification.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparaison des fournisseurs LLM intégrés dans Guidni}
+    \label{tab:llm_providers}
+    \small
+    \begin{tabular}{p{1.8cm} p{2.8cm} p{1.2cm} p{1.5cm} p{1.3cm} p{2.5cm} p{2.5cm}}
+        \toprule
+        \textbf{Fournisseur} & \textbf{Modèle} & \textbf{Type} & \textbf{Contexte} &
+        \textbf{Latence} & \textbf{Points forts} & \textbf{Contraintes} \\
+        \midrule
+        Ollama & qwen2.5:7b & Local & 8\,192 tok. & 2--5\,s &
+        Gratuit, confidentialité, hors-ligne & Lent, RAM requise \\[4pt]
+        Groq & llama-3.3-70b-versatile & Cloud & 128k tok. & 0.5--1\,s &
+        Très rapide, grande fenêtre & Quota API, réseau \\[4pt]
+        Gemini & gemini-2.5-flash & Cloud & 1M tok. & 1--2\,s &
+        Multimodal, contexte énorme & Coût API, format list \\[4pt]
+        Lightning & openai/gpt-5 & Cloud & 128k tok. & 1--3\,s &
+        Dernière génération & Réseau, coût \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+La section suivante aborde le mécanisme de génération augmentée par récupération (RAG), qui
+permet à l'agent d'accéder à des données locales vérifiées plutôt que de s'appuyer sur la mémoire
+paramétrique du LLM.
+
+
+% ────────────────────────────────────────────────────────────────
+\section{Génération augmentée par récupération (RAG)}
+% ────────────────────────────────────────────────────────────────
+
+\subsection{Motivation et principe}
+
+Le problème fondamental que résout la technique RAG est l'incapacité des LLMs à connaître des
+informations spécifiques à un domaine local. Les modèles de langage sont entraînés sur des corpus
+internet généraux et ne peuvent pas connaître les caractéristiques précises d'un hôtel à Djerba,
+le menu d'un restaurant local, ou le prix actuel d'une activité de plongée. Interroger un LLM sur
+\og{}l'Hôtel Djerba Plaza\fg{} ou \og{}le Restaurant Haroun\fg{} sans contexte produira des
+descriptions hallucinées~--- des informations plausibles mais factuellement fausses. Pour un
+planificateur de voyage, cette situation est catastrophique car les utilisateurs font confiance
+aux adresses, prix et horaires recommandés.
+
+Le principe RAG (\textit{Retrieval-Augmented Generation}), formalisé par Lewis et al.~\cite{lewis2020rag},
+repose sur une idée simple mais efficace~: au lieu de s'appuyer sur la mémoire paramétrique du LLM,
+le système récupère des documents pertinents depuis une base de connaissances structurée et les
+injecte comme contexte dans le prompt. Le LLM raisonne alors sur des données réelles et vérifiées
+plutôt que d'inventer des informations. Cette approche combine la capacité de raisonnement et de
+génération fluide du LLM avec la précision factuelle d'une base de données interrogée en temps réel.
+
+L'architecture RAG se décompose en deux phases distinctes. La \textbf{phase d'indexation}, exécutée
+au démarrage de l'application, convertit l'ensemble des enregistrements de la base de données en
+documents textuels, calcule les vecteurs d'embedding pour chaque document, et construit un index
+vectoriel interrogeable. La \textbf{phase de requête}, exécutée à chaque demande utilisateur,
+prend la requête en entrée, trouve les documents sémantiquement similaires dans l'index, et
+retourne les résultats les plus pertinents avec leurs scores de similarité.
+
+L'implémentation Guidni indexe six types d'entités~: les activités (\texttt{Activity}), les
+hébergements (\texttt{Stay}), les restaurants (\texttt{Restaurant}), les attractions
+(\texttt{Attraction}), les locations (\texttt{Rental}) et les transferts (\texttt{Transfer}).
+Chaque entité est convertie en un document textuel riche incluant l'ensemble des champs
+pertinents~--- titre, description, catégorie, région, ville, prix, durée, horaires d'ouverture,
+équipements~--- accompagné d'un dictionnaire de métadonnées structurées utilisé pour le filtrage.
+Le système supporte deux moteurs vectoriels interchangeables~: Qdrant (index vectoriel dédié)
+et pgvector (extension PostgreSQL), sélectionnés via la variable de configuration
+\texttt{VECTOR\_ENGINE}.
+
+% --- RAG architecture diagram ---
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_rag_architecture.png}
+    \caption{Architecture du pipeline RAG avec réindexation automatique}
+    \label{fig:rag_architecture}
+\end{figure}
+
+
+\subsection{Modèle d'embedding BAAI/bge-m3}
+
+Le modèle BAAI/bge-m3, publié par la Beijing Academy of Artificial Intelligence, est un modèle
+d'embedding multilingue open source supportant plus de 100~langues, dont le français, l'anglais
+et l'arabe. Il produit des vecteurs denses de 1024~dimensions qui capturent la signification
+sémantique des textes indépendamment de la langue~: une requête en français sur \og{}plage
+familiale\fg{} retrouvera des documents mentionnant \og{}family beach\fg{} en anglais ou
+des termes équivalents en arabe. Cette propriété multilingue est
+essentielle pour le marché touristique de Djerba, intrinsèquement trilingue.
+
+La configuration retenue dans le module \texttt{settings.py} définit les paramètres suivants~:
+\texttt{chunk\_size=512} tokens pour le découpage des documents, \texttt{chunk\_overlap=50} tokens
+pour assurer la continuité sémantique entre les fragments, exécution sur CPU
+(\texttt{device="cpu"}) sans nécessité de GPU, et \texttt{trust\_remote\_code=True} pour le
+chargeur HuggingFace. Le modèle est initialisé une seule fois au démarrage de l'application
+via la fonction \texttt{initialize\_rag\_settings()} et stocké comme paramètre global LlamaIndex.
+Le LLM intégré de LlamaIndex est explicitement désactivé (\texttt{LlamaSettings.llm = None})
+car tout le raisonnement est délégué à l'agent LangGraph.
+
+Le choix de bge-m3 par rapport aux alternatives a été motivé par plusieurs facteurs~: il est
+gratuit (aucune clé API nécessaire), respectueux de la vie privée (exécution entièrement locale),
+multilingue de manière native --- ce qui est critique pour le marché touristique FR/EN/AR --- et
+surpasse les modèles plus petits sur les benchmarks de récupération pour du contenu multi-domaine.
+L'alternative OpenAI \texttt{text-embedding-3} offre des performances similaires mais introduit
+une dépendance réseau, un coût par requête et une transmission des données hors du serveur.
+
+
+\subsection{Réindexation automatique via SQLAlchemy Events}
+
+Le problème résolu par la réindexation automatique est le suivant~: si un propriétaire d'hôtel
+met à jour le prix de son annonce ou si une nouvelle activité est ajoutée à la base de données,
+l'index vectoriel devient obsolète et l'agent recommandera des informations périmées. Une
+reconstruction manuelle de l'index nécessiterait un redémarrage du serveur, ce qui est
+inacceptable pour un système en production.
+
+La solution implémentée dans le module \texttt{db\_events.py} repose sur les écouteurs
+d'événements SQLAlchemy. Au démarrage de l'application, la fonction \texttt{register\_db\_events()}
+attache des écouteurs sur les événements \texttt{after\_insert}, \texttt{after\_update} et
+\texttt{after\_delete} des six modèles suivis~: \texttt{Activity}, \texttt{Stay},
+\texttt{Restaurant}, \texttt{Attraction}, \texttt{Rental} et \texttt{Transfer}. Lorsqu'un de
+ces événements se produit, une tâche asynchrone en arrière-plan est créée via
+\texttt{loop.create\_task()} pour appeler \texttt{upsert\_entity()} (insertion ou mise à jour)
+ou \texttt{delete\_entity()} (suppression) sur l'entité concernée.
+
+Les bénéfices de cette approche sont triples~: l'index reste toujours à jour sans aucune
+intervention manuelle, la réindexation est non bloquante car elle s'exécute en arrière-plan
+via des tâches asynchrones, et le traitement est ciblé --- seule l'entité modifiée est
+réindexée, et non l'ensemble du corpus. Cette architecture événementielle garantit que l'agent
+planificateur travaille systématiquement sur des données actualisées.
+
+La section suivante élargit la perspective aux systèmes de recommandation, domaine théorique
+qui sous-tend le second sous-système du projet Guidni.
+% ============================================================================
+% CHAPITRE 2 — ÉTAT DE L'ART (Part 2: 2.4–2.6 + Conclusion)
+% ============================================================================
+
+% ────────────────────────────────────────────────────────────────
+\section{Systèmes de recommandation~: vue d'ensemble}
+% ────────────────────────────────────────────────────────────────
+
+Le \textbf{filtrage collaboratif} repose sur la matrice d'interactions utilisateur-item. En
+identifiant des utilisateurs aux comportements similaires, le système recommande à un utilisateur
+les items appréciés par ses \og{}voisins\fg{} comportementaux. Les techniques de factorisation
+matricielle (SVD, ALS) permettent de réduire la dimensionnalité de cette matrice creuse. Cette
+approche excelle dans la découverte d'items inattendus, mais souffre du problème de démarrage
+à froid (\textit{cold start})~: un nouvel utilisateur ou un nouvel item n'ayant aucune interaction
+ne peut être recommandé, et le système nécessite un historique d'interactions conséquent pour
+formuler des recommandations pertinentes.
+
+Le \textbf{filtrage basé sur le contenu} représente chaque item par un vecteur de
+caractéristiques (catégorie, tags, prix, localisation) et recommande les items dont le profil
+est similaire à ceux déjà appréciés par l'utilisateur. Cette approche fonctionne dès la première
+interaction car elle ne dépend pas d'autres utilisateurs. Cependant, elle crée des bulles de
+filtres (\textit{filter bubbles}) qui enferment l'utilisateur dans un ensemble restreint de
+catégories déjà explorées, éliminant toute sérendipité~--- la découverte fortuite d'items
+intéressants en dehors du profil habituel.
+
+Les \textbf{systèmes hybrides hors ligne} combinent les deux approches précédentes et sont
+entraînés sur des données historiques par lots (\textit{batch training}). Ils offrent une
+meilleure couverture du catalogue et atténuent partiellement le démarrage à froid. Cependant, ils
+sont incapables de réagir aux signaux émis par l'utilisateur en temps réel durant sa session~:
+le temps passé sur une page, la profondeur de défilement ou l'ajout à une liste de souhaits ne
+sont exploités qu'au prochain cycle de réentraînement, qui peut survenir des heures ou des jours
+plus tard. De plus, la dérive conceptuelle (\textit{concept drift}) --- l'évolution des
+préférences au fil des saisons --- dégrade les performances entre deux cycles.
+
+L'\textbf{apprentissage en ligne par bandits contextuels} apprend en temps réel à partir de
+chaque interaction. À chaque requête, le système observe un vecteur de contexte (heure, saison,
+appareil, comportement de session) et sélectionne les items qui maximisent la récompense attendue
+tout en explorant des alternatives moins connues. Cette approche équilibre naturellement
+l'exploration de nouveaux items avec l'exploitation des items connus, s'adapte automatiquement
+aux tendances saisonnières, et ne nécessite aucun réentraînement par lots. C'est cette approche
+qui a été retenue pour le moteur de recommandation Guidni.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparaison des approches de recommandation}
+    \label{tab:reco_approaches}
+    \small
+    \begin{tabular}{p{2.8cm} p{2cm} p{2cm} p{2.2cm} p{1.8cm} p{2.2cm}}
+        \toprule
+        \textbf{Approche} & \textbf{Cold Start} & \textbf{Dérive temp.} &
+        \textbf{Données} & \textbf{Complexité} & \textbf{Guidni~?} \\
+        \midrule
+        Filtrage collaboratif & Problématique & Mauvaise & Grand historique & Moyenne & Non \\[3pt]
+        Basé contenu & Acceptable & Mauvaise & Attributs items & Faible & Partiel \\[3pt]
+        Hybride offline & Partiel & Mauvaise & Les deux & Élevée & Non \\[3pt]
+        LinUCB contextuel & Bonus exploration & Reset $\lambda$-decay & Contexte temps réel & Faible--Moy. & \textbf{Oui} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+% ────────────────────────────────────────────────────────────────
+\section{Bandits multi-bras contextuels et algorithme LinUCB}
+% ────────────────────────────────────────────────────────────────
+
+\subsection{Formulation du problème MAB}
+
+Le problème des bandits multi-bras (\textit{Multi-Armed Bandit}, MAB) tire son nom de la métaphore
+d'un joueur face à une rangée de machines à sous~: chaque machine (appelée \og{}bras\fg{}) offre
+une distribution de gains différente et inconnue. À chaque tour, le joueur doit choisir une
+machine et observe la récompense obtenue. Son objectif est de maximiser la récompense cumulée au
+fil du temps. Le défi fondamental réside dans le dilemme exploration-exploitation~: faut-il
+actionner les bras dont on sait qu'ils rapportent (exploitation) ou essayer des bras inconnus
+qui pourraient rapporter davantage (exploration)~?
+
+Formellement, à chaque pas de temps $t$, un agent choisit un bras $a_t$ parmi $K$ bras
+disponibles et reçoit une récompense $r_t$ tirée d'une distribution inconnue. L'objectif est de
+minimiser le regret cumulé, défini comme la différence entre la récompense totale obtenue et la
+récompense maximale qu'aurait obtenue un oracle ayant toujours choisi le meilleur bras~:
+$R_T = \sum_{t=1}^{T} r^* - r_t$, où $r^*$ est la récompense espérée du bras optimal.
+
+Dans la variante \textbf{contextuelle} du problème, l'agent observe un vecteur de contexte
+$\phi_t$ avant de choisir un bras. La récompense espérée dépend à la fois du bras choisi et
+du contexte observé. Cette extension est cruciale pour la recommandation touristique~: la
+meilleure recommandation dépend du contexte --- une famille à 10h en été (tags~: \texttt{beach\_access},
+\texttt{pool}, \texttt{family}) n'a pas les mêmes attentes qu'un voyageur solo à 20h en hiver
+(tags~: \texttt{romantic}, \texttt{bar}, \texttt{activity\_indoor}).
+
+Dans le système Guidni, neuf types d'événements sont suivis avec des valeurs de récompense
+allant de $-0.2$ (\texttt{quick\_exit}~: l'utilisateur a quitté la page en moins de 5~secondes)
+à $1.0$ (\texttt{reservation}~: signal de valeur maximale), en passant par $0.3$ (\texttt{click}),
+$0.5$ / $0.7$ (\texttt{dwell\_30s} / \texttt{dwell\_60s}), $0.4$ / $0.6$
+(\texttt{gallery\_swipe} / \texttt{scroll\_reviews}), et $0.85$ (\texttt{wishlist}). Un mécanisme
+de delta par session empêche la même annonce d'accumuler des récompenses multiples lors d'une
+même visite~: seule la différence entre la récompense courante et le maximum précédemment émis
+pour cette annonce est comptabilisée.
+
+% --- LinUCB cycle diagram ---
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_linucb_cycle.png}
+    \caption{Cycle complet du bandit LinUCB dans le système Guidni}
+    \label{fig:linucb_cycle}
+\end{figure}
+
+
+\subsection{L'algorithme LinUCB et la formule de score}
+
+L'algorithme LinUCB repose sur l'hypothèse que la récompense espérée est une fonction linéaire
+du vecteur de contexte~: $\mathbb{E}[r|\phi] = \theta^\top \phi$, où $\theta$ est un vecteur
+de paramètres inconnu que le système doit estimer à partir des récompenses observées. Cette
+hypothèse de linéarité est raisonnable pour un espace de caractéristiques bien conçu, car le
+produit de Kronecker utilisé pour construire $\phi$ capture déjà les interactions non linéaires
+entre caractéristiques utilisateur et tags d'annonces.
+
+La règle de mise à jour LinUCB est la suivante~: après avoir observé une récompense $r$ pour un
+contexte $\phi$, le système met à jour les matrices globales selon $A \leftarrow A + \phi\phi^\top$
+et $b \leftarrow b + r \cdot \phi$. L'estimateur du paramètre $\theta$ est alors
+$\hat{\theta} = A^{-1}b$, calculé dans le code via \texttt{np.linalg.solve(A, b)} --- jamais
+par inversion matricielle directe (\texttt{np.linalg.inv}) pour des raisons de stabilité
+numérique. En cas de matrice singulière, un repli vers \texttt{np.linalg.lstsq} est prévu.
+
+La formule de score UCB combine exploitation et exploration~:
+\begin{equation}
+    \text{score} = \underbrace{\hat{\theta}^\top \phi}_{\text{exploitation}} +
+    \underbrace{\alpha \sqrt{\phi^\top A^{-1} \phi}}_{\text{bonus UCB (exploration)}}
+    \label{eq:ucb_score}
+\end{equation}
+Le premier terme est la récompense prédite (exploitation)~; le second est le bonus d'exploration,
+proportionnel à l'incertitude --- élevé lorsque la matrice $A$ a peu d'observations dans la
+direction de $\phi$. Le paramètre $\alpha = 0.3$ contrôle l'équilibre exploration-exploitation~;
+une valeur plus élevée favorise l'exploration de bras moins connus.
+
+Les annonces ayant moins de 50~impressions reçoivent un bonus supplémentaire de $+0.15$ ajouté
+au score UCB, assurant que les nouvelles annonces sont présentées à un nombre minimum
+d'utilisateurs avant que le système puisse correctement estimer leur valeur. Ce bonus
+d'exposition (\texttt{UNDEREXPOSED\_BONUS}) est contrôlé par le drapeau
+\texttt{is\_underexposed} défini par la fonction \texttt{apply\_popularity\_correction()}.
+
+La santé numérique de la matrice $A$ est surveillée par la fonction \texttt{is\_matrix\_healthy()},
+qui vérifie que $A$ est définie positive (toutes les valeurs propres sont strictement positives)
+et que toutes les valeurs sont finies. Tous les 90~jours, une réinitialisation partielle est
+appliquée~: $A_{\text{new}} = 0.7 \times A + 0.3 \times I$ et $b_{\text{new}} = 0.7 \times b$,
+avec $\lambda_{\text{decay}} = 0.7$. Cette opération oublie progressivement les données anciennes
+tout en conservant la structure apprise, adressant la dérive conceptuelle lorsque les préférences
+touristiques évoluent au fil des saisons.
+
+
+\subsection{Ingénierie des caractéristiques}
+
+Le vecteur utilisateur $x_{\text{user}}$ est de dimension~9. L'heure et le mois sont encodés
+avec des fonctions sinus et cosinus pour préserver leur nature cyclique~: minuit et 23h doivent
+être proches, décembre et janvier doivent être voisins. La profondeur de défilement
+(\texttt{scroll\_depth}) est écrêtée à $[0, 1]$. Le temps de consultation est normalisé par une
+transformation logarithmique~: $\texttt{log1p(dwell)} / \texttt{log1p(300)}$, écrêté à $[0, 1]$.
+L'affinité de prix est le prix moyen de réservation de l'utilisateur divisé par le maximum de la
+plateforme (2000~TND). Le score d'affinité de tag maximal provient du profil utilisateur. Le
+type de voyage est encodé numériquement~: famille$=1.0$, couple$=0.67$, solo$=0.33$,
+inconnu$=0.0$.
+
+Le vocabulaire de tags comprend \textbf{40~tags} en ordre alphabétique fixe. L'ordre ne doit
+jamais changer après le déploiement car toute modification invaliderait la matrice~$A$. Les
+tags couvrent les équipements (\texttt{beach\_access}, \texttt{pool}, \texttt{spa}, \texttt{wifi},
+\texttt{parking}, \texttt{gym}, \texttt{hammam}, \texttt{air\_conditioning}), les types
+d'activité (\texttt{adventure}, \texttt{cultural}, \texttt{nature}, \texttt{activity\_outdoor},
+\texttt{activity\_indoor}), les caractéristiques (\texttt{budget}, \texttt{luxury},
+\texttt{romantic}, \texttt{family}, \texttt{business}, \texttt{solo}), la restauration
+(\texttt{fine\_dining}, \texttt{casual\_dining}, \texttt{street\_food}, \texttt{bar}), les types
+d'hébergement (\texttt{hotel}, \texttt{hostel}, \texttt{riad}, \texttt{villa}), et la saisonnalité
+(\texttt{best\_morning}, \texttt{best\_evening}, \texttt{best\_summer}, \texttt{best\_winter},
+\texttt{all\_seasons}).
+
+Le produit de Kronecker $\phi = \texttt{np.kron}(x_{\text{user}}, x_{\text{tags}})$ combine
+le vecteur utilisateur de dimension~9 avec un vecteur binaire de tags de longueur~40 (1 si
+l'annonce possède le tag, 0 sinon). Ce produit crée toutes les combinaisons par paires entre
+caractéristiques utilisateur et tags d'annonces, produisant un vecteur $\phi$ de longueur
+$9 \times 40 = 360$ qui capture les effets d'interaction --- par exemple, \og{}utilisateur
+famille + tag pool\fg{} constitue une dimension unique du vecteur.
+
+Un mécanisme de sécurité par hachage du vocabulaire garantit la cohérence entre le vocabulaire
+et les matrices. Au démarrage, un hash SHA-256 du vocabulaire de tags trié est calculé par la
+fonction \texttt{compute\_vocab\_hash()} et comparé au hash stocké dans la table
+\texttt{SystemConfig}. Si les hash divergent, le système refuse de démarrer, empêchant une
+corruption silencieuse de la matrice~$A$.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Les 9 composantes du vecteur utilisateur $x_{\text{user}}$}
+    \label{tab:user_vector}
+    \small
+    \begin{tabular}{c l l c}
+        \toprule
+        \textbf{Idx} & \textbf{Caractéristique} & \textbf{Formule} &
+        \textbf{Exemple} \\
+        \midrule
+        0 & sin(heure) & $\sin(2\pi \times h / 24)$ & $0.866$ \\
+        1 & cos(heure) & $\cos(2\pi \times h / 24)$ & $0.500$ \\
+        2 & sin(mois) & $\sin(2\pi \times m / 12)$ & $0.866$ \\
+        3 & cos(mois) & $\cos(2\pi \times m / 12)$ & $-0.500$ \\
+        4 & Profondeur défilement & $\text{clip}(\text{scroll}, 0, 1)$ & $0.70$ \\
+        5 & Temps consultation & $\text{clip}(\log_e(1+\text{dwell})/\log_e(301), 0, 1)$ & $0.72$ \\
+        6 & Affinité prix & $\text{avg\_price} / 2000$ & $0.075$ \\
+        7 & Affinité tag max & $\max(\text{tag\_affinity})$ & $0.82$ \\
+        8 & Type voyage & famille$=1.0$, couple$=0.67$, solo$=0.33$ & $1.0$ \\
+        \bottomrule
+    \end{tabular}
+    \vspace{0.2cm}
+    \footnotesize
+    \textit{Exemple~: utilisateur famille, 10h du matin, mois d'août, 60s de consultation.}
+\end{table}
+
+
+\subsection{Pipeline de classement post-LinUCB}
+
+Le score brut LinUCB ne suffit pas pour produire une liste de recommandations optimale. Plusieurs
+contraintes métier doivent être appliquées en post-traitement~: diversité des types d'annonces,
+garantie d'exposition pour les nouvelles annonces, exploration de catégories inconnues de
+l'utilisateur, et optimisation des revenus de la plateforme. Le pipeline de classement
+(\texttt{ranker.py}) applique une chaîne de neuf filtres et ajustements dans un ordre précis
+après le scoring LinUCB initial.
+
+Les trois premiers filtres sont des filtres d'éligibilité qui réduisent l'ensemble des candidats
+avant le scoring~: la correction de popularité marque les annonces sous-exposées, le filtre
+temporel élimine les annonces inadaptées à l'heure, et le filtre budgétaire supprime les annonces
+hors budget. Les étapes suivantes construisent les vecteurs de caractéristiques et appliquent
+le scoring LinUCB. Les quatre derniers filtres sont des ajustements post-scoring qui optimisent
+la diversité, l'équité et les revenus.
+
+Les neuf étapes du pipeline sont les suivantes~:
+
+\begin{enumerate}[leftmargin=2cm]
+    \item \textbf{Correction de popularité}~: marquer comme sous-exposées les annonces ayant
+    moins de 50~impressions, déclenchant le bonus $+0.15$ lors du scoring.
+
+    \item \textbf{Filtre temporel}~: retirer les annonces tagées \texttt{best\_evening} ou
+    \texttt{bar} le matin (6h--12h), et \texttt{best\_morning} le soir (20h--23h).
+
+    \item \textbf{Filtre budgétaire}~: retirer les annonces dont le prix dépasse
+    $\text{budget} \times 1.25$ lorsqu'une estimation de budget est disponible.
+
+    \item \textbf{Construction des vecteurs $\phi$}~: calculer le produit de Kronecker pour chaque
+    annonce restante à partir du contexte utilisateur courant.
+
+    \item \textbf{Scoring LinUCB}~: calculer le score UCB pour toutes les annonces restantes.
+
+    \item \textbf{Filtre de diversité}~: parcourir la liste classée de haut en bas, n'accepter
+    au maximum que 2~annonces par type (\texttt{STAY}, \texttt{ACTIVITY}, \texttt{RESTAURANT}).
+
+    \item \textbf{Garantie nouvelles annonces}~: si aucune annonce du résultat top-$k$ n'a moins
+    de 50~impressions, remplacer le dernier créneau par l'annonce sous-exposée la mieux classée.
+
+    \item \textbf{Exploration de tags}~: remplacer 10\% des créneaux par les annonces les mieux
+    classées parmi les catégories de tags que l'utilisateur n'a pas encore explorées
+    (affinité $< 0.2$).
+
+    \item \textbf{Tri par marge}~: dans les paliers de score dont l'écart est inférieur à $0.05$,
+    trier par \texttt{commission\_rate} décroissant pour maximiser les revenus de la plateforme.
+\end{enumerate}
+
+Le résultat final est tronqué à \texttt{top\_k} éléments (par défaut~10) avant d'être retourné.
+
+
+% ────────────────────────────────────────────────────────────────
+\section{Travaux connexes et comparaison}
+% ────────────────────────────────────────────────────────────────
+
+Li et al.~\cite{li2010linucb} ont introduit l'algorithme LinUCB dans le contexte de la
+recommandation d'articles de presse sur le portail Yahoo! Today. Leur travail a démontré que
+les bandits contextuels linéaires surpassent les méthodes de recommandation classiques lorsque
+le contenu évolue rapidement et que les préférences utilisateur dépendent du contexte temporel.
+Bouneffouf et al.~\cite{bouneffouf2014context} ont étendu cette approche aux recommandations
+mobiles avec des bandits hybrides intégrant des signaux contextuels similaires aux nôtres
+(localisation, heure). Le \textit{Thompson Sampling} contextuel constitue une alternative
+bayésienne, mais LinUCB a été préféré pour sa nature déterministe, sa facilité de débogage
+(pas d'échantillonnage postérieur), et son caractère éprouvé en production à grande échelle.
+
+TripAdvisor, la plateforme de référence pour les avis touristiques, utilise un système de
+recommandation combinant filtrage collaboratif et signaux de contenu. Le classement est entraîné
+hors ligne sur des données historiques massives et ne se met pas à jour en temps réel à partir
+des signaux de session en cours. De plus, TripAdvisor recommande des attractions individuelles
+sans composer d'itinéraire multi-journées intégré~--- l'utilisateur doit assembler manuellement
+son programme de voyage.
+
+Booking.com a développé un système de classement hybride sophistiqué, intégrant des signaux
+en temps réel et une infrastructure de tests A/B à grande échelle~\cite{bernardi2019booking}.
+Cependant, ce système est entièrement fermé et non reproductible, conçu pour un volume de
+trafic de plusieurs ordres de grandeur supérieur à celui d'une place de marché touristique
+locale. Les techniques employées (réseaux de neurones profonds, infrastructure de feature store
+distribuée) ne sont pas adaptées au contexte d'un projet académique avec des contraintes de
+ressources limitées.
+
+Dans le domaine de la planification de voyage automatisée, Lim et al.~\cite{lim2018personalized}
+et Jiang et al.~\cite{jiang2019trip} proposent des approches par optimisation combinatoire
+sur des graphes de points d'intérêt. Ces travaux modélisent la planification comme un problème
+d'optimisation sous contraintes (temps, budget, distance) mais n'intègrent pas d'interaction
+conversationnelle, de données météorologiques en temps réel, ni d'apprentissage en ligne à
+partir du comportement utilisateur.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparaison avec les systèmes existants}
+    \label{tab:comparison}
+    \small
+    \begin{tabular}{p{3cm} c c c c c}
+        \toprule
+        \textbf{Système} & \textbf{Planif.} & \textbf{Reco. TR} &
+        \textbf{Multilingue} & \textbf{Apprent. OL} & \textbf{Open src.} \\
+        \midrule
+        Guidni (ce projet) & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+        TripAdvisor & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ \\
+        Booking.com & $\times$ & \checkmark & \checkmark & \checkmark & $\times$ \\
+        ChatGPT (sans outils) & Partiel & $\times$ & \checkmark & $\times$ & $\times$ \\
+        Lim et al. (2018) & \checkmark & $\times$ & $\times$ & $\times$ & \checkmark \\
+        Bouneffouf et al. & $\times$ & \checkmark & $\times$ & \checkmark & \checkmark \\
+        \bottomrule
+    \end{tabular}
+    \vspace{0.2cm}
+    \footnotesize
+    \textit{Planif.~= planification multi-jours, Reco. TR~= recommandation temps réel,
+    Apprent. OL~= apprentissage en ligne.}
+\end{table}
+
+
+% ────────────────────────────────────────────────────────────────
+\section{Choix technologiques et justification}
+% ────────────────────────────────────────────────────────────────
+
+\textbf{FastAPI} a été préféré à Django et Flask pour sa nature nativement asynchrone, sa
+génération automatique de documentation OpenAPI, sa validation des données par Pydantic, et ses
+performances supérieures pour les tâches d'entrée-sortie intensives typiques des applications IA.
+L'agent LLM effectue de multiples appels réseau concurrents (LLM, base de données, APIs
+météo, géocodage), rendant l'asynchronicité essentielle.
+
+\textbf{LangGraph} a été choisi plutôt que LangChain Expression Language (LCEL) ou CrewAI pour
+son état explicitement typé qui facilite le débogage, son graphe orienté qui permet des boucles
+de validation impossibles avec des chaînes linéaires, son support natif du streaming, et sa
+flexibilité pour définir des fonctions de routage conditionnel complexes.
+
+\textbf{LlamaIndex} a été préféré à FAISS ou Chroma pour sa gestion intégrée du magasin de
+documents (\textit{document store}), son filtrage par métadonnées nativement supporté, sa
+persistance automatique sur disque, et son système d'événements facilitant l'intégration avec
+SQLAlchemy pour la réindexation incrémentale.
+
+\textbf{BAAI/bge-m3} a été sélectionné plutôt que OpenAI \texttt{text-embedding-3} car il est
+gratuit, s'exécute localement (aucune donnée transmise à des tiers), supporte nativement le
+français, l'anglais et l'arabe, et n'introduit aucune dépendance réseau pour la recherche
+sémantique.
+
+\textbf{LinUCB} a été préféré au Thompson Sampling et aux bandits neuronaux pour sa mathématique
+plus simple, sa nature déterministe (pas d'échantillonnage MCMC), sa facilité de débogage
+(le score est une formule explicite), et son efficacité prouvée en production à grande échelle
+chez Yahoo!~\cite{li2010linucb} et dans les systèmes de recommandation d'actualités.
+
+\textbf{APScheduler} a été choisi plutôt que Celery pour sa simplicité de configuration
+(pas de broker Redis nécessaire), sa légèreté (une seule dépendance Python), et sa capacité
+suffisante pour les tâches nocturnes planifiées à l'échelle de ce projet.
+
+Le \textbf{tracker JavaScript vanilla} a été développé sans dépendance externe (ni Google
+Analytics, ni Segment) pour garantir un contrôle total sur les données collectées, éliminer
+les cookies tiers, assurer la conformité RGPD, et offrir un poids de chargement minimal.
+
+
+% ────────────────────────────────────────────────────────────────
+\section*{Conclusion du chapitre}
+\addcontentsline{toc}{section}{Conclusion du chapitre}
+
+Ce chapitre a établi les fondements théoriques nécessaires à la compréhension du système Guidni.
+Les agents LLM et le patron ReAct ont été présentés comme base de l'architecture agentique, le
+framework LangGraph a été justifié comme choix de machine à états pour sa debuggabilité et ses
+boucles de validation, et l'abstraction multi-fournisseurs LLM a été exposée pour sa flexibilité.
+Le pipeline RAG avec le modèle d'embedding multilingue BAAI/bge-m3 et la réindexation automatique
+par événements SQLAlchemy ont été décrits comme mécanisme de grounding factuel. Les systèmes de
+recommandation ont été comparés selon quatre axes, établissant la supériorité de l'apprentissage
+en ligne par bandits contextuels pour le cas d'usage touristique. L'algorithme LinUCB a été
+formalisé mathématiquement, l'ingénierie des caractéristiques par produit de Kronecker a été
+détaillée avec ses 40~tags et son vecteur $\phi$ de dimension~360, et le pipeline de classement
+post-scoring en neuf étapes a été décrit.
+
+Le chapitre suivant traduira ces fondements théoriques en exigences concrètes, modèles UML et
+conceptions architecturales détaillées pour les deux sous-systèmes du projet Guidni.

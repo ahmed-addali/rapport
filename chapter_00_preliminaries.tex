@@ -1,0 +1,384 @@
+% ============================================================================
+% CHAPTER 0 — PAGES PRÉLIMINAIRES
+% ============================================================================
+% This file contains all preliminary pages of the PFE report.
+% Include it in main.tex BEFORE \pagenumbering{arabic}.
+% ============================================================================
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 1 — PAGE DE TITRE
+% ────────────────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+
+    % --- University logo ---
+    \vspace*{0.5cm}
+    \includegraphics[width=4cm]{images/university_logo.png}
+
+    \vspace{0.8cm}
+
+    % --- University name and department ---
+    {\large \textbf{Université de Sousse}}\\[4pt]
+    {\large \textbf{Institut Supérieur d'Informatique et des Technologies de Communication}}\\[4pt]
+    {\large \textbf{(ISITCOM)}}\\[4pt]
+    {\large Département Informatique}
+
+    \vspace{1.2cm}
+
+    % --- Report label ---
+    {\Large \textsc{Rapport de Projet de Fin d'Études}}\\[6pt]
+    {\normalsize Présenté en vue de l'obtention du diplôme national d'ingénieur en informatique}
+
+    \vspace{1.5cm}
+
+    % --- Project title ---
+    \rule{\textwidth}{0.4pt}
+    \vspace{0.6cm}
+    {\LARGE \textbf{Conception et Implémentation d'un Système de\\[6pt]
+    Planification de Voyage Intelligent basé sur les\\[6pt]
+    Agents LLM et un Moteur de Recommandation\\[6pt]
+    Contextuel par Bandits (LinUCB)}}
+    \vspace{0.6cm}
+    \rule{\textwidth}{0.4pt}
+
+    \vspace{1.5cm}
+
+    % --- Author and Supervisor (two-column layout) ---
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedright
+        {\large \textbf{Réalisé par~:}}\\[6pt]
+        {\large Ahmed Addali}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedleft
+        {\large \textbf{Encadré par~:}}\\[6pt]
+        {\large Nizar Tenzekhti}
+    \end{minipage}
+
+    \vspace{1.8cm}
+
+    % --- Jury table ---
+    {\large \textbf{Membres du jury}}\\[10pt]
+    \begin{tabular}{l l}
+        \textbf{Président}     & M./Mme \dotfill \\[8pt]
+        \textbf{Rapporteur}    & M./Mme \dotfill \\[8pt]
+        \textbf{Examinateur}   & M./Mme \dotfill \\
+    \end{tabular}
+
+    \vfill
+
+    % --- Academic year ---
+    {\large \textbf{Année universitaire~: 2024\,--\,2025}}
+
+\end{titlepage}
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 2 — DÉDICACE
+% ────────────────────────────────────────────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+    {\Large \textbf{Dédicace}}\\[1.5cm]
+    \begin{minipage}{0.75\textwidth}
+        \begin{center}
+            \textit{%
+            À mes chers parents, dont les sacrifices silencieux et le soutien
+            indéfectible ont pavé chaque étape de mon parcours. Aucun mot ne
+            saurait exprimer la profondeur de ma reconnaissance envers vous.}
+
+            \vspace{0.6cm}
+
+            \textit{%
+            À mes enseignants, qui ont su éveiller en moi une passion sincère
+            pour l'intelligence artificielle et les sciences de l'informatique,
+            et qui m'ont transmis la rigueur nécessaire à la recherche.}
+
+            \vspace{0.6cm}
+
+            \textit{%
+            À mes amis et camarades de promotion, compagnons de longues nuits
+            de travail et de discussions enrichissantes, dont la solidarité a
+            rendu ce parcours plus humain.}
+
+            \vspace{0.6cm}
+
+            \textit{%
+            À tous ceux qui, de près ou de loin, ont contribué à la réalisation
+            de ce travail\,: que ces pages soient le témoignage modeste de ma
+            gratitude.}
+        \end{center}
+    \end{minipage}
+\end{center}
+\vspace*{\fill}
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 3 — REMERCIEMENTS
+% ────────────────────────────────────────────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+
+Au terme de ce projet de fin d'études, il m'est agréable d'exprimer ma
+profonde gratitude envers toutes les personnes qui ont contribué, directement
+ou indirectement, à l'aboutissement de ce travail.
+
+Mes remerciements les plus sincères s'adressent en premier lieu à mon
+encadrant, \textbf{M.~Nizar Tenzekhti}, pour sa disponibilité constante, ses
+orientations judicieuses et son encadrement technique rigoureux tout au long
+de ce projet. Sa maîtrise des architectures logicielles et des systèmes
+d'intelligence artificielle a constitué une source d'inspiration permanente
+et a significativement enrichi la qualité de ce travail.
+
+Je tiens également à remercier les membres du jury pour l'honneur qu'ils me
+font en acceptant d'évaluer ce travail. Leurs remarques et observations
+contribueront sans nul doute à son amélioration.
+
+Ma reconnaissance s'étend à l'ensemble du corps enseignant de l'ISITCOM, et
+en particulier au département d'informatique, pour la qualité de la formation
+dispensée au cours de ces années, formation qui m'a fourni les fondements
+théoriques et pratiques nécessaires à la réalisation de ce projet.
+
+Je remercie chaleureusement ma famille pour son soutien moral et matériel
+inestimable, sa patience et ses encouragements constants, qui ont été un
+moteur essentiel durant les moments les plus exigeants de ce parcours.
+
+Enfin, j'adresse mes remerciements à mes collègues et amis pour les échanges
+fructueux, les relectures attentives et la collaboration productive qui ont
+accompagné chaque étape de ce travail.
+
+Que toutes ces personnes trouvent ici l'expression de ma profonde gratitude.
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 4 — RÉSUMÉ EN FRANÇAIS
+% ────────────────────────────────────────────────────────────────────────────
+\newpage
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+
+Les touristes visitant l'île de Djerba sont confrontés à l'absence d'outils
+de planification intelligents capables de combiner la génération automatique
+d'itinéraires multi-journées avec des recommandations personnalisées en temps
+réel. Les plateformes existantes se limitent soit à des moteurs de recherche
+par filtres statiques, soit à des systèmes de recommandation collaboratifs qui
+ignorent le contexte immédiat du voyageur --- son budget, ses contraintes
+temporelles, sa localisation et ses préférences linguistiques.
+
+Ce travail propose \textbf{Guidni}, une plateforme de planification de voyage
+articulée autour de deux sous-systèmes complémentaires. Le premier est un
+\textbf{agent planificateur conversationnel} construit sur une machine à états
+LangGraph comportant quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
+et disposant de dix-huit outils appelables par le LLM, couvrant la gestion
+du profil utilisateur, la recherche d'activités, les données météorologiques
+via Open-Meteo, la géolocalisation par Nominatim et Haversine, ainsi qu'un
+pipeline RAG multilingue (français, anglais, arabe) reposant sur les
+embeddings denses BAAI/bge-m3 et un ré-ordonnancement par cross-encoder
+BAAI/bge-reranker-v2-m3. Le second sous-système est un \textbf{moteur de
+recommandation hybride LinUCB} exploitant un vecteur de caractéristiques
+construit par produit de Kronecker ($\phi = x_{\text{user}} \otimes
+x_{\text{tags}}$, dimension~306), un pipeline de classement en dix étapes
+intégrant des filtres de diversité et d'exploration, et un apprentissage en
+ligne à partir de huit signaux comportementaux collectés en temps réel.
+
+Les résultats obtenus attestent d'un planificateur conversationnel de bout en
+bout opérant en trois langues, d'une latence de scoring inférieure à 100\,ms
+grâce à un cache matriciel en mémoire vive, et d'une ré-indexation RAG
+incrémentale déclenchée par les événements SQLAlchemy. Ce système contribue à
+la convergence de la planification de voyage assistée par IA et de
+l'apprentissage en ligne à partir de signaux comportementaux pour le marché
+touristique de Djerba.
+
+\vspace{0.8cm}
+\noindent\textbf{Mots-clés~:} Agent LLM, LangGraph, RAG multilingue, Bandit
+contextuel LinUCB, Recommandation personnalisée.
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 5 — ABSTRACT IN ENGLISH
+% ────────────────────────────────────────────────────────────────────────────
+\newpage
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Tourists visiting the island of Djerba lack intelligent planning tools that
+seamlessly combine multi-day itinerary generation with real-time personalised
+recommendations. Existing platforms are limited to either static filter-based
+search engines or collaborative recommendation systems that disregard the
+traveller's immediate context --- budget constraints, temporal availability,
+geolocation and language preferences.
+
+This work introduces \textbf{Guidni}, a travel planning platform built
+around two complementary sub-systems. The first is a \textbf{conversational
+planner agent} implemented as a LangGraph state machine with four nodes
+(THINK, EXECUTE\_TOOL, VALIDATE, RESPOND) and eighteen LLM-callable tools
+spanning user profile management, activity search, weather data retrieval via
+Open-Meteo, geolocation through Nominatim and Haversine distance
+computation, and a multilingual RAG pipeline (French, English, Arabic)
+powered by BAAI/bge-m3 dense embeddings and BAAI/bge-reranker-v2-m3
+cross-encoder reranking. The second sub-system is a \textbf{Hybrid LinUCB
+contextual bandit recommender} that leverages a Kronecker-product feature
+vector ($\phi = x_{\text{user}} \otimes x_{\text{tags}}$, dimension~306), a
+ten-step ranker pipeline incorporating diversity and exploration filters, and
+online learning from eight real-time behavioural reward signals.
+
+The experimental results demonstrate an end-to-end conversational planner
+supporting three languages, sub-100\,ms recommendation scoring latency
+through an in-RAM matrix cache, and incremental RAG re-indexing triggered by
+SQLAlchemy event listeners. The system contributes a joint approach to
+AI-assisted trip planning and online learning from real-time behavioural
+signals for the Djerba tourism market.
+
+\vspace{0.8cm}
+\noindent\textbf{Keywords:} LLM Agent, LangGraph, Multilingual RAG, LinUCB
+Contextual Bandit, Personalised Recommendation.
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 6 — TABLE DES MATIÈRES
+% ────────────────────────────────────────────────────────────────────────────
+% The table of contents is generated automatically by LaTeX via \tableofcontents
+% in main.tex. The structure below is embedded as a comment for reference only.
+% It will be populated automatically from \chapter, \section, \subsection commands.
+%
+% Structure de la table des matières :
+%
+% Introduction générale .................................................. pp
+%
+% Chapitre 1 — Cadre général du projet
+%   1.1 Introduction ...................................................... pp
+%   1.2 Problématique ..................................................... pp
+%   1.3 Objectifs ......................................................... pp
+%   1.4 Cadre du projet ................................................... pp
+%   1.5 Méthodologie 2TUP ................................................. pp
+%   1.6 Planification ..................................................... pp
+%   1.7 Structure du rapport .............................................. pp
+%
+% Chapitre 2 — État de l'art
+%   2.1 Introduction ...................................................... pp
+%   2.2 Agents LLM et architectures agentiques ............................ pp
+%   2.3 Retrieval-Augmented Generation (RAG) ............................... pp
+%   2.4 Systèmes de recommandation ........................................ pp
+%   2.5 Théorie des bandits contextuels et LinUCB .......................... pp
+%   2.6 Travaux connexes .................................................. pp
+%
+% Chapitre 3 — Analyse et conception
+%   3.1 Introduction ...................................................... pp
+%   3.2 Analyse des besoins fonctionnels .................................. pp
+%   3.3 Exigences non fonctionnelles ...................................... pp
+%   3.4 Architecture globale du système ................................... pp
+%   3.5 Conception de la base de données .................................. pp
+%   3.6 Contrats d'API .................................................... pp
+%
+% Chapitre 4 — Implémentation de l'agent planificateur
+%   4.1 Introduction ...................................................... pp
+%   4.2 Machine à états LangGraph ......................................... pp
+%   4.3 Nœud THINK — raisonnement du LLM .................................. pp
+%   4.4 Les 18 outils LLM-callable ........................................ pp
+%   4.5 Nœud VALIDATE — validation des sorties ............................ pp
+%   4.6 Nœud RESPOND — génération de la réponse ........................... pp
+%   4.7 Pipeline RAG multilingue .......................................... pp
+%   4.8 Système de mémoire conversationnelle ............................... pp
+%   4.9 Pipeline rapide et abstraction LLM ................................. pp
+%
+% Chapitre 5 — Moteur de recommandation LinUCB
+%   5.1 Introduction ...................................................... pp
+%   5.2 Ingénierie des caractéristiques ................................... pp
+%   5.3 Moteur de scoring LinUCB .......................................... pp
+%   5.4 Pipeline de classement (Ranker) ................................... pp
+%   5.5 Extracteur de tags par LLM ........................................ pp
+%   5.6 Couche d'accès base de données .................................... pp
+%   5.7 Couche API et routeur FastAPI ..................................... pp
+%   5.8 Tracker JavaScript ................................................ pp
+%   5.9 Tâches nocturnes et maintenance ................................... pp
+%
+% Chapitre 6 — Tests et évaluation
+%   6.1 Introduction ...................................................... pp
+%   6.2 Stratégie de test ................................................. pp
+%   6.3 Évaluation du planificateur ....................................... pp
+%   6.4 Évaluation du pipeline RAG ........................................ pp
+%   6.5 Évaluation du moteur de recommandation ............................. pp
+%   6.6 Performance système et limitations ................................. pp
+%
+% Conclusion générale et perspectives ..................................... pp
+% Bibliographie ........................................................... pp
+%
+% Annexes
+%   A.1 Schéma complet de la base de données ............................... pp
+%   A.2 Exemples de conversations avec l'agent ............................. pp
+%   A.3 Configuration des modèles LLM ..................................... pp
+%   A.4 Captures d'écran de l'interface .................................... pp
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 7 — LISTE DES FIGURES
+% ────────────────────────────────────────────────────────────────────────────
+% Generated automatically by \listoffigures in main.tex.
+% This page will be populated after all chapters are assembled.
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 8 — LISTE DES TABLEAUX
+% ────────────────────────────────────────────────────────────────────────────
+% Generated automatically by \listoftables in main.tex.
+% This page will be populated after all chapters are assembled.
+
+
+% ────────────────────────────────────────────────────────────────────────────
+% PAGE 9 — LISTE DES ABRÉVIATIONS
+% ────────────────────────────────────────────────────────────────────────────
+\newpage
+\chapter*{Liste des Abréviations}
+\addcontentsline{toc}{chapter}{Liste des Abréviations}
+
+\noindent
+\begin{longtable}{@{} p{3.2cm} p{11.5cm} @{}}
+    \textbf{Abréviation} & \textbf{Signification} \\
+    \midrule
+    \endhead
+
+    2TUP        & Two-Track Unified Process \\[3pt]
+    AI          & Artificial Intelligence \\[3pt]
+    API         & Application Programming Interface \\[3pt]
+    AR          & Arabe \\[3pt]
+    BAAI        & Beijing Academy of Artificial Intelligence \\[3pt]
+    CORS        & Cross-Origin Resource Sharing \\[3pt]
+    CRUD        & Create, Read, Update, Delete \\[3pt]
+    DB          & Database (Base de données) \\[3pt]
+    EN          & Anglais \\[3pt]
+    ER          & Entity-Relationship (Entité-Relation) \\[3pt]
+    ESM         & ECMAScript Modules \\[3pt]
+    FAQ         & Frequently Asked Questions (Foire Aux Questions) \\[3pt]
+    FK          & Foreign Key (Clé étrangère) \\[3pt]
+    FR          & Français \\[3pt]
+    HTTP        & HyperText Transfer Protocol \\[3pt]
+    IA          & Intelligence Artificielle \\[3pt]
+    IPS         & Inverse Propensity Scoring \\[3pt]
+    JSON        & JavaScript Object Notation \\[3pt]
+    JWT         & JSON Web Token \\[3pt]
+    LLM         & Large Language Model (Grand modèle de langage) \\[3pt]
+    MAB         & Multi-Armed Bandit (Bandit multi-bras) \\[3pt]
+    ML          & Machine Learning (Apprentissage automatique) \\[3pt]
+    MoSCoW      & Must / Should / Could / Won't \\[3pt]
+    NLP         & Natural Language Processing (Traitement du langage naturel) \\[3pt]
+    NLU         & Natural Language Understanding (Compréhension du langage naturel) \\[3pt]
+    ORM         & Object-Relational Mapping (Mapping objet-relationnel) \\[3pt]
+    PFE         & Projet de Fin d'Études \\[3pt]
+    PK          & Primary Key (Clé primaire) \\[3pt]
+    PostgreSQL  & Post Structured Query Language \\[3pt]
+    RAG         & Retrieval-Augmented Generation (Génération augmentée par la récupération) \\[3pt]
+    RAM         & Random Access Memory (Mémoire vive) \\[3pt]
+    REST        & Representational State Transfer \\[3pt]
+    SQL         & Structured Query Language (Langage de requêtes structurées) \\[3pt]
+    TND         & Tunisian Dinar (Dinar tunisien) \\[3pt]
+    TTL         & Time To Live (Durée de vie) \\[3pt]
+    UCB         & Upper Confidence Bound (Borne de confiance supérieure) \\[3pt]
+    UML         & Unified Modeling Language (Langage de modélisation unifié) \\[3pt]
+    UP          & Unified Process (Processus unifié) \\[3pt]
+    UUID        & Universally Unique Identifier (Identifiant unique universel) \\
+\end{longtable}
