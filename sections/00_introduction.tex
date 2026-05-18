@@ -232,44 +232,57 @@ La section suivante présente la méthodologie adoptée pour conduire ce projet 
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Méthodologie~: 2TUP (Two-Track Unified Process)}
+\section{Méthodologie~: Scrum}
 
 Le choix de la méthodologie de développement constitue une décision structurante pour tout projet
-d'ingénierie logicielle. Pour le projet Guidni, la méthodologie \textbf{2TUP} (Two-Track Unified
-Process) a été retenue en raison de sa capacité à séparer la complexité fonctionnelle
---- \textit{ce que le système doit faire} --- de la complexité technique --- \textit{comment il est
-construit} --- en deux branches parallèles qui convergent lors de la phase de conception détaillée
-et d'implémentation. Cette séparation est particulièrement pertinente pour ce projet, car la branche
-fonctionnelle (planification conversationnelle, logique de recommandation, cas d'utilisation
-touristiques) et la branche technique (machines à états LangGraph, algèbre matricielle LinUCB,
-indexation vectorielle, gestion de mémoire conversationnelle) présentent des courbes d'apprentissage
-et des chronologies très différentes.
+d'ingénierie logicielle. Pour le projet Guidni, la méthodologie \textbf{Scrum} a été retenue en
+raison de sa nature itérative et incrémentale, particulièrement adaptée aux projets à forte
+complexité technique et fonctionnelle évolutive, tels que le développement de systèmes
+d'intelligence artificielle. Fondé sur les principes du Manifeste Agile \cite{agile2001}, Scrum
+structure le travail en cycles courts appelés \textit{Sprints}, dont la durée est fixée entre
+deux et quatre semaines, permettant ainsi une livraison continue de valeur et une adaptation
+permanente aux retours de l'encadrant.
 
-La \textbf{branche fonctionnelle} débute par la capture des besoins utilisateurs sous forme de
-\textit{user stories} et du modèle de domaine, identifiant les entités clés~: touriste, annonce,
-conversation, plan, événement comportemental. Elle produit ensuite les diagrammes de cas
-d'utilisation UML et les diagrammes de classes du domaine, avant de détailler les spécifications
-fonctionnelles de chaque sous-système. Cette branche permet de s'assurer que le système répond
-aux besoins réels des utilisateurs avant toute considération technologique.
+Le cadre Scrum repose sur trois piliers fondamentaux : la transparence, qui impose que l'ensemble
+des informations relatives à l'avancement du projet soient visibles par toutes les parties
+prenantes ; l'inspection, qui consiste à examiner régulièrement les artefacts et la progression
+du travail lors des cérémonies Scrum ; et l'adaptation, qui permet d'ajuster le plan et le
+périmètre du Sprint en fonction des résultats observés.
 
-La \textbf{branche technique} commence par des expérimentations ciblées (\textit{technology spikes})~:
-validation du routage LangGraph entre les nœuds, mesure de la latence des différents fournisseurs
-LLM, vérification de la stabilité numérique de l'algèbre matricielle LinUCB, et test de
-l'indexation vectorielle avec les embeddings BAAI/bge-m3. Cette branche produit l'architecture
-d'infrastructure, les contrats d'API, et les schémas de données, en s'appuyant sur des prototypes
-fonctionnels validés.
+\subsection{Rôles Scrum dans le projet}
 
-La \textbf{phase de convergence} réunit les deux branches lors de la conception détaillée, où les
-diagrammes de classes, les diagrammes de séquence et les schémas de base de données sont finalisés
-en intégrant simultanément les exigences fonctionnelles et les contraintes techniques. Cette phase
-précède directement l'implémentation, les tests d'intégration et le déploiement.
+\begin{itemize}
+  \item \textbf{Product Owner} : Ahmed Addali, responsable de la définition et de la priorisation
+        du Product Backlog, ainsi que de la validation des User Stories à chaque fin de Sprint.
+  \item \textbf{Scrum Master} : Nizar Tenzekhti, garant du respect du cadre Scrum, chargé de
+        lever les obstacles et d'assurer la bonne tenue des cérémonies.
+  \item \textbf{Development Team} : Ahmed Addali, seul développeur responsable de la conception,
+        du développement et des tests de l'ensemble du système.
+\end{itemize}
+
+\subsection{Artefacts Scrum}
+
+Les trois artefacts principaux du cadre Scrum sont mobilisés dans ce projet :
+le \textit{Product Backlog}, liste ordonnée et priorisée de l'ensemble des fonctionnalités
+à développer ; le \textit{Sprint Backlog}, sous-ensemble sélectionné pour chaque Sprint
+lors du Sprint Planning ; et l'\textit{Increment}, livrable fonctionnel produit à la fin
+de chaque Sprint.
+
+\subsection{Cérémonies Scrum}
+
+Quatre cérémonies structurent chaque Sprint : le \textit{Sprint Planning}, tenu en début de
+Sprint pour définir l'objectif et sélectionner les éléments du backlog ; le \textit{Daily Scrum},
+réunion quotidienne de quinze minutes permettant de synchroniser l'avancement et d'identifier
+les blocages ; le \textit{Sprint Review}, démonstration du livrable à l'encadrant en fin de
+Sprint ; et la \textit{Sprint Retrospective}, séance d'amélioration continue du processus
+de développement.
 
 % --- PlantUML diagram placeholder ---
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_01_2tup_methodology.png}
-    \caption{Processus 2TUP appliqué au projet Guidni}
-    \label{fig:2tup}
+    \includegraphics[width=0.95\textwidth]{diagrams/fig_03_scrum_sprints.png}
+    \caption{Organisation du projet Guidni en Sprints Scrum}
+    \label{fig:scrumsprints}
 \end{figure}
 
 La section suivante présente la planification temporelle du projet selon cette méthodologie.
@@ -278,13 +291,36 @@ La section suivante présente la planification temporelle du projet selon cette 
 % ────────────────────────────────────────────────────────────────
 \section{Planification du projet}
 
-Le projet Guidni s'étend sur une durée approximative de cinq mois, d'octobre~2024 à février~2025.
-Les deux sous-systèmes ont été développés partiellement en parallèle~: l'agent planificateur a
-démarré en premier, lors de la phase d'implémentation en novembre, tandis que le moteur de
-recommandation a été initié en décembre, avec un chevauchement significatif durant la période
-de décembre à janvier. Cette parallélisation a été rendue possible par l'indépendance architecturale
-des deux sous-systèmes, qui partagent la base de données mais n'ont aucune dépendance de code
-directe.
+Le projet Guidni s'étend sur une durée approximative de cinq mois, d'octobre~2024 à février~2025,
+organisé en cinq Sprints Scrum de quatre semaines chacun. Chaque Sprint a produit un incrément
+fonctionnel démontrable à l'encadrant lors du Sprint Review. Le tableau~\ref{tab:sprints} présente
+la planification détaillée des Sprints avec leurs objectifs et livrables principaux.
+
+\begin{table}[htbp]
+\centering
+\caption{Tableau des Sprints du projet Guidni}
+\label{tab:sprints}
+\begin{tabularx}{\textwidth}{|c|l|l|X|}
+\hline
+\textbf{Sprint} & \textbf{Période} & \textbf{Objectif} & \textbf{Livrables principaux} \\
+\hline
+Sprint 1 & Oct. 2024 (S1--S4) & Analyse \& Architecture &
+  Product Backlog, diagrammes UML, choix technologiques, architecture système \\
+\hline
+Sprint 2 & Nov. 2024 (S5--S8) & Agent LangGraph &
+  Machine à états THINK→EXECUTE\_TOOL→VALIDATE→RESPOND, 18 outils LLM opérationnels \\
+\hline
+Sprint 3 & Déc. 2024 (S9--S12) & Pipeline RAG Multilingue &
+  Embeddings BAAI/bge-m3 (FR/EN/AR), reranker cross-encoder, réindexation incrémentale \\
+\hline
+Sprint 4 & Jan. 2025 (S13--S16) & Moteur LinUCB &
+  Vecteur $\phi$ (d=360), pipeline 10 étapes, tracker JS, cache matriciel RAM \\
+\hline
+Sprint 5 & Fév. 2025 (S17--S20) & Tests \& Déploiement &
+  Tests end-to-end, évaluation RAG, simulation LinUCB 500 sessions, déploiement \\
+\hline
+\end{tabularx}
+\end{table}
 
 La rédaction du rapport a été conduite en parallèle avec l'implémentation à partir de
 décembre~2024, permettant de documenter les choix de conception au moment où ils étaient les plus
@@ -345,7 +381,7 @@ destination Djerba, et en identifiant les lacunes des outils de planification et
 existants. La problématique a été formulée de manière précise autour de deux axes
 complémentaires~: la génération conversationnelle de plans de voyage et la recommandation
 personnalisée en temps réel par bandits contextuels. Les sept objectifs du projet ont été définis,
-le périmètre fonctionnel a été délimité, et la méthodologie 2TUP ainsi que la planification
+le périmètre fonctionnel a été délimité, et la méthodologie Scrum ainsi que la planification
 temporelle ont été présentées.
 
 Le chapitre suivant fournira les fondements théoriques nécessaires à la compréhension des choix

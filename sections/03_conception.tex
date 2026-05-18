@@ -2,10 +2,20 @@
 % CHAPITRE 4 — IMPLÉMENTATION DE L'AGENT PLANIFICATEUR IA (Part 1: 4.1–4.4)
 % ============================================================================
 
+%% ---------- SPRINT PLANNING ----------
+\section*{Sprint Planning}
+\addcontentsline{toc}{section}{Sprint Planning}
+
+Le Sprint 2, couvrant la période de novembre 2024, a pour objectif principal
+l'implémentation de l'agent planificateur IA. Lors du Sprint Planning, les
+User Stories US-01 et US-02 ont été sélectionnées depuis le Product Backlog
+et intégrées au Sprint Backlog. L'objectif du Sprint est de livrer une machine
+à états LangGraph fonctionnelle avec les 18 outils LLM opérationnels.
+
 \section{Introduction}
 
 Ce chapitre présente l'implémentation complète de l'agent planificateur IA du système Guidni,
-conformément à l'architecture conçue au chapitre~3. L'implémentation est organisée autour de
+conformément à l'architecture conçue au chapitre~2. L'implémentation est organisée autour de
 quatre composants principaux~: la machine à états LangGraph qui orchestre le raisonnement de
 l'agent, les 18~outils appelables par le LLM qui permettent l'accès aux données en temps réel,
 le pipeline RAG qui ancre les réponses dans des données factuelles vérifiées, et le système de
@@ -570,4 +580,23 @@ rapide de génération de plans en trois phases ont complété la présentation.
 
 Le chapitre suivant présente l'implémentation du second sous-système~: le moteur de
 recommandation Hybrid LinUCB, avec son ingénierie des caractéristiques, son cycle
-d'apprentissage en ligne, et son pipeline de classement en neuf étapes.
+d'apprentissage en ligne, et son pipeline de classement en dix étapes.
+
+%% ---------- SPRINT REVIEW & RETROSPECTIVE ----------
+\section*{Sprint Review et Retrospective}
+\addcontentsline{toc}{section}{Sprint Review et Retrospective}
+
+À l'issue du Sprint 2, les User Stories US-01 et US-02 ont été démontrées
+à l'encadrant et validées conformément à la Definition of Done. Le livrable
+principal est l'agent planificateur LangGraph opérationnel avec ses 18 outils
+LLM, le pipeline RAG multilingue et le système de mémoire conversationnelle.
+
+La Sprint Retrospective a mis en évidence les points suivants :
+\begin{itemize}
+  \item \textbf{Points positifs} : la modularité de LangGraph a facilité
+        l'ajout incrémental des outils sans régression.
+  \item \textbf{Points d'amélioration} : le temps de réponse du cross-encoder
+        en mode synchrone a nécessité une refactorisation vers des threads CPU.
+  \item \textbf{Action pour Sprint 3} : introduire le cache de résultats RAG
+        pour réduire la latence sur les requêtes répétées.
+\end{itemize}

@@ -1,0 +1,33 @@
+@startuml fig_03_scrum_sprints
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam rectangleBorderColor #333333
+skinparam arrowColor #333333
+
+title Organisation du projet Guidni en Sprints Scrum
+
+rectangle "Product Backlog\n(User Stories priorisées)" as PB #EEEEEE
+
+rectangle "Sprint 1\n(Oct 2024)\nAnalyse & Architecture" as S1
+rectangle "Sprint 2\n(Nov 2024)\nAgent LangGraph" as S2
+rectangle "Sprint 3\n(Déc 2024)\nPipeline RAG" as S3
+rectangle "Sprint 4\n(Jan 2025)\nMoteur LinUCB" as S4
+rectangle "Sprint 5\n(Fév 2025)\nTests & Déploiement" as S5
+
+rectangle "Increment\n(Livrable fonctionnel)" as INC #DDDDDD
+
+PB --> S1
+S1 --> S2
+S2 --> S3
+S3 --> S4
+S4 --> S5
+S1 --> INC
+S2 --> INC
+S3 --> INC
+S4 --> INC
+S5 --> INC
+
+note right of S1 : Sprint Planning\nSprint Review\nRetrospective
+@enduml
