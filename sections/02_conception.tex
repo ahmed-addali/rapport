@@ -64,9 +64,9 @@ la relation d'inclusion \texttt{<<include>>} entre \og{}Recevoir un plan de voya
 \og{}Valider le plan\fg{} indique que la validation est systématiquement exécutée avant la
 présentation du plan au touriste.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_03_use_case_global.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_03_use_case_global.png}
     \caption{Diagramme des cas d'utilisation global du système Guidni}
     \label{fig:use_case}
 \end{figure}
@@ -79,7 +79,7 @@ tableaux suivants. Chaque description spécifie l'acteur déclencheur, les préc
 nécessaires, le flux principal d'exécution, les flux alternatifs possibles, et les
 postconditions garanties.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{UC-01~: Générer un plan de voyage}
     \label{tab:uc01}
@@ -109,7 +109,7 @@ postconditions garanties.
     \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{UC-02~: Obtenir des recommandations personnalisées}
     \label{tab:uc02}
@@ -134,7 +134,7 @@ postconditions garanties.
     \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{UC-03~: Tracker un événement comportemental}
     \label{tab:uc03}
@@ -176,7 +176,7 @@ Le tableau suivant synthétise ces besoins avec pour chaque catégorie une mesur
 permettant de valider le respect de ces exigences lors de la phase de tests présentée au
 chapitre~5.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Besoins non fonctionnels classifiés selon la norme ISO~25010}
     \label{tab:nfr}
@@ -239,9 +239,9 @@ défilement, ajout aux favoris, réservations) et les transmet par lots vers l'e
 \texttt{POST /api/recommendations/events}. Il utilise l'API \texttt{navigator.sendBeacon()} pour
 garantir la transmission des événements même lors de la fermeture de la page.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_03_global_architecture.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_03_global_architecture.png}
     \caption{Architecture globale du système Guidni}
     \label{fig:global_arch}
 \end{figure}
@@ -303,16 +303,16 @@ l'ancien plan est désactivé (\texttt{isActive=False}) et une nouvelle ligne es
 le champ \texttt{version} incrémenté. Cette approche conserve l'historique complet des plans
 générés et permet la récupération de versions antérieures si nécessaire.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_03_er_diagram_planner.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_03_er_diagram_planner.png}
     \caption{Schéma ER du sous-système agent planificateur}
     \label{fig:er_planner}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_03_er_diagram_recommender.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_03_er_diagram_recommender.png}
     \caption{Schéma ER du sous-système de recommandation LinUCB}
     \label{fig:er_recommender}
 \end{figure}
@@ -325,7 +325,7 @@ fonctionnel, les composants qui y écrivent et ceux qui les lisent. Cette matric
 responsabilité permet de comprendre les flux de données entre les différents composants du
 système.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Description des tables AI-owned}
     \label{tab:ai_tables}
@@ -367,7 +367,7 @@ La documentation OpenAPI est générée automatiquement par FastAPI et accessibl
 et de réponse, et les codes d'erreur possibles. Les deux tableaux suivants spécifient les
 contrats API pour chacun des deux sous-systèmes.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Contrat API --- Sous-système Agent Planificateur}
     \label{tab:api_planner}
@@ -389,7 +389,7 @@ contrats API pour chacun des deux sous-systèmes.
     \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Contrat API --- Sous-système de Recommandation}
     \label{tab:api_reco}
@@ -436,9 +436,9 @@ donnée ne quitte le serveur. Les vecteurs de caractéristiques du moteur LinUCB
 à partir de signaux comportementaux agrégés (profondeur de défilement, temps de consultation)
 et non à partir de données personnelles brutes.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_03_security_flow.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_03_security_flow.png}
     \caption{Flux de sécurité et de validation dans l'endpoint /chat}
     \label{fig:security_flow}
 \end{figure}

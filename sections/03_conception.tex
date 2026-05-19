@@ -52,7 +52,7 @@ routage vers RESPOND, \texttt{is\_plan\_ready} déclenche le routage vers VALIDA
 (\texttt{response\_type}, \texttt{final\_response}, \texttt{final\_plan}, \texttt{questions})
 sont définis par RESPOND.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Champs de l'AgentState et leur comportement}
     \label{tab:agent_state}
@@ -118,9 +118,9 @@ Si le plan a été invalidé (\texttt{is\_plan\_ready=False}) et qu'il reste des
 LLM de corriger les erreurs identifiées. Sinon, le routage envoie vers \texttt{"respond"}
 (soit la validation a réussi, soit les itérations sont épuisées).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_04_langgraph_routing.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_04_langgraph_routing.png}
     \caption{Diagramme d'états du graphe LangGraph avec conditions de routage}
     \label{fig:langgraph_routing}
 \end{figure}
@@ -209,7 +209,7 @@ dans un \texttt{ToolMessage} et peut décider de réessayer avec des paramètres
 d'informer l'utilisateur du problème. Ce patron garantit que le graphe LangGraph ne s'arrête
 jamais brutalement à cause d'un outil défaillant.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Catalogue des 18 outils LLM}
     \label{tab:tools_catalog}
@@ -334,9 +334,9 @@ marche à suivre. L'exécuteur effectue également une journalisation détaillé
 incluant les arguments d'entrée complets et les résultats complets de chaque outil, facilitant
 le débogage des chaînes de raisonnement complexes.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_04_tool_execution_flow.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_04_tool_execution_flow.png}
     \caption{Flux d'exécution de l'outil create\_plan\_structure}
     \label{fig:tool_exec_flow}
 \end{figure}
@@ -430,9 +430,9 @@ sur-échantillonnage compense le fait que les filtres de métadonnées dans Llam
 une logique AND qui peut être trop restrictive pour les requêtes multi-types, éliminant des
 résultats pertinents avant le post-filtrage applicatif.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/screen_04_rag_search_result.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_04_rag_search_result.png}
     \caption{Exemple de résultats d'une recherche RAG avec scores de similarité}
     \label{fig:rag_results}
 \end{figure}
@@ -538,16 +538,16 @@ boucle de validation de l'agent complet au profit de la vitesse (5 à 10~seconde
 complètes dès le départ, tandis que l'agent complet est préférable pour les conversations
 exploratoires où les besoins de l'utilisateur se précisent progressivement.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_04_fast_pipeline.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_04_fast_pipeline.png}
     \caption{Pipeline de génération rapide de plans (3 phases parallèles)}
     \label{fig:fast_pipeline}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/screen_04_chat_plan_output.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_04_chat_plan_output.png}
     \caption{Exemple de plan de voyage généré par l'agent Guidni}
     \label{fig:chat_output}
 \end{figure}

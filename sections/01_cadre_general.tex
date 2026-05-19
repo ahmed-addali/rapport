@@ -58,9 +58,9 @@ un hôtel inexistant, un prix erroné ou une activité fermée détruit immédia
 l'utilisateur. L'accès aux outils transforme le LLM d'un générateur de texte en un orchestrateur
 de données vérifiées.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{diagrams/fig_02_transformer_attention.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_transformer_attention.png}
     \caption{Architecture simplifiée d'un décodeur Transformer avec mécanisme d'attention}
     \label{fig:transformer}
 \end{figure}
@@ -108,17 +108,17 @@ permet d'afficher les étapes de réflexion (\textit{thinking steps}) de manièr
 l'interface frontend, offrant une expérience utilisateur transparente.
 
 % --- PlantUML diagram placeholder ---
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_02_langgraph_graph.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_langgraph_graph.png}
     \caption{Graphe LangGraph de l'agent planificateur Guidni}
     \label{fig:langgraph}
 \end{figure}
 
 % --- Sequence diagram placeholder ---
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_agent_sequence.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_agent_sequence.png}
     \caption{Diagramme de séquence d'un cycle complet de l'agent}
     \label{fig:agent_sequence}
 \end{figure}
@@ -153,7 +153,7 @@ de sélectionner dynamiquement un modèle spécifique pour chaque requête, par 
 serveur. Cette flexibilité permet aux utilisateurs avancés de comparer les performances des
 différents modèles sur la même requête de planification.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Comparaison des fournisseurs LLM intégrés dans Guidni}
     \label{tab:llm_providers}
@@ -220,9 +220,9 @@ et pgvector (extension PostgreSQL), sélectionnés via la variable de configurat
 \texttt{VECTOR\_ENGINE}.
 
 % --- RAG architecture diagram ---
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_rag_architecture.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_rag_architecture.png}
     \caption{Architecture du pipeline RAG avec réindexation automatique}
     \label{fig:rag_architecture}
 \end{figure}
@@ -322,7 +322,7 @@ l'exploration de nouveaux items avec l'exploitation des items connus, s'adapte a
 aux tendances saisonnières, et ne nécessite aucun réentraînement par lots. C'est cette approche
 qui a été retenue pour le moteur de recommandation Guidni.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Comparaison des approches de recommandation}
     \label{tab:reco_approaches}
@@ -378,9 +378,9 @@ même visite~: seule la différence entre la récompense courante et le maximum 
 pour cette annonce est comptabilisée.
 
 % --- LinUCB cycle diagram ---
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_02_linucb_cycle.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_linucb_cycle.png}
     \caption{Cycle complet du bandit LinUCB dans le système Guidni}
     \label{fig:linucb_cycle}
 \end{figure}
@@ -465,7 +465,7 @@ fonction \texttt{compute\_vocab\_hash()} et comparé au hash stocké dans la tab
 \texttt{SystemConfig}. Si les hash divergent, le système refuse de démarrer, empêchant une
 corruption silencieuse de la matrice~$A$.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Les 9 composantes du vecteur utilisateur $x_{\text{user}}$}
     \label{tab:user_vector}
@@ -578,7 +578,7 @@ d'optimisation sous contraintes (temps, budget, distance) mais n'intègrent pas 
 conversationnelle, de données météorologiques en temps réel, ni d'apprentissage en ligne à
 partir du comportement utilisateur.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Comparaison avec les systèmes existants}
     \label{tab:comparison}

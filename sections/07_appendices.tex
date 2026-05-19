@@ -114,7 +114,7 @@ You are **Guidni**, an expert AI travel planner specializing in Djerba, Tunisia.
 \textbf{Extrait 2 — Règle de désambiguïsation des entités~:}
 
 \begin{lstlisting}[language={},caption={Règles strictes de classification des types d'entités}]
-CRITICAL — Entity Type Rules:
+CRITICAL -- Entity Type Rules:
 - **activity** = things to DO during the day (tours, sports, sightseeing).
   Put these in daytime plan slots.
 - **stay** = ACCOMMODATION (hotels, villas, guesthouses). Suggest as overnight
@@ -128,10 +128,10 @@ Do NOT confuse them.
 \textbf{Extrait 3 — Règle des activités par jour et obligation des repas~:}
 
 \begin{lstlisting}[language={},caption={Règles de densité journalière du plan}]
-4. **Maximum 4-5 activities per day** — people need rest, travel time,
+4. **Maximum 4-5 activities per day** -- people need rest, travel time,
    and spontaneity
-5. **Always include meals** — suggest restaurants for lunch and dinner
-6. **Include rest/free time** — especially for relaxed travel styles
+5. **Always include meals** -- suggest restaurants for lunch and dinner
+6. **Include rest/free time** -- especially for relaxed travel styles
 \end{lstlisting}
 
 \textbf{Extrait 4 — Garde-fou anti-hallucination et seuil de confiance RAG~:}
@@ -140,7 +140,7 @@ Do NOT confuse them.
 ### 2. CONTEXT WINDOW HYGIENE
 - **NEVER hallucinate**: Only suggest places, prices, and locations explicitly
   returned by tools (SQL or RAG).
-- If a place/activity is not in tool results, say it's unavailable —
+- If a place/activity is not in tool results, say it's unavailable --
   do NOT fabricate it.
 - Only use IDs and metadata provided by tools. Never invent opening hours
   or addresses.
@@ -299,44 +299,44 @@ plan généré, les endpoints de diagnostic, et la réponse du moteur de recomma
 les scores détaillés. Ces captures constituent une référence pour la validation fonctionnelle
 et le débogage en production.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{diagrams/screen_A4_chat_interface.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_chat_interface.png}
     \caption{Interface de chat de l'agent planificateur Guidni}
     \label{fig:A1_chat}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{diagrams/screen_A4_plan_output_full.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_plan_output_full.png}
     \caption{Exemple complet de plan de voyage généré (5 jours, famille)}
     \label{fig:A2_plan}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/screen_A4_health_check.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_health_check.png}
     \caption{Réponse complète de l'endpoint /health}
     \label{fig:A3_health}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/screen_A4_admin_rebuild.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_admin_rebuild.png}
     \caption{Endpoint /admin/rebuild-index après reconstruction complète de l'index RAG}
     \label{fig:A4_rebuild}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{diagrams/screen_A4_api_docs.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_api_docs.png}
     \caption{Documentation OpenAPI auto-générée par FastAPI (/docs)}
     \label{fig:A5_docs}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{diagrams/screen_A4_recommendations_response.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_A4_recommendations_response.png}
     \caption{Exemple de réponse de l'API /api/recommendations avec scores exposés (\texttt{EXPOSE\_SCORES=true})}
     \label{fig:A6_scores}
 \end{figure}

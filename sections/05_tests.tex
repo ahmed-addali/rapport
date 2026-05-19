@@ -49,7 +49,7 @@ scoring de 2~bras, la déduplication de récompenses par session (click$=0.3$ pu
 wishlist$=0.55$ de delta, non $0.85$), les seuils de dwell\_exit, et la santé matricielle
 (identité saine, zéros malsaine).
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Matrice de couverture des tests}
     \label{tab:test_coverage}
@@ -97,7 +97,7 @@ le prompt système instruite l'agent de détecter automatiquement la langue de l
 de répondre dans la même langue. Le scénario SC-06 teste le déclenchement de l'outil
 \texttt{ask\_user} lorsque les informations fournies sont insuffisantes pour générer un plan.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Scénarios de test de l'agent planificateur}
     \label{tab:test_scenarios}
@@ -145,7 +145,7 @@ sur 20, le nœud VALIDATE a détecté des doublons d'identifiants d'activités, 
 corrigé le plan avec succès lors du réessai. Sans validation, environ 15\% des plans auraient
 contenu des erreurs structurelles livrées à l'utilisateur final.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Résultats d'évaluation de l'agent planificateur}
     \label{tab:agent_results}
@@ -171,9 +171,9 @@ contenu des erreurs structurelles livrées à l'utilisateur final.
     \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/screen_06_plan_thinking_steps.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_06_plan_thinking_steps.png}
     \caption{Affichage des étapes de raisonnement de l'agent dans l'interface utilisateur}
     \label{fig:thinking_steps}
 \end{figure}
@@ -197,7 +197,7 @@ passant par le multilingue (\og{}restaurant with sea view\fg{},
 requête en arabe tunisien). Cette diversité teste la capacité du modèle d'embeddings
 BAAI/bge-m3 à capturer la sémantique dans différentes langues et niveaux d'abstraction.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Résultats de précision de récupération RAG par type et langue}
     \label{tab:rag_precision}
@@ -286,9 +286,9 @@ l'exposition dans les 200~premières sessions du LinUCB. Parmi ces annonces
 \og{}découvertes\fg{}, 3~avaient des taux de récompense dans le quartile supérieur,
 confirmant la valeur de l'exploration structurée par rapport à l'exploitation pure.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_06_cumulative_reward.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_06_cumulative_reward.png}
     \caption{Récompense cumulée comparée~: LinUCB vs baselines sur 500 sessions simulées}
     \label{fig:cumulative_reward}
 \end{figure}
@@ -306,7 +306,7 @@ de base de données complexe avec JOIN multi-tables) s'exécute au maximum 2~foi
 par zone, et non à chaque requête de recommandation. Cette séparation entre le coût de
 récupération des données et le coût de scoring est fondamentale pour la performance.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Latence de scoring LinUCB selon le nombre de bras}
     \label{tab:scoring_latency}
@@ -356,7 +356,7 @@ interactive. L'endpoint de conversation accepte une latence plus élevée (15 à
 car il correspond à une interaction de planification délibérée où l'utilisateur attend
 une réponse réfléchie.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Métriques de performance système mesurées}
     \label{tab:system_perf}
@@ -374,9 +374,9 @@ une réponse réfléchie.
     \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/screen_06_health_endpoint.png}
+    \includegraphics[width=\textwidth]{diagrams/screen_06_health_endpoint.png}
     \caption{Réponse de l'endpoint /health indiquant l'état de tous les composants}
     \label{fig:health_endpoint}
 \end{figure}

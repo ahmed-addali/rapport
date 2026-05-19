@@ -110,7 +110,7 @@ ou inf par 0.0 et journalise un WARNING. Ce nettoyage garantit qu'un vecteur de
 caractéristiques malformé ne corrompe jamais la mise à jour de la matrice $A$, car
 $A \mathrel{+}= \text{outer}(\phi, \phi)$ propagerait les NaN à toute la matrice.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Exemple de construction du vecteur $\phi$ pour un cas concret}
     \label{tab:phi_example}
@@ -283,9 +283,9 @@ l'utilisateur, sans impact significatif sur l'expérience utilisateur.
 \textbf{Étape~10 --- Troncature top-$k$}. La liste finale est tronquée à
 \texttt{top\_k} (défaut~10) et retournée au \texttt{recommendation\_router}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/fig_05_ranker_pipeline.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_05_ranker_pipeline.png}
     \caption{Pipeline de classement en 10~étapes du moteur de recommandation}
     \label{fig:ranker_pipeline}
 \end{figure}
@@ -449,9 +449,9 @@ courante via beacon avant tout changement d'identité, (2) \texttt{POST
 événements anonymes passés), (3) mise à jour de \texttt{\_userId} indépendamment du succès
 de la fusion.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{diagrams/fig_05_tracker_flush.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_05_tracker_flush.png}
     \caption{Flux de collecte d'événements et mise à jour des matrices LinUCB}
     \label{fig:tracker_flush}
 \end{figure}
@@ -519,7 +519,7 @@ job dure plus longtemps que son intervalle. Le planificateur démarre dans le co
 de l'application. Chaque job est encapsulé dans une fonction \texttt{\_safe\_*} qui capture
 toutes les exceptions et les journalise, empêchant un job défaillant de bloquer les autres.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Planning des jobs nocturnes APScheduler}
     \label{tab:scheduler_jobs}
