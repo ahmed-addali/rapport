@@ -65,7 +65,7 @@ note left of IntegrationTests
   Validation E2E
 end note
 
-note bottom of CoverageDash
+note left of CoverageDash
   Modules critiques:
   - linucb_engine.py: 92%
   - rag_pipeline.py: 88%

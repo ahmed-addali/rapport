@@ -59,7 +59,7 @@ note left of LinUCB
   Ranker 10 étapes
 end note
 
-note bottom of WebUI
+note left of WebUI
   Sprint 4: Intégration complète
   Dashboard admin
   Documentation OpenAPI

@@ -1,0 +1,141 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Remerciements}{ii}{chapter*.1}%
+\contentsline {chapter}{Résumé}{iii}{chapter*.2}%
+\contentsline {chapter}{Abstract}{iv}{chapter*.3}%
+\contentsline {chapter}{Liste des Abréviations}{v}{chapter*.4}%
+\contentsline {chapter}{Liste des Figures}{xiii}{chapter*.6}%
+\contentsline {chapter}{Liste des Tableaux}{xv}{chapter*.7}%
+\contentsline {chapter}{Introduction Générale}{1}{chapter*.8}%
+\contentsline {section}{\numberline {0.1}Contexte et Motivation}{1}{section.0.1}%
+\contentsline {section}{\numberline {0.2}Problématique}{1}{section.0.2}%
+\contentsline {section}{\numberline {0.3}Objectifs du Projet}{2}{section.0.3}%
+\contentsline {section}{\numberline {0.4}Structure du Rapport}{3}{section.0.4}%
+\contentsline {section}{\numberline {0.5}Méthodologie Scrum}{4}{section.0.5}%
+\contentsline {subsection}{\numberline {0.5.1}Pourquoi Scrum ?}{4}{subsection.0.5.1}%
+\contentsline {subsection}{\numberline {0.5.2}Rôles Scrum}{5}{subsection.0.5.2}%
+\contentsline {section}{\numberline {0.6}Planification des Sprints}{6}{section.0.6}%
+\contentsline {section}{\numberline {0.7}Conclusion de l'Introduction}{9}{section.0.7}%
+\contentsline {chapter}{\numberline {1}Contexte Général et Étude Préliminaire}{10}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{10}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Agents LLM et planification conversationnelle}{10}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Les grands modèles de langage (LLMs)}{10}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Frameworks agentiques~: ReAct et LangGraph}{13}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Abstraction multi-fournisseurs LLM}{15}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}Génération augmentée par récupération (RAG)}{16}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Motivation et principe}{16}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Modèle d'embedding BAAI/bge-m3}{17}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Réindexation automatique via SQLAlchemy Events}{18}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Systèmes de recommandation~: vue d'ensemble}{18}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Bandits multi-bras contextuels et algorithme LinUCB}{19}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Formulation du problème MAB}{19}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}L'algorithme LinUCB et la formule de score}{22}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Ingénierie des caractéristiques}{22}{subsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.5.4}Pipeline de classement post-LinUCB}{24}{subsection.1.5.4}%
+\contentsline {section}{\numberline {1.6}Travaux connexes et comparaison}{25}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Choix technologiques et justification}{26}{section.1.7}%
+\contentsline {section}{Conclusion du chapitre}{27}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Lancement de Projet}{28}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{28}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Identification des acteurs et besoins fonctionnels}{28}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Identification des acteurs}{28}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Diagramme des cas d'utilisation global}{29}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Description détaillée des cas d'utilisation principaux}{30}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Besoins non fonctionnels}{32}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Architecture globale du système}{33}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Vue d'ensemble architecturale}{33}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Architecture en couches}{34}{subsection.2.4.2}%
+\contentsline {section}{\numberline {2.5}Conception de la base de données}{35}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Vue d'ensemble du schéma}{35}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Description des tables clés}{37}{subsection.2.5.2}%
+\contentsline {section}{\numberline {2.6}Conception de l'API REST}{37}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Sécurité et gestion des données}{38}{section.2.7}%
+\contentsline {section}{Conclusion du chapitre}{39}{figure.caption.33}%
+\contentsline {chapter}{\numberline {3}Sprint 1 — Conception et Implémentation de l'Agent Planificateur}{41}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{41}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Le graphe LangGraph~: machine à états}{41}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}L'AgentState TypedDict}{41}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Fonctions de routage conditionnel}{43}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Le nœud THINK}{44}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Construction du prompt système}{44}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Injection du contexte dynamique}{44}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Les 18 outils LLM}{45}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Vue d'ensemble et registre des outils}{45}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Outil rag\_search\_for\_plan~: quatre recherches parallèles}{46}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Outil enrich\_activity~: cache d'intelligence IA}{47}{subsection.3.4.3}%
+\contentsline {section}{\numberline {3.5}Le nœud EXECUTE\_TOOL}{47}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Le nœud VALIDATE}{49}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Le nœud RESPOND et la persistance}{49}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Le pipeline RAG}{50}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Gestion de la mémoire et du contexte}{51}{section.3.9}%
+\contentsline {subsection}{\numberline {3.9.1}Chargement du contexte}{51}{subsection.3.9.1}%
+\contentsline {subsection}{\numberline {3.9.2}Résumé automatique}{52}{subsection.3.9.2}%
+\contentsline {subsection}{\numberline {3.9.3}Profil utilisateur}{52}{subsection.3.9.3}%
+\contentsline {section}{\numberline {3.10}Pipeline rapide de génération de plans}{52}{section.3.10}%
+\contentsline {section}{Conclusion du chapitre}{55}{figure.caption.40}%
+\contentsline {chapter}{\numberline {4}Sprint 2 — Implémentation du Moteur de Recommandation Hybrid LinUCB}{56}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introduction}{56}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Ingénierie des caractéristiques}{56}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Le vecteur utilisateur $x_{user}$}{56}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Le vocabulaire de tags et le vecteur $x_{tags}$}{57}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Le produit de Kronecker $\phi $}{58}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Moteur de scoring LinUCB}{59}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Score UCB et paramètres}{59}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Mise à jour des matrices et récompenses}{59}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Pipeline de classement post-LinUCB}{60}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Extracteur de tags par LLM}{63}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Couche de données runtime}{63}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Cache matriciel en RAM}{63}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Traitement par lots d'événements}{64}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Cache des bras}{64}{subsection.4.6.3}%
+\contentsline {section}{\numberline {4.7}Tracker JavaScript}{65}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Architecture et initialisation}{65}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Stratégie de flush et beacon}{65}{subsection.4.7.2}%
+\contentsline {section}{\numberline {4.8}Extracteur de tags LLM et jobs nocturnes}{66}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Mise à jour des profils utilisateurs}{66}{subsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.8.2}Gestion de la dérive conceptuelle}{67}{subsection.4.8.2}%
+\contentsline {subsection}{\numberline {4.8.3}Planificateur de tâches}{67}{subsection.4.8.3}%
+\contentsline {section}{Conclusion du chapitre}{68}{table.caption.44}%
+\contentsline {chapter}{\numberline {5}Sprint 3 — Tests et Évaluation}{69}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{69}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Stratégie de test}{69}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Évaluation de l'agent planificateur}{70}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Scénarios de test}{70}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Résultats de l'agent}{71}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Évaluation du pipeline RAG}{72}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Précision de récupération}{72}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Performance de la réindexation automatique}{73}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}Évaluation du moteur de recommandation}{74}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Simulation de récompense cumulée}{74}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Latence de scoring}{75}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}Performance globale du système}{76}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Discussion et limites}{77}{section.5.7}%
+\contentsline {section}{Conclusion du chapitre}{78}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Sprint 4 — Intégration et Déploiement}{79}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Introduction}{79}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Sprint 4 Planning}{79}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Objectif du Sprint 4}{79}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Sprint Backlog du Sprint 4}{79}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Analyse}{80}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Diagramme de Cas d'Utilisation du Sprint 4}{80}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Description Textuelle des Cas d'Utilisation}{81}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}Conception}{81}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Diagramme de Séquence — Health Check}{81}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Diagramme de Séquence — Rebuild Index}{83}{subsection.6.4.2}%
+\contentsline {section}{\numberline {6.5}Réalisation}{83}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Endpoint de Santé (GET /health)}{83}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Tableau de Bord Administrateur}{85}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}Documentation API OpenAPI}{85}{subsection.6.5.3}%
+\contentsline {subsection}{\numberline {6.5.4}Journalisation Rotative}{87}{subsection.6.5.4}%
+\contentsline {subsection}{\numberline {6.5.5}Scénario de Démonstration Complète}{87}{subsection.6.5.5}%
+\contentsline {section}{\numberline {6.6}Tests d'Intégration}{89}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Conclusion du Sprint 4}{90}{section.6.7}%
+\contentsline {chapter}{Conclusion Générale et Perspectives}{91}{chapter*.64}%
+\contentsline {section}{Bilan des contributions}{91}{section*.65}%
+\contentsline {section}{Perspectives et travaux futurs}{92}{section*.65}%
+\contentsline {section}{Mot de la fin}{93}{section*.65}%
+\contentsline {chapter}{\numberline {A}Annexes}{95}{chapter.A}%
+\contentsline {chapter}{Annexes}{95}{chapter.A}%
+\contentsline {section}{\numberline {A.1}Vocabulaire des tags (TAG\_VOCAB complet)}{95}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Invite système de l'agent Guidni (extraits)}{97}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Extraits du schéma de base de données}{99}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Captures d'écran de l'application}{102}{section.A.4}%

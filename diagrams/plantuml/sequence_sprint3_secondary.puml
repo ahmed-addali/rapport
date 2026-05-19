@@ -73,7 +73,7 @@ note left of RecAPI
   - Fraîcheur modèle < 24h
 end note
 
-note bottom of Metrics
+note left of Metrics
   Résultats obtenus:
   - Chat p95: 720ms [OK]
   - Rec p95: 1.1s [OK]

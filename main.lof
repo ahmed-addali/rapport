@@ -1,0 +1,42 @@
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Cycle du processus Scrum adapté au projet Guidni}}{5}{figure.caption.9}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Diagramme de Gantt des quatre sprints du projet Guidni}}{7}{figure.caption.11}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Architecture simplifiée d'un décodeur Transformer avec mécanisme d'attention}}{12}{figure.caption.13}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Graphe LangGraph de l'agent planificateur Guidni}}{14}{figure.caption.14}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Diagramme de séquence d'un cycle complet de l'agent}}{14}{figure.caption.15}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Architecture du pipeline RAG avec réindexation automatique}}{17}{figure.caption.17}%
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Cycle complet du bandit LinUCB dans le système Guidni}}{21}{figure.caption.19}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagramme des cas d'utilisation global du système Guidni}}{30}{figure.caption.22}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Architecture globale du système Guidni}}{34}{figure.caption.27}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Schéma ER du sous-système agent planificateur}}{36}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Schéma ER du sous-système de recommandation LinUCB}}{36}{figure.caption.29}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Flux de sécurité et de validation dans l'endpoint /chat}}{39}{figure.caption.33}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Diagramme d'états du graphe LangGraph avec conditions de routage}}{43}{figure.caption.35}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Flux d'exécution de l'outil create\_plan\_structure}}{48}{figure.caption.37}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Exemple de résultats d'une recherche RAG avec scores de similarité}}{51}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Pipeline de génération rapide de plans (3 phases parallèles)}}{54}{figure.caption.39}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Exemple de plan de voyage généré par l'agent Guidni}}{55}{figure.caption.40}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Pipeline de classement en 10~étapes du moteur de recommandation}}{62}{figure.caption.42}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Flux de collecte d'événements et mise à jour des matrices LinUCB}}{66}{figure.caption.43}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Affichage des étapes de raisonnement de l'agent dans l'interface utilisateur}}{72}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Récompense cumulée comparée~: LinUCB vs baselines sur 500 sessions simulées}}{75}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Réponse de l'endpoint /health indiquant l'état de tous les composants}}{77}{figure.caption.53}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Diagramme de séquence — Endpoint GET /health}}{82}{figure.caption.57}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Diagramme de séquence — Reconstruction index RAG}}{83}{figure.caption.58}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Réponse de l'endpoint GET /health}}{85}{figure.caption.59}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Documentation API OpenAPI générée automatiquement}}{86}{figure.caption.60}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Interface de chat avec plan généré (démonstration)}}{88}{figure.caption.61}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Sortie complète du plan avec étapes de réflexion}}{89}{figure.caption.62}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Interface de chat de l'agent planificateur Guidni}}{102}{figure.caption.67}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Exemple complet de plan de voyage généré (5 jours, famille)}}{103}{figure.caption.68}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Réponse complète de l'endpoint /health}}{104}{figure.caption.69}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Endpoint /admin/rebuild-index après reconstruction complète de l'index RAG}}{104}{figure.caption.70}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Documentation OpenAPI auto-générée par FastAPI (/docs)}}{105}{figure.caption.71}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Exemple de réponse de l'API /api/recommendations avec scores exposés (\texttt {EXPOSE\_SCORES=true})}}{106}{figure.caption.72}%

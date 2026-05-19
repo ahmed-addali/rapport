@@ -1,0 +1,4202 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.5.14)  19 MAY 2026 03:26
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./main.tex
+(main.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-03-20>
+(/home/ahmed/.miktex/texmfs/install/tex/latex/base/report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(/home/ahmed/.miktex/texmfs/install/tex/latex/base/size12.clo
+File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count275
+\c@chapter=\count276
+\c@section=\count277
+\c@subsection=\count278
+\c@subsubsection=\count279
+\c@paragraph=\count280
+\c@subparagraph=\count281
+\c@figure=\count282
+\c@table=\count283
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen150
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/base/inputenc.sty
+Package: inputenc 2024/02/08 v1.3d Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/base/fontenc.sty
+Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/babel/babel.sty
+Package: babel 2026/04/15 v26.6 The multilingual framework for LuaLaTeX, pdfLaT
+eX and XeLaTeX
+\babel@savecnt=\count284
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input li
+ne 2078.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input li
+ne 2080.
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding T1) on input lin
+e 2082.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding T1) on input lin
+e 2083.
+LaTeX Encoding Info:    Ignoring declaration for text command \ij (encoding ?) 
+on input line 2084.
+LaTeX Encoding Info:    Ignoring declaration for text command \IJ (encoding ?) 
+on input line 2086.
+LaTeX Encoding Info:    Ignoring declaration for text command \SS (encoding ?) 
+on input line 2111.
+\U@D=\dimen151
+\l@unhyphenated=\language1
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read2
+\bbl@dirlevel=\count285
+Package babel Info: Configuration files are deprecated, as
+(babel)             they can break document portability.
+(babel)             Reported on input line 4206.
+
+*************************************
+* Local config file bblopts.cfg used
+*
+(/home/ahmed/.miktex/texmfs/install/tex/latex/arabi/bblopts.cfg
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/babel/locale/fr/babel-french.te
+x)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/babel/locale/en/babel-english.t
+ex)
+Package babel Info: Importing font and identification data for french
+(babel)             from babel-fr.ini. Reported on input line 4330.
+ (/home/ahmed/.miktex/texmfs/install/tex/generic/babel-french/french.ldf
+Language: french 2025-08-15 v4.0e French support from the babel system
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/babel-french/french3.ldf
+Language: french 2025-08-15 v3.7e French support from the babel system
+
+
+Package babel Warning: No hyphenation patterns were preloaded for
+(babel)                the language 'French' into the format.
+(babel)                Please, configure your TeX system to add them and
+(babel)                rebuild the format. Now I will use the patterns
+(babel)                preloaded for \language=nohyphenation instead on input l
+ine 87.
+
+\FB@stdchar=\count286
+Package babel Info: Making : an active character on input line 273.
+Package babel Info: Making ; an active character on input line 274.
+Package babel Info: Making ! an active character on input line 275.
+Package babel Info: Making ? an active character on input line 276.
+\FBguill@level=\count287
+\FBold@everypar=\toks19
+\FB@Mht=\dimen152
+\mc@charclass=\count288
+\mc@charfam=\count289
+\mc@charslot=\count290
+\std@mcc=\count291
+\dec@mcc=\count292
+\FB@pardim=\dimen153
+\listindentFB=\dimen154
+\descindentFB=\dimen155
+\labelindentFB=\dimen156
+\labelwidthFB=\dimen157
+\leftmarginFB=\dimen158
+\parindentFFN=\dimen159
+\FBfnindent=\dimen160
+))
+Package babel Info: Importing font and identification data for english
+(babel)             from babel-en.ini. Reported on input line 4330.
+ (/home/ahmed/.miktex/texmfs/install/tex/latex/babel-english/english.ldf
+Language: english 2017/06/06 v3.3r English support from the babel system
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/carlisle/scalefnt.sty)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/csquotes/csquotes.sty
+Package: csquotes 2024-04-04 v5.2o context-sensitive quotations (JAW)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count293
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks20
+)
+\csq@reset=\count294
+\csq@gtype=\count295
+\csq@glevel=\count296
+\csq@qlevel=\count297
+\csq@maxlvl=\count298
+\csq@tshold=\count299
+\csq@ltx@everypar=\toks21
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/csquotes/csquotes.def
+File: csquotes.def 2024-04-04 v5.2o csquotes generic definitions (JAW)
+)
+Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
+Package csquotes Info: ... configuration file loaded successfully.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/csquotes/csquotes.cfg
+File: csquotes.cfg 
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics/graphicx.sty
+Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 106.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen161
+\Gin@req@width=\dimen162
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count300
+\float@exts=\toks22
+\float@box=\box53
+\@float@everytoks=\toks23
+\@floatcapt=\box54
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2026-04-24 v7.01q Hypertext links for LaTeX
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/iftex/iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hyperref/nameref.sty
+Package: nameref 2026-01-29 v2.58 Cross-referencing by name of section
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/gettitlestring/gettitlestring.s
+ty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+ (/home/ahmed/.miktex/texmfs/install/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count301
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/stringenc/stringenc.sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
+)
+)
+\@linkdim=\dimen163
+\Hy@linkcounter=\count302
+\Hy@pagecounter=\count303
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2026-04-24 v7.01q Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(/home/ahmed/.miktex/texmfs/install/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count304
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hyperref/puenc.def
+File: puenc.def 2026-04-24 v7.01q Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4199.
+Package hyperref Info: Link nesting OFF on input line 4204.
+Package hyperref Info: Hyper index ON on input line 4207.
+Package hyperref Info: Plain pages OFF on input line 4214.
+Package hyperref Info: Backreferencing OFF on input line 4219.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4466.
+\c@Hy@tempcnt=\count305
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4805.
+\XeTeXLinkMargin=\dimen164
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count306
+\Field@Width=\dimen165
+\Fld@charsize=\dimen166
+Package hyperref Info: Hyper figures OFF on input line 6091.
+Package hyperref Info: Link nesting OFF on input line 6096.
+Package hyperref Info: Hyper index ON on input line 6099.
+Package hyperref Info: backreferencing OFF on input line 6106.
+Package hyperref Info: Link coloring OFF on input line 6111.
+Package hyperref Info: Link coloring with OCG OFF on input line 6116.
+Package hyperref Info: PDF/A mode OFF on input line 6121.
+\Hy@abspage=\count307
+\c@Item=\count308
+\c@Hfootnote=\count309
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2026-04-24 v7.01q Hyperref driver for pdfTeX
+\Fld@listcount=\count310
+\c@bookmark@seq@number=\count311
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+84.
+)
+\Hy@SectionHShift=\skip51
+) (/home/ahmed/.miktex/texmfs/install/tex/latex/geometry/geometry.sty
+Package: geometry 2026/03/07 v6.0 Page Geometry
+
+(/home/ahmed/.miktex/texmfs/install/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count312
+\Gm@cntv=\count313
+\c@Gm@tempcnt=\count314
+\Gm@bindingoffset=\dimen167
+\Gm@wd@mp=\dimen168
+\Gm@odd@mp=\dimen169
+\Gm@even@mp=\dimen170
+\Gm@layoutwidth=\dimen171
+\Gm@layoutheight=\dimen172
+\Gm@layouthoffset=\dimen173
+\Gm@layoutvoffset=\dimen174
+\Gm@dimlist=\toks24
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/geometry/geometry.cfg))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/titlesec/titlesec.sty
+Package: titlesec 2025/01/04 v2.17 Sectioning titles
+\ttl@box=\box55
+\beforetitleunit=\skip52
+\aftertitleunit=\skip53
+\ttl@plus=\dimen175
+\ttl@minus=\dimen176
+\ttl@toksa=\toks25
+\titlewidth=\dimen177
+\titlewidthlast=\dimen178
+\titlewidthfirst=\dimen179
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/setspace/setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/fancyhdr/fancyhdr.sty
+Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
+
+\f@nch@headwidth=\skip54
+\f@nch@offset@elh=\skip55
+\f@nch@offset@erh=\skip56
+\f@nch@offset@olh=\skip57
+\f@nch@offset@orh=\skip58
+\f@nch@offset@elf=\skip59
+\f@nch@offset@erf=\skip60
+\f@nch@offset@olf=\skip61
+\f@nch@offset@orf=\skip62
+\f@nch@height=\skip63
+\f@nch@footalignment=\skip64
+\f@nch@widthL=\skip65
+\f@nch@widthC=\skip66
+\f@nch@widthR=\skip67
+\@temptokenb=\toks26
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/biblatex.sty
+Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/logreq/logreq.sty
+Package: logreq 2010/08/04 v1.0 xml request logger
+\lrq@indent=\count315
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/logreq/logreq.def
+File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+\c@tabx@nest=\count316
+\c@listtotal=\count317
+\c@listcount=\count318
+\c@liststart=\count319
+\c@liststop=\count320
+\c@citecount=\count321
+\c@citetotal=\count322
+\c@multicitecount=\count323
+\c@multicitetotal=\count324
+\c@instcount=\count325
+\c@maxnames=\count326
+\c@minnames=\count327
+\c@maxitems=\count328
+\c@minitems=\count329
+\c@citecounter=\count330
+\c@maxcitecounter=\count331
+\c@savedcitecounter=\count332
+\c@uniquelist=\count333
+\c@uniquename=\count334
+\c@refsection=\count335
+\c@refsegment=\count336
+\c@maxextratitle=\count337
+\c@maxextratitleyear=\count338
+\c@maxextraname=\count339
+\c@maxextradate=\count340
+\c@maxextraalpha=\count341
+\c@abbrvpenalty=\count342
+\c@highnamepenalty=\count343
+\c@lownamepenalty=\count344
+\c@maxparens=\count345
+\c@parenlevel=\count346
+\blx@tempcnta=\count347
+\blx@tempcntb=\count348
+\blx@tempcntc=\count349
+\c@blx@maxsection=\count350
+\blx@maxsegment@0=\count351
+\blx@notetype=\count352
+\blx@parenlevel@text=\count353
+\blx@parenlevel@foot=\count354
+\blx@sectionciteorder@0=\count355
+\blx@sectionciteorderinternal@0=\count356
+\blx@entrysetcounter=\count357
+\blx@biblioinstance=\count358
+\labelnumberwidth=\skip68
+\labelalphawidth=\skip69
+\biblabelsep=\skip70
+\bibitemsep=\skip71
+\bibnamesep=\skip72
+\bibinitsep=\skip73
+\bibparsep=\skip74
+\bibhang=\skip75
+\blx@bcfin=\read3
+\blx@bcfout=\write3
+\blx@langwohyphens=\language2
+\c@mincomprange=\count359
+\c@maxcomprange=\count360
+\c@mincompwidth=\count361
+Package biblatex Info: Trying to load biblatex default data model...
+Package biblatex Info: ... file 'blx-dm.def' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/blx-dm.def
+File: blx-dm.def 2025/07/10 v3.21 biblatex datamodel (PK/MW)
+)
+Package biblatex Info: Trying to load biblatex style data model...
+Package biblatex Info: ... file 'numeric.dbx' not found.
+Package biblatex Info: Trying to load biblatex custom data model...
+Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
+\c@afterword=\count362
+\c@savedafterword=\count363
+\c@annotator=\count364
+\c@savedannotator=\count365
+\c@author=\count366
+\c@savedauthor=\count367
+\c@bookauthor=\count368
+\c@savedbookauthor=\count369
+\c@commentator=\count370
+\c@savedcommentator=\count371
+\c@editor=\count372
+\c@savededitor=\count373
+\c@editora=\count374
+\c@savededitora=\count375
+\c@editorb=\count376
+\c@savededitorb=\count377
+\c@editorc=\count378
+\c@savededitorc=\count379
+\c@foreword=\count380
+\c@savedforeword=\count381
+\c@holder=\count382
+\c@savedholder=\count383
+\c@introduction=\count384
+\c@savedintroduction=\count385
+\c@namea=\count386
+\c@savednamea=\count387
+\c@nameb=\count388
+\c@savednameb=\count389
+\c@namec=\count390
+\c@savednamec=\count391
+\c@translator=\count392
+\c@savedtranslator=\count393
+\c@shortauthor=\count394
+\c@savedshortauthor=\count395
+\c@shorteditor=\count396
+\c@savedshorteditor=\count397
+\c@labelname=\count398
+\c@savedlabelname=\count399
+\c@institution=\count400
+\c@savedinstitution=\count401
+\c@lista=\count402
+\c@savedlista=\count403
+\c@listb=\count404
+\c@savedlistb=\count405
+\c@listc=\count406
+\c@savedlistc=\count407
+\c@listd=\count408
+\c@savedlistd=\count409
+\c@liste=\count410
+\c@savedliste=\count411
+\c@listf=\count412
+\c@savedlistf=\count413
+\c@location=\count414
+\c@savedlocation=\count415
+\c@organization=\count416
+\c@savedorganization=\count417
+\c@origlocation=\count418
+\c@savedoriglocation=\count419
+\c@origpublisher=\count420
+\c@savedorigpublisher=\count421
+\c@publisher=\count422
+\c@savedpublisher=\count423
+\c@language=\count424
+\c@savedlanguage=\count425
+\c@origlanguage=\count426
+\c@savedoriglanguage=\count427
+\c@pageref=\count428
+\c@savedpageref=\count429
+\shorthandwidth=\skip76
+\shortjournalwidth=\skip77
+\shortserieswidth=\skip78
+\shorttitlewidth=\skip79
+\shortauthorwidth=\skip80
+\shorteditorwidth=\skip81
+\locallabelnumberwidth=\skip82
+\locallabelalphawidth=\skip83
+\localshorthandwidth=\skip84
+\localshortjournalwidth=\skip85
+\localshortserieswidth=\skip86
+\localshorttitlewidth=\skip87
+\localshortauthorwidth=\skip88
+\localshorteditorwidth=\skip89
+Package biblatex Info: Trying to load compatibility code...
+Package biblatex Info: ... file 'blx-compat.def' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/blx-compat.def
+File: blx-compat.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
+)
+Package biblatex Info: Trying to load generic definitions...
+Package biblatex Info: ... file 'biblatex.def' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/biblatex.def
+File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
+\c@textcitecount=\count430
+\c@textcitetotal=\count431
+\c@textcitemaxnames=\count432
+\c@biburlbigbreakpenalty=\count433
+\c@biburlbreakpenalty=\count434
+\c@biburlnumpenalty=\count435
+\c@biburlucpenalty=\count436
+\c@biburllcpenalty=\count437
+\biburlbigskip=\muskip18
+\biburlnumskip=\muskip19
+\biburlucskip=\muskip20
+\biburllcskip=\muskip21
+\c@smartand=\count438
+)
+Package biblatex Info: Trying to load bibliography style 'numeric'...
+Package biblatex Info: ... file 'numeric.bbx' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/bbx/numeric.bbx
+File: numeric.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
+Package biblatex Info: Trying to load bibliography style 'standard'...
+Package biblatex Info: ... file 'standard.bbx' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/bbx/standard.bbx
+File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
+\c@bbx:relatedcount=\count439
+\c@bbx:relatedtotal=\count440
+))
+Package biblatex Info: Trying to load citation style 'numeric'...
+Package biblatex Info: ... file 'numeric.cbx' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/cbx/numeric.cbx
+File: numeric.cbx 2025/07/10 v3.21 biblatex citation style (PK/MW)
+Package biblatex Info: Redefining '\cite'.
+Package biblatex Info: Redefining '\parencite'.
+Package biblatex Info: Redefining '\footcite'.
+Package biblatex Info: Redefining '\footcitetext'.
+Package biblatex Info: Redefining '\smartcite'.
+Package biblatex Info: Redefining '\supercite'.
+Package biblatex Info: Redefining '\textcite'.
+Package biblatex Info: Redefining '\textcites'.
+Package biblatex Info: Redefining '\cites'.
+Package biblatex Info: Redefining '\parencites'.
+Package biblatex Info: Redefining '\smartcites'.
+)
+Package biblatex Info: Trying to load configuration file...
+Package biblatex Info: ... file 'biblatex.cfg' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/biblatex.cfg
+File: biblatex.cfg 
+)
+Package biblatex Info: Input encoding 'utf8' detected.
+Package biblatex Info: Document encoding is UTF8 ....
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/l3kernel/expl3.sty
+Package: expl3 2026-03-20 L3 programming layer (loader) 
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count441
+))
+Package biblatex Info: ... and expl3
+(biblatex)             2026-03-20 L3 programming layer (loader) 
+(biblatex)             is new enough (at least 2020/04/06),
+(biblatex)             setting 'casechanger=expl3'.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/blx-case-expl3.sty
+(/home/ahmed/.miktex/texmfs/install/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2025-10-09 L3 Experimental document command parser
+)
+Package: blx-case-expl3 2025/07/10 v3.21 expl3 case changing code for biblatex
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/tools/longtable.sty
+Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
+\LTleft=\skip90
+\LTright=\skip91
+\LTpre=\skip92
+\LTpost=\skip93
+\LTchunksize=\count442
+\LTcapwidth=\dimen180
+\LT@head=\box56
+\LT@firsthead=\box57
+\LT@foot=\box58
+\LT@lastfoot=\box59
+\LT@gbox=\box60
+\LT@cols=\count443
+\LT@rows=\count444
+\c@LT@tables=\count445
+\c@LT@chunks=\count446
+\LT@p@ftn=\toks27
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen181
+\lightrulewidth=\dimen182
+\cmidrulewidth=\dimen183
+\belowrulesep=\dimen184
+\belowbottomsep=\dimen185
+\aboverulesep=\dimen186
+\abovetopsep=\dimen187
+\cmidrulesep=\dimen188
+\cmidrulekern=\dimen189
+\defaultaddspace=\dimen190
+\@cmidla=\count447
+\@cmidlb=\count448
+\@aboverulesep=\dimen191
+\@belowrulesep=\dimen192
+\@thisruleclass=\count449
+\@lastruleclass=\count450
+\@thisrulewidth=\dimen193
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2025/07/09 v2.17z AMS math features
+\@mathmargin=\skip94
+
+For additional information on amsmath, use the `?' option.
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsmath/amstext.sty
+Package: amstext 2024/11/17 v2.01 AMS text
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks28
+\ex@=\dimen194
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen195
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count451
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count452
+\leftroot@=\count453
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count454
+\DOTSCASE@=\count455
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box61
+\strutbox@=\box62
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen196
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count456
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count457
+\dotsspace@=\muskip22
+\c@parentequation=\count458
+\dspbrk@lvl=\count459
+\tag@help=\toks29
+\row@=\count460
+\column@=\count461
+\maxfields@=\count462
+\andhelp@=\toks30
+\eqnshift@=\dimen197
+\alignsep@=\dimen198
+\tagshift@=\dimen199
+\tagwidth@=\dimen256
+\totwidth@=\dimen257
+\lineht@=\dimen258
+\@envbody=\toks31
+\multlinegap=\skip95
+\multlinetaggap=\skip96
+\mathdisplay@stack=\toks32
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/home/ahmed/.miktex/texmfs/install/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2024/10/29 v1.0k Color table columns (DPC)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/tools/array.sty
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
+\col@sep=\dimen259
+\ar@mcellbox=\box63
+\extrarowheight=\dimen260
+\NC@list=\toks33
+\extratabsurround=\skip97
+\backup@length=\skip98
+\ar@cellbox=\box64
+)
+\everycr=\toks34
+\minrowclearance=\skip99
+\rownum=\count463
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/enumitem/enumitem.sty
+Package: enumitem 2025/02/06 v3.11 Customized lists
+\labelindent=\skip100
+\enit@outerparindent=\dimen261
+\enit@toks=\toks35
+\enit@inbox=\box65
+\enit@count@id=\count464
+\enitdp@description=\count465
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/listings/listings.sty
+\lst@mode=\count466
+\lst@gtempboxa=\box66
+\lst@token=\toks36
+\lst@length=\count467
+\lst@currlwidth=\dimen262
+\lst@column=\count468
+\lst@pos=\count469
+\lst@lostspace=\dimen263
+\lst@width=\dimen264
+\lst@newlines=\count470
+\lst@lineno=\count471
+\lst@maxwidth=\dimen265
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/listings/lstpatch.sty
+File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
+\c@lstnumber=\count472
+\lst@skipnumbers=\count473
+\lst@framebox=\box67
+)
+(/home/ahmed/.miktex/texmfs/install/tex/latex/listings/listings.cfg
+File: listings.cfg 2025/11/14 1.11b listings configuration
+))
+Package: listings 2025/11/14 1.11b (Carsten Heinz)
+
+==> First Aid for listings.sty no longer applied!
+    Expected:
+        2024/09/23 1.10c (Carsten Heinz)
+    but found:
+        2025/11/14 1.11b (Carsten Heinz)
+    so I'm assuming it got fixed.
+(/home/ahmed/.miktex/texmfs/install/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen266
+\captionmargin=\dimen267
+\caption@leftmargin=\dimen268
+\caption@rightmargin=\dimen269
+\caption@width=\dimen270
+\caption@indent=\dimen271
+\caption@parindent=\dimen272
+\caption@hangindent=\dimen273
+Package caption Info: Standard document class detected.
+Package caption Info: french babel package is loaded.
+)
+\c@caption@flags=\count474
+\c@continuedfloat=\count475
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: longtable package is loaded.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
+))
+Package csquotes Info: Checking for multilingual support...
+Package csquotes Info: ... found 'babel' package.
+Package csquotes Info: Adjusting default style.
+Package csquotes Info: Redefining alias 'default' -> 'english'.
+ (main.aux
+
+LaTeX Warning: Label `fig:health_endpoint' multiply defined.
+
+)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Info: Redefining \degres on input line 59.
+ (/home/ahmed/.miktex/texmfs/install/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count476
+\scratchdimen=\dimen274
+\scratchbox=\box68
+\nofMPsegments=\count477
+\nofMParguments=\count478
+\everyMPshowfont=\toks37
+\MPscratchCnt=\count479
+\MPscratchDim=\dimen275
+\MPnumerator=\count480
+\makeMPintoPDFobject=\count481
+\everyMPtoPDFconversion=\toks38
+) (/home/ahmed/.miktex/texmfs/install/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/00miktex/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+Package hyperref Info: Link coloring OFF on input line 59.
+
+(main.out) (main.out)
+\@outlinefile=\write4
+\openout4 = `main.out'.
+
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=455.24411pt
+* \textheight=702.78308pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-40.6381pt
+* \headheight=14.5pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=35.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package biblatex Info: Trying to load language 'english'...
+Package biblatex Info: ... file 'english.lbx' found.
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/lbx/english.lbx
+File: english.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
+)
+Package biblatex Info: Trying to load language 'french'...
+Package biblatex Info: ... file 'french.lbx' found.
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/biblatex/lbx/french.lbx
+File: french.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
+)
+Package biblatex Info: Input encoding 'utf8' detected.
+Package biblatex Info: Automatic encoding selection.
+(biblatex)             Assuming data encoding 'utf8'.
+\openout3 = `main.bcf'.
+
+Package biblatex Info: Trying to load bibliographic data...
+Package biblatex Info: ... file 'main.bbl' found.
+
+(main.bbl)
+Package biblatex Info: Reference section=0 on input line 59.
+Package biblatex Info: Reference segment=0 on input line 59.
+\c@lstlisting=\count482
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+ (chapter_00_preliminaries.tex
+<images/university_logo.png, id=558, 401.5pt x 401.5pt>
+File: images/university_logo.png Graphic file (type png)
+<use images/university_logo.png>
+Package pdftex.def Info: images/university_logo.png  used on input line 17.
+(pdftex.def)             Requested size: 113.81102pt x 113.80992pt.
+ [1
+
+{/home/ahmed/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map} <./images/univers
+ity_logo.png (PNG copy)>]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 64.
+
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 64.
+
+
+(/home/ahmed/.miktex/texmfs/install/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [2]
+pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.122 \newpage
+               [1]
+Overfull \hbox (15.9464pt too wide) in paragraph at lines 127--130
+\T1/cmr/m/n/12 envers toutes les personnes qui ont contribué, directement ou in
+directement, à l'aboutissement
+ []
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) has
+ been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.161 \newpage
+               [2
+
+]
+Overfull \hbox (44.39865pt too wide) in paragraph at lines 173--188
+\T1/cmr/m/n/12 de deux sous-systèmes complémentaires. Le premier est un \T1/cmr
+/bx/n/12 agent planificateur conversationnel
+ []
+
+
+Overfull \hbox (62.42525pt too wide) in paragraph at lines 173--188
+\T1/cmr/m/n/12 construit sur une machine à états LangGraph comportant quatre n÷
+uds (THINK, EXECUTE_TOOL,
+ []
+
+[3
+
+]
+Overfull \hbox (2.27176pt too wide) in paragraph at lines 209--215
+\T1/cmr/m/n/12 Tourists visiting the island of Djerba lack intelligent planning
+ tools that seamlessly combine
+ []
+
+
+Overfull \hbox (28.34613pt too wide) in paragraph at lines 209--215
+\T1/cmr/m/n/12 platforms are limited to either static filter-based search engin
+es or collaborative recommendation
+ []
+
+
+Overfull \hbox (15.82826pt too wide) in paragraph at lines 216--229
+[]\T1/cmr/m/n/12 This work introduces \T1/cmr/bx/n/12 Guidni\T1/cmr/m/n/12 , a 
+travel planning platform built around two complementary
+ []
+
+
+Overfull \hbox (5.62668pt too wide) in paragraph at lines 216--229
+\T1/cmr/m/n/12 and eighteen LLM-callable tools spanning user profile management
+, activity search, weather
+ []
+
+
+Overfull \hbox (0.28769pt too wide) in paragraph at lines 230--236
+[]\T1/cmr/m/n/12 The experimental results demonstrate an end-to-end conversatio
+nal planner supporting
+ []
+
+[4
+
+]
+ignored: Infinite glue shrinkage found in box being split [5
+
+]) [6] (main.toc [7
+
+] [8] [9] [10])
+\tf@toc=\write5
+\openout5 = `main.toc'.
+
+ [11] (main.lof
+Overfull \hbox (2.95517pt too wide) in paragraph at lines 5--5
+ [][] [][]\T1/cmr/m/n/12 Architecture simplifiée d'un décodeur Transformer avec
+ mécanisme d'attention[] [][]  
+ []
+
+[12
+
+])
+\tf@lof=\write6
+\openout6 = `main.lof'.
+
+ [13] (main.lot)
+\tf@lot=\write7
+\openout7 = `main.lot'.
+
+ [14
+
+] [15] (sections/01_introduction.tex
+
+! LaTeX Error: Unicode character Ðµ (U+0435)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire Ðµ
+              Ð¶ÐµÐ³Ð¾Ð´Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð¶ (U+0436)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶
+                ÐµÐ³Ð¾Ð´Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ðµ (U+0435)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶Ðµ
+                  Ð³Ð¾Ð´Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð³ (U+0433)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶ÐµÐ³
+                    Ð¾Ð´Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð¾ (U+043E)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶ÐµÐ³Ð¾
+                      Ð´Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð´ (U+0434)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶ÐµÐ³Ð¾Ð´
+                        Ð½Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð½ (U+043D)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶ÐµÐ³Ð¾Ð´Ð½
+                          Ð¾ plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character Ð¾ (U+043E)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 attire ÐµÐ¶ÐµÐ³Ð¾Ð´Ð½Ð¾
+                             plus de 3 millions de visiteurs internationaux....
+
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+Overfull \hbox (9.45615pt too wide) in paragraph at lines 38--39
+[]\T1/cmr/m/it/12 ^^S Comment concevoir et implémenter une plateforme intellige
+nte de planification
+ []
+
+
+Overfull \hbox (24.31363pt too wide) in paragraph at lines 38--39
+\T1/cmr/m/it/12 et de recommandation touristique pour Djerba qui combine un age
+nt conversationnel
+ []
+
+[1
+
+]
+Overfull \hbox (26.771pt too wide) in paragraph at lines 41--51
+[]\T1/cmr/m/n/12 Cette problématique soulève plusieurs défis techniques majeurs
+. Premièrement, l'intégration
+ []
+
+
+Overfull \hbox (19.722pt too wide) in paragraph at lines 41--51
+\T1/cmr/m/n/12 d'un LLM dans un système de production nécessite de résoudre le 
+problème des hallucinations :
+ []
+
+
+Overfull \hbox (20.26685pt too wide) in paragraph at lines 76--81
+[]\T1/cmr/bx/n/12 Objectif 4 : Intégration Système et Déploiement. \T1/cmr/m/n/
+12 Assurer l'intégration transparente
+ []
+
+[2]
+Overfull \hbox (24.15665pt too wide) in paragraph at lines 99--102
+[]\T1/cmr/bx/n/12 Chapitre 4 ^^V Sprint 1 : Conception et Implémentation de l'A
+gent Planificateur.
+ []
+
+
+Overfull \hbox (44.97964pt too wide) in paragraph at lines 103--107
+\T1/cmr/bx/n/12 Hybrid LinUCB. \T1/cmr/m/n/12 Ce chapitre détaille le deuxième 
+sprint consacré au moteur de recommandation :
+ []
+
+
+Overfull \hbox (7.12643pt too wide) in paragraph at lines 117--121
+\T1/cmr/m/n/12 remplacement du LinUCB linéaire par un bandit neuronal, infrastr
+ucture d'expérimentation
+ []
+
+[3]
+Overfull \hbox (0.46542pt too wide) in paragraph at lines 132--138
+[]\T1/cmr/bx/n/12 Incertitude inhérente à l'IA. \T1/cmr/m/n/12 Les projets d'IA
+ comportent une incertitude technique
+ []
+
+
+Overfull \hbox (22.65996pt too wide) in paragraph at lines 132--138
+\T1/cmr/m/n/12 importante : les performances réelles des modèles LLM, la qualit
+é des embeddings multilingues,
+ []
+
+
+LaTeX Warning: File `diagrams/fig_01_scrum_process.png' not found on input line
+ 159.
+
+
+! Package pdftex.def Error: File `diagrams/fig_01_scrum_process.png' not found:
+ using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.159 ...width]{diagrams/fig_01_scrum_process.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 186--186
+[]|\T1/cmr/m/n/10.95 Product Owner
+ []
+
+
+Underfull \hbox (badness 3601) in paragraph at lines 186--189
+\T1/cmr/m/n/10.95 le Product Backlog, valider les
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/10.95 Scrum Master
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/10.95 Étudiant (Ahmed
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--193
+[]|\T1/cmr/m/n/10.95 Équipe de
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--193
+[]|\T1/cmr/m/n/10.95 Étudiant (Ahmed
+ []
+
+
+Underfull \hbox (badness 1609) in paragraph at lines 193--196
+[]|\T1/cmr/m/n/10.95 Concevoir, implémenter et tester
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--196
+\T1/cmr/m/n/10.95 les fonctionnalités, estimer les
+ []
+
+
+Underfull \hbox (badness 2626) in paragraph at lines 193--196
+\T1/cmr/m/n/10.95 charges, s'engager sur le Sprint
+ []
+
+
+Underfull \hbox (badness 1038) in paragraph at lines 193--196
+\T1/cmr/m/n/10.95 Backlog, produire des incréments
+ []
+
+[5]
+
+LaTeX Warning: File `diagrams/fig_01_gantt_sprints.png' not found on input line
+ 216.
+
+
+! Package pdftex.def Error: File `diagrams/fig_01_gantt_sprints.png' not found:
+ using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.216 ...width]{diagrams/fig_01_gantt_sprints.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 233--233
+[]|\T1/cmr/m/n/10.95 Agent planificateur IA
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--236
+[]|\T1/cmr/m/n/10.95 Graphe LangGraph
+ []
+
+
+Underfull \hbox (badness 6364) in paragraph at lines 233--236
+\T1/cmr/m/n/10.95 4 n÷uds, 18 outils,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--236
+\T1/cmr/m/n/10.95 pipeline RAG
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--236
+\T1/cmr/m/n/10.95 bge-m3, mémoire
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--236
+\T1/cmr/m/n/10.95 conversationnelle,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--237
+[]|\T1/cmr/m/n/10.95 Moteur de
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--237
+\T1/cmr/m/n/10.95 recommandation Hybrid
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+[]|\T1/cmr/m/n/10.95 Ingénierie des
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+\T1/cmr/m/n/10.95 caractéristiques
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+\T1/cmr/m/n/10.95 (360D), algorithme
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+\T1/cmr/m/n/10.95 LinUCB, ranker 10
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--240
+[]|\T1/cmr/m/n/10.95 Tests complets et
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--243
+\T1/cmr/m/n/10.95 linucb, ranker),
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--243
+\T1/cmr/m/n/10.95 tests d'intégration
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--243
+\T1/cmr/m/n/10.95 (/chat, /plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--243
+\T1/cmr/m/n/10.95 /events), évaluation
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+[]|\T1/cmr/m/n/10.95 Intégration des
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+\T1/cmr/m/n/10.95 deux sous-systèmes,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+\T1/cmr/m/n/10.95 endpoints de santé,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+\T1/cmr/m/n/10.95 dashboard admin,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+\T1/cmr/m/n/10.95 documentation API,
+ []
+
+[7])
+Overfull \hbox (28.36703pt too wide) in paragraph at lines 270--88
+\T1/cmr/m/n/12 touristique de Djerba, la problématique centrale combinant fiabi
+lité des LLM et personnalisation
+ []
+
+[8] [9]
+Chapter 1.
+(sections/02_etude_preliminaire.tex
+Overfull \hbox (9.90974pt too wide) in paragraph at lines 7--14
+\T1/cmr/m/n/12 conception du système Guidni. Il couvre cinq domaines majeurs : 
+les agents conversationnels
+ []
+
+
+Overfull \hbox (21.8547pt too wide) in paragraph at lines 15--20
+[]\T1/cmr/m/n/12 L'objectif de ce chapitre est double : d'une part, fournir au 
+lecteur les clés de compréhension
+ []
+
+
+Overfull \hbox (5.77621pt too wide) in paragraph at lines 36--43
+\T1/cmr/m/n/12 retours humains (RLHF --- \T1/cmr/m/it/12 Reinforcement Learning
+ from Human Feedback\T1/cmr/m/n/12 ). Ces techniques
+ []
+
+
+Overfull \hbox (3.02461pt too wide) in paragraph at lines 36--43
+\T1/cmr/m/n/12 seulement à compléter une séquence statistiquement probable, mai
+s à produire des réponses
+ []
+
+[10
+
+]
+Overfull \hbox (23.13771pt too wide) in paragraph at lines 44--51
+\T1/cmr/m/n/12 modèle peut appeler explicitement \T1/cmtt/m/n/12 get_weather(lo
+cation="Djerba", date="2025-01-15")
+ []
+
+
+Overfull \hbox (14.10954pt too wide) in paragraph at lines 52--60
+\T1/cmr/m/n/12 LLM sans outils est contraint de répondre uniquement à partir de
+ ses données d'entraînement,
+ []
+
+
+Overfull \hbox (20.18857pt too wide) in paragraph at lines 52--60
+\T1/cmr/m/n/12 recommander un hôtel inexistant, un prix erroné ou une activité 
+fermée détruit immédiatement
+ []
+
+<diagrams/fig_02_transformer_attention.png, id=961, 572.1375pt x 839.135pt>
+File: diagrams/fig_02_transformer_attention.png Graphic file (type png)
+<use diagrams/fig_02_transformer_attention.png>
+Package pdftex.def Info: diagrams/fig_02_transformer_attention.png  used on inp
+ut line 63.
+(pdftex.def)             Requested size: 455.24411pt x 667.69814pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[11]
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[12 <./diagrams/fig_02_transformer_attention.png (PNG copy)>]
+Overfull \hbox (20.18835pt too wide) in paragraph at lines 78--87
+\T1/cmr/m/n/12 des données collectées : profil utilisateur, activités trouvées,
+ météo, hébergements, restaurants,
+ []
+
+
+Overfull \hbox (12.53056pt too wide) in paragraph at lines 88--101
+\T1/cmtt/m/n/12 ask_user \T1/cmr/m/n/12 a été utilisé, auquel cas l'agent passe
+ directement à RESPOND. Après VALIDATE,
+ []
+
+<diagrams/fig_02_langgraph_graph.png, id=971, 1218.5525pt x 677.53125pt>
+File: diagrams/fig_02_langgraph_graph.png Graphic file (type png)
+<use diagrams/fig_02_langgraph_graph.png>
+Package pdftex.def Info: diagrams/fig_02_langgraph_graph.png  used on input lin
+e 113.
+(pdftex.def)             Requested size: 455.24411pt x 253.12247pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[13]
+<diagrams/fig_02_agent_sequence.png, id=977, 1853.92625pt x 1235.61626pt>
+File: diagrams/fig_02_agent_sequence.png Graphic file (type png)
+<use diagrams/fig_02_agent_sequence.png>
+Package pdftex.def Info: diagrams/fig_02_agent_sequence.png  used on input line
+ 121.
+(pdftex.def)             Requested size: 455.24411pt x 303.39795pt.
+
+Overfull \hbox (37.01302pt too wide) in paragraph at lines 129--138
+\T1/cmr/m/n/12 pour tout système agentique destiné à un usage en production. Le
+s coûts varient considérablement
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[14 <./diagrams/fig_02_langgraph_graph.png> <./diagrams/fig_02_agent_sequence.p
+ng>]
+Overfull \hbox (15.0531pt too wide) in paragraph at lines 139--149
+\T1/cmr/m/n/12 (fournisseur à utiliser) et \T1/cmtt/m/n/12 model \T1/cmr/m/n/12
+ (nom du modèle). La fonction \T1/cmtt/m/n/12 parse_model_id() \T1/cmr/m/n/12 d
+écompose
+ []
+
+
+Overfull \hbox (16.7421pt too wide) in paragraph at lines 150--155
+\T1/cmtt/m/n/12 "groq/llama-3.3-70b-versatile" \T1/cmr/m/n/12 ou \T1/cmtt/m/n/1
+2 "ollama/qwen2.5:7b"\T1/cmr/m/n/12 , sans redémarrage du serveur.
+ []
+
+
+Overfull \hbox (3.02457pt too wide) in paragraph at lines 150--155
+\T1/cmr/m/n/12 Cette flexibilité permet aux utilisateurs avancés de comparer le
+s performances des différents
+ []
+
+
+Overfull \hbox (12.01965pt too wide) in paragraph at lines 163--163
+[]|\T1/cmr/bx/n/10.95 Fournisseur| 
+ []
+
+
+Overfull \hbox (6.98228pt too wide) in paragraph at lines 163--163
+[]|\T1/cmr/bx/n/10.95 Contexte| 
+ []
+
+
+Overfull \hbox (5.41956pt too wide) in paragraph at lines 164--164
+[]|\T1/cmr/bx/n/10.95 Latence| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 166--166
+[]|\T1/cmr/m/n/10.95 8192
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+[]|\T1/cmr/m/n/10.95 Gratuit,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+\T1/cmr/m/n/10.95 confidentialité,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+[]|\T1/cmr/m/n/10.95 Lent, RAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+[]|\T1/cmr/m/n/10.95 llama-3.3-70b-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+[]|\T1/cmr/m/n/10.95 128k
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 169--169
+[]|\T1/cmr/m/n/10.95 Très rapide,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 169--169
+[]|\T1/cmr/m/n/10.95 Quota API,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 171--171
+[]|\T1/cmr/m/n/10.95 Multimodal,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 171--171
+\T1/cmr/m/n/10.95 contexte
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 171--171
+[]|\T1/cmr/m/n/10.95 Coût API,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--172
+[]|\T1/cmr/m/n/10.95 128k
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+[]|\T1/cmr/m/n/10.95 Dernière
+ []
+
+
+Overfull \hbox (15.7135pt too wide) in paragraph at lines 161--176
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[15]
+Overfull \hbox (16.40337pt too wide) in paragraph at lines 205--211
+\T1/cmr/m/n/12 chaque demande utilisateur, prend la requête en entrée, trouve l
+es documents sémantiquement
+ []
+
+
+Overfull \hbox (6.65796pt too wide) in paragraph at lines 212--221
+\T1/cmr/m/n/12 locations (\T1/cmtt/m/n/12 Rental\T1/cmr/m/n/12 ) et les transfe
+rts (\T1/cmtt/m/n/12 Transfer\T1/cmr/m/n/12 ). Chaque entité est convertie en u
+n document
+ []
+
+
+Overfull \hbox (9.87695pt too wide) in paragraph at lines 212--221
+\T1/cmr/m/n/12 région, ville, prix, durée, horaires d'ouverture, équipements --
+- accompagné d'un dictionnaire
+ []
+
+
+Overfull \hbox (26.97144pt too wide) in paragraph at lines 212--221
+\T1/cmr/m/n/12 vectoriels interchangeables : Qdrant (index vectoriel dédié) et 
+pgvector (extension PostgreSQL),
+ []
+
+<diagrams/fig_02_rag_architecture.png, id=990, 1422.31375pt x 786.94pt>
+File: diagrams/fig_02_rag_architecture.png Graphic file (type png)
+<use diagrams/fig_02_rag_architecture.png>
+Package pdftex.def Info: diagrams/fig_02_rag_architecture.png  used on input li
+ne 225.
+(pdftex.def)             Requested size: 455.24411pt x 251.87398pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[16]
+Overfull \hbox (16.43806pt too wide) in paragraph at lines 241--249
+\T1/cmr/m/n/12 pour assurer la continuité sémantique entre les fragments, exécu
+tion sur CPU (\T1/cmtt/m/n/12 device="cpu"\T1/cmr/m/n/12 )
+ []
+
+
+Overfull \hbox (9.82388pt too wide) in paragraph at lines 250--256
+\T1/cmr/m/n/12 du contenu multi-domaine. L'alternative OpenAI \T1/cmtt/m/n/12 t
+ext-embedding-3 \T1/cmr/m/n/12 offre des performances
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[17 <./diagrams/fig_02_rag_architecture.png (PNG copy)>]
+Overfull \hbox (30.60953pt too wide) in paragraph at lines 266--274
+[]\T1/cmr/m/n/12 La solution implémentée dans le module \T1/cmtt/m/n/12 db_even
+ts.py \T1/cmr/m/n/12 repose sur les écouteurs d'événements
+ []
+
+
+Overfull \hbox (9.64458pt too wide) in paragraph at lines 291--299
+\T1/cmr/m/n/12 Le \T1/cmr/bx/n/12 filtrage collaboratif \T1/cmr/m/n/12 repose s
+ur la matrice d'interactions utilisateur-item. En identifiant
+ []
+
+
+Overfull \hbox (20.01204pt too wide) in paragraph at lines 300--307
+[]\T1/cmr/m/n/12 Le \T1/cmr/bx/n/12 filtrage basé sur le contenu \T1/cmr/m/n/12
+ représente chaque item par un vecteur de caractéristiques
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 332--332
+[]|\T1/cmr/bx/n/10.95 Dérive
+ []
+
+
+Overfull \hbox (11.30353pt too wide) in paragraph at lines 333--333
+[]|\T1/cmr/bx/n/10.95 Complexité| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 335--335
+[]|\T1/cmr/m/n/10.95 Filtrage
+ []
+
+
+Overfull \hbox (12.50417pt too wide) in paragraph at lines 335--335
+[]|\T1/cmr/m/n/10.95 Problématique| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 335--335
+[]|\T1/cmr/m/n/10.95 Grand
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 336--336
+[]|\T1/cmr/m/n/10.95 Attributs
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[]|\T1/cmr/m/n/10.95 LinUCB
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[]|\T1/cmr/m/n/10.95 Bonus
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[]|\T1/cmr/m/n/10.95 Reset $\OML/cmm/m/it/10.95 ^^U$\T1/cmr/m/n/10.95 -
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[]|\T1/cmr/m/n/10.95 Contexte
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
+[]|\T1/cmr/m/n/10.95 Faible--
+ []
+
+
+Overfull \hbox (17.25267pt too wide) in paragraph at lines 345--345
+|[]\T1/cmr/bx/n/17.28 Bandits multi-bras contextuels et algorithme LinUCB| 
+ []
+
+
+Overfull \hbox (20.77559pt too wide) in paragraph at lines 350--357
+\T1/cmr/m/n/12 exploration-exploitation : faut-il actionner les bras dont on sa
+it qu'ils rapportent (exploitation)
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[19]
+<diagrams/fig_02_linucb_cycle.png, id=1009, 460.72125pt x 1034.86626pt>
+File: diagrams/fig_02_linucb_cycle.png Graphic file (type png)
+<use diagrams/fig_02_linucb_cycle.png>
+Package pdftex.def Info: diagrams/fig_02_linucb_cycle.png  used on input line 3
+83.
+(pdftex.def)             Requested size: 455.24411pt x 1022.56271pt.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[20]
+Overfull \vbox (344.27962pt too high) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[21 <./diagrams/fig_02_linucb_cycle.png>]
+Overfull \hbox (21.11096pt too wide) in paragraph at lines 410--415
+\T1/cmr/m/n/12 Le premier terme est la récompense prédite (exploitation) ; le s
+econd est le bonus d'exploration,
+ []
+
+
+Overfull \hbox (48.11868pt too wide) in paragraph at lines 416--421
+\T1/cmr/m/n/12 valeur. Ce bonus d'exposition (\T1/cmtt/m/n/12 UNDEREXPOSED_BONU
+S\T1/cmr/m/n/12 ) est contrôlé par le drapeau \T1/cmtt/m/n/12 is_underexposed
+ []
+
+
+Overfull \hbox (4.70955pt too wide) in paragraph at lines 422--429
+[]\T1/cmr/m/n/12 La santé numérique de la matrice $\OML/cmm/m/it/12 A$ \T1/cmr/
+m/n/12 est surveillée par la fonction \T1/cmtt/m/n/12 is_matrix_healthy()\T1/cm
+r/m/n/12 ,
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[22]
+Overfull \hbox (17.30153pt too wide) in paragraph at lines 443--454
+\T1/cmtt/m/n/12 air_conditioning\T1/cmr/m/n/12 ), les types d'activité (\T1/cmt
+t/m/n/12 adventure\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 cultural\T1/cmr/m/n/12 , \T1
+/cmtt/m/n/12 nature\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 activity_outdoor\T1/cmr/m/n
+/12 ,
+ []
+
+
+Overfull \hbox (45.38087pt too wide) in paragraph at lines 443--454
+\T1/cmtt/m/n/12 solo\T1/cmr/m/n/12 ), la restauration (\T1/cmtt/m/n/12 fine_din
+ing\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 casual_dining\T1/cmr/m/n/12 , \T1/cmtt/m/n/
+12 street_food\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 bar\T1/cmr/m/n/12 ), les types d
+'hébergement
+ []
+
+
+Overfull \hbox (24.34985pt too wide) in paragraph at lines 443--454
+\T1/cmr/m/n/12 (\T1/cmtt/m/n/12 hotel\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 hostel\T1
+/cmr/m/n/12 , \T1/cmtt/m/n/12 riad\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 villa\T1/cmr
+/m/n/12 ), et la saisonnalité (\T1/cmtt/m/n/12 best_morning\T1/cmr/m/n/12 , \T1
+/cmtt/m/n/12 best_evening\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 best_summer\T1/cmr/m/
+n/12 ,
+ []
+
+
+Overfull \hbox (14.31471pt too wide) in paragraph at lines 497--503
+\T1/cmr/m/n/12 types d'annonces, garantie d'exposition pour les nouvelles annon
+ces, exploration de catégories
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[23]
+Overfull \hbox (10.26878pt too wide) in paragraph at lines 549--558
+\T1/cmr/m/n/12 contenu évolue rapidement et que les préférences utilisateur dép
+endent du contexte temporel.
+ []
+
+
+Overfull \hbox (25.92195pt too wide) in paragraph at lines 549--558
+\T1/cmr/m/n/12 LinUCB a été préféré pour sa nature déterministe, sa facilité de
+ débogage (pas d'échantillonnage
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[24]
+Overfull \hbox (23.7127pt too wide) in paragraph at lines 574--580
+\T1/cmr/m/n/12 de données météorologiques en temps réel, ni d'apprentissage en 
+ligne à partir du comportement
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 594--594
+[]|\T1/cmr/m/n/10.95 ChatGPT (sans
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[25]
+Overfull \hbox (12.86653pt too wide) in paragraph at lines 610--615
+\T1/cmr/m/n/12 génération automatique de documentation OpenAPI, sa validation d
+es données par Pydantic,
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[26]
+Overfull \hbox (6.60106pt too wide) in paragraph at lines 649--660
+\T1/cmr/m/n/12 comme mécanisme de grounding factuel. Les systèmes de recommanda
+tion ont été comparés
+ []
+
+
+Overfull \hbox (13.85796pt too wide) in paragraph at lines 649--660
+\T1/cmr/m/n/12 selon quatre axes, établissant la supériorité de l'apprentissage
+ en ligne par bandits contextuels
+ []
+
+)
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[27]
+Chapter 2.
+(sections/03_lancement_projet.tex
+Overfull \hbox (18.8526pt too wide) in paragraph at lines 13--18
+[]\T1/cmr/m/n/12 La démarche adoptée progresse en six étapes : l'identification
+ des acteurs et la modélisation
+ []
+
+
+Overfull \hbox (6.73743pt too wide) in paragraph at lines 34--41
+\T1/cmtt/m/n/12 POST /admin/rebuild-index \T1/cmr/m/n/12 lorsque l'indexation i
+ncrémentale se désynchronise, consulter
+ []
+
+
+Overfull \hbox (6.65549pt too wide) in paragraph at lines 34--41
+\T1/cmr/m/n/12 la disponibilité d'Ollama si configuré, et l'état de l'index RAG
+), et sélectionner le fournisseur
+ []
+
+
+Overfull \hbox (11.94281pt too wide) in paragraph at lines 34--41
+\T1/cmr/m/n/12 LLM par défaut via la configuration du serveur. L'administrateur
+ n'interagit pas directement
+ []
+
+[28
+
+]
+Overfull \hbox (8.681pt too wide) in paragraph at lines 42--50
+\T1/cmr/m/n/12 intervention humaine. Il comprend les écouteurs d'événements SQL
+Alchemy qui déclenchent
+ []
+
+<diagrams/fig_03_use_case_global.png, id=1077, 1124.2pt x 1322.9425pt>
+File: diagrams/fig_03_use_case_global.png Graphic file (type png)
+<use diagrams/fig_03_use_case_global.png>
+Package pdftex.def Info: diagrams/fig_03_use_case_global.png  used on input lin
+e 69.
+(pdftex.def)             Requested size: 455.24411pt x 535.72823pt.
+[29]
+Underfull \hbox (badness 5622) in paragraph at lines 105--106
+[]|\T1/cmr/m/n/10.95 Le LLM a besoin d'informations $\OMS/cmsy/m/n/10.95 !$ \T1
+/cmr/m/n/10.95 outil \T1/cmtt/m/n/10.95 ask_user $\OMS/cmsy/m/n/10.95 !$
+ []
+
+[30 <./diagrams/fig_03_use_case_global.png>] [31]
+Underfull \hbox (badness 10000) in paragraph at lines 202--203
+[]|\T1/cmr/m/n/10.95 Ollama pour souveraineté
+ []
+
+[32]
+Overfull \hbox (41.76521pt too wide) in paragraph at lines 222--228
+\T1/cmr/m/n/12 intelligents : l'agent planificateur LangGraph (9 endpoints REST
+) et le moteur de recommandation
+ []
+
+
+Overfull \hbox (14.52313pt too wide) in paragraph at lines 229--235
+[]\T1/cmr/m/n/12 Les \T1/cmr/bx/n/12 services externes \T1/cmr/m/n/12 comprenne
+nt l'API Open-Meteo pour les données météorologiques
+ []
+
+[33]
+Overfull \hbox (13.97275pt too wide) in paragraph at lines 236--241
+\T1/cmr/m/n/12 l'endpoint \T1/cmtt/m/n/12 POST /api/recommendations/events\T1/c
+mr/m/n/12 . Il utilise l'API \T1/cmtt/m/n/12 navigator.sendBeacon()
+ []
+
+<diagrams/fig_03_global_architecture.png, id=1101, 2262.4525pt x 653.44125pt>
+File: diagrams/fig_03_global_architecture.png Graphic file (type png)
+<use diagrams/fig_03_global_architecture.png>
+Package pdftex.def Info: diagrams/fig_03_global_architecture.png  used on input
+ line 244.
+(pdftex.def)             Requested size: 455.24411pt x 131.48358pt.
+
+Overfull \hbox (5.91698pt too wide) in paragraph at lines 252--257
+\T1/cmtt/m/n/12 recommendation_router.py\T1/cmr/m/n/12 , les schémas Pydantic d
+e requête et de réponse (\T1/cmtt/m/n/12 ChatRequest\T1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (6.11281pt too wide) in paragraph at lines 252--257
+\T1/cmtt/m/n/12 PlannerResponse\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 UserPreferences
+\T1/cmr/m/n/12 ), le middleware CORS configuré pour accepter toutes
+ []
+
+
+Overfull \hbox (27.04099pt too wide) in paragraph at lines 258--263
+\T1/cmr/m/n/12 recherche sémantique et reranking par cross-encoder, et le systè
+me de mémoire conversationnelle
+ []
+
+
+Overfull \hbox (23.38629pt too wide) in paragraph at lines 258--263
+\T1/cmr/m/n/12 (chargement des 8 derniers messages, résumé automatique au seuil
+ de 15 messages, construction
+ []
+
+
+Overfull \hbox (8.4023pt too wide) in paragraph at lines 264--273
+\T1/cmr/m/n/12 requêtes asynchrones pour le sous-système planificateur, le cons
+tructeur d'index LlamaIndex
+ []
+
+[34 <./diagrams/fig_03_global_architecture.png (PNG copy)>]
+Overfull \hbox (20.50912pt too wide) in paragraph at lines 293--299
+\T1/cmr/m/n/12 planificateur utilisent également le PascalCase (\T1/cmtt/m/n/12
+ "PlannerConversation"\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 "GeneratedPlan"\T1/cmr/m
+/n/12 ),
+ []
+
+<diagrams/fig_03_er_diagram_planner.png, id=1106, 812.03375pt x 786.94pt>
+File: diagrams/fig_03_er_diagram_planner.png Graphic file (type png)
+<use diagrams/fig_03_er_diagram_planner.png>
+Package pdftex.def Info: diagrams/fig_03_er_diagram_planner.png  used on input 
+line 308.
+(pdftex.def)             Requested size: 455.24411pt x 441.1757pt.
+[35]
+<diagrams/fig_03_er_diagram_recommender.png, id=1111, 1758.57pt x 657.45625pt>
+File: diagrams/fig_03_er_diagram_recommender.png Graphic file (type png)
+<use diagrams/fig_03_er_diagram_recommender.png>
+Package pdftex.def Info: diagrams/fig_03_er_diagram_recommender.png  used on in
+put line 315.
+(pdftex.def)             Requested size: 455.24411pt x 170.19223pt.
+ [36 <./diagrams/fig_03_er_diagram_planner.png> <./diagrams/fig_03_er_diagram_r
+ecommender.png>]
+Overfull \hbox (8.06265pt too wide) in paragraph at lines 337--337
+[]|\T1/cmr/m/n/10.95 PlannerConversation| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 337--337
+[]|\T1/cmr/m/n/10.95 Suivi des conversations
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 339--339
+[]|\T1/cmr/m/n/10.95 Agent
+ []
+
+
+Overfull \hbox (1.20131pt too wide) in paragraph at lines 340--340
+[]|\T1/cmr/m/n/10.95 ActivityIntelligence| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 341--341
+[]|\T1/cmr/m/n/10.95 Reco router,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 342--342
+[]|\T1/cmr/m/n/10.95 Cache RAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 344--344
+[]|\T1/cmr/m/n/10.95 Données de session
+ []
+
+
+Overfull \hbox (19.03214pt too wide) in paragraph at lines 345--345
+[]|\T1/cmr/m/n/10.95 RecommendationEvent| 
+ []
+
+
+Overfull \hbox (9.81891pt too wide) in paragraph at lines 359--364
+\T1/cmr/m/n/12 HTTP (\T1/cmtt/m/n/12 GET\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 POST\T
+1/cmr/m/n/12 , \T1/cmtt/m/n/12 DELETE\T1/cmr/m/n/12 ) correspondent aux opérati
+ons de lecture, création et suppression,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 381--381
+[]|\T1/cmtt/m/n/10 /conversations/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 381--381
+[]|\T1/cmr/m/n/10 Lister
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 382--382
+[]|\T1/cmtt/m/n/10 /conversations/
+ []
+
+
+Overfull \hbox (13.0649pt too wide) in paragraph at lines 383--383
+[]|\T1/cmr/m/n/10 DELETE| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 383--383
+[]|\T1/cmtt/m/n/10 /conversations/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 386--386
+[]|\T1/cmtt/m/n/10 /admin/
+ []
+
+
+Overfull \hbox (12.7289pt too wide) in paragraph at lines 386--386
+[]|\T1/cmr/m/n/10 {documents_indexed}| 
+ []
+
+[37]
+Underfull \hbox (badness 10000) in paragraph at lines 401--401
+[]|\T1/cmtt/m/n/10 /api/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 401--401
+[]|\T1/cmr/m/n/10 Query params
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 401--401
+\T1/cmr/m/n/10 (zone, types,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 401--401
+\T1/cmr/m/n/10 session, hour,
+ []
+
+
+Overfull \hbox (30.83559pt too wide) in paragraph at lines 401--401
+[]|\T1/cmr/m/n/10 RecommendationResponse| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--402
+[]|\T1/cmtt/m/n/10 /api/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--402
+\T1/cmtt/m/n/10 recommendations/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--402
+[]|\T1/cmr/m/n/10 BatchRequest
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 402--402
+\T1/cmr/m/n/10 (session_id,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 403--403
+[]|\T1/cmtt/m/n/10 /api/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 403--403
+\T1/cmtt/m/n/10 recommendations/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 403--403
+[]|\T1/cmr/m/n/10 {session_id,
+ []
+
+
+Overfull \hbox (25.80112pt too wide) in paragraph at lines 425--430
+\T1/cmr/m/n/12 prévenir les abus : un maximum de 10 événements par annonce et p
+ar session, et 100 événements
+ []
+
+[38]
+<diagrams/fig_03_security_flow.png, id=1130, 1232.605pt x 723.70375pt>
+File: diagrams/fig_03_security_flow.png Graphic file (type png)
+<use diagrams/fig_03_security_flow.png>
+Package pdftex.def Info: diagrams/fig_03_security_flow.png  used on input line 
+441.
+(pdftex.def)             Requested size: 455.24411pt x 267.2803pt.
+
+Overfull \hbox (13.72746pt too wide) in paragraph at lines 451--460
+\T1/cmr/m/n/12 l'obtention de recommandations personnalisées, et le suivi des é
+vénements comportementaux.
+ []
+
+) [39 <./diagrams/fig_03_security_flow.png>] [40]
+Chapter 3.
+(sections/04_sprint1.tex
+Overfull \hbox (7.3341pt too wide) in paragraph at lines 7--13
+\T1/cmr/m/n/12 Guidni, conformément à l'architecture conçue au chapitre 3. L'im
+plémentation est organisée
+ []
+
+
+Overfull \hbox (36.14424pt too wide) in paragraph at lines 14--19
+\T1/cmr/m/n/12 entre dans le graphe via le n÷ud THINK, les outils sont exécutés
+ par le n÷ud EXECUTE_TOOL,
+ []
+
+[41
+
+]
+Overfull \hbox (6.79027pt too wide) in paragraph at lines 34--41
+\T1/cmr/m/n/12 Deux champs utilisent ce mécanisme : \T1/cmtt/m/n/12 messages \T
+1/cmr/m/n/12 (la liste complète des messages LangChain)
+ []
+
+
+Overfull \hbox (23.21823pt too wide) in paragraph at lines 42--54
+\T1/cmr/m/n/12 champs de données peuplés par les outils (\T1/cmtt/m/n/12 user_p
+rofile\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 activities\T1/cmr/m/n/12 , \T1/cmtt/m/n/
+12 enriched_activities\T1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (45.47107pt too wide) in paragraph at lines 42--54
+\T1/cmtt/m/n/12 weather\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 stays\T1/cmr/m/n/12 , \
+T1/cmtt/m/n/12 restaurants\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 rag_context\T1/cmr/m
+/n/12 , \T1/cmtt/m/n/12 current_plan\T1/cmr/m/n/12 ) stockent les résultats int
+ermédiaires ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 64--65
+[]|\T1/cmr/m/n/10 Messages LangChain
+ []
+
+
+Overfull \hbox (36.45818pt too wide) in paragraph at lines 94--101
+\T1/cmr/m/n/12 dernier message possède un attribut \T1/cmtt/m/n/12 tool_calls \
+T1/cmr/m/n/12 non vide, le routage envoie vers \T1/cmtt/m/n/12 "execute_tool"
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[42]
+Overfull \hbox (67.36987pt too wide) in paragraph at lines 109--114
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 _after_tool_execution(state) \T1/c
+mr/m/n/12 détermine le n÷ud suivant après EXECUTE_TOOL.
+ []
+
+
+Overfull \hbox (1.71788pt too wide) in paragraph at lines 115--120
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 _after_validation(state) \T1/cmr/m
+/n/12 détermine le n÷ud suivant après VALIDATE.
+ []
+
+
+Overfull \hbox (21.4451pt too wide) in paragraph at lines 115--120
+\T1/cmr/m/n/12 Si le plan a été invalidé (\T1/cmtt/m/n/12 is_plan_ready=False\T
+1/cmr/m/n/12 ) et qu'il reste des itérations (\T1/cmtt/m/n/12 iteration_count
+ []
+
+<diagrams/fig_04_langgraph_routing.png, id=1148, 1352.05125pt x 745.78625pt>
+File: diagrams/fig_04_langgraph_routing.png Graphic file (type png)
+<use diagrams/fig_04_langgraph_routing.png>
+Package pdftex.def Info: diagrams/fig_04_langgraph_routing.png  used on input l
+ine 123.
+(pdftex.def)             Requested size: 455.24411pt x 251.10594pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[43 <./diagrams/fig_04_langgraph_routing.png>]
+Overfull \hbox (16.42278pt too wide) in paragraph at lines 150--157
+\T1/cmr/m/n/12 diurne), \T1/cmtt/m/n/12 restaurant\T1/cmr/m/n/12 /\T1/cmtt/m/n/
+12 yummy \T1/cmr/m/n/12 désigne un lieu de restauration (catégorie ^^PEAT^^Q), 
+et \T1/cmtt/m/n/12 attraction
+ []
+
+
+Overfull \hbox (27.78925pt too wide) in paragraph at lines 169--175
+[]\T1/cmr/m/n/12 L'heuristique d'arrêt forcé constitue un mécanisme de sécurité
+ critique : si \T1/cmtt/m/n/12 iteration_count
+ []
+
+
+Overfull \hbox (10.44362pt too wide) in paragraph at lines 169--175
+\T1/cmtt/m/n/12 >= 2 \T1/cmr/m/n/12 et que \T1/cmtt/m/n/12 rag_context \T1/cmr/
+m/n/12 est non vide, un \T1/cmtt/m/n/12 SystemMessage \T1/cmr/m/n/12 final est 
+injecté avec l'instruction :
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[44]
+Overfull \hbox (13.58727pt too wide) in paragraph at lines 176--182
+\T1/cmr/m/n/12 des messages sous forme de liste de dictionnaires (\T1/cmtt/m/n/
+12 [{"type": "text", "text": "..."}]\T1/cmr/m/n/12 )
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--221
+[]|\T1/cmr/m/n/10 User, Reservation,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--221
+\T1/cmr/m/n/10 Review, Wishlist,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 223--223
+[]|\T1/cmr/m/n/10 Activité
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--224
+[]|\T1/cmr/m/n/10 Enrichissement
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--226
+[]|\T1/cmr/m/n/10 ^^V
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 228--228
+[]|\T1/cmr/m/n/10 Liste
+ []
+
+
+Overfull \hbox (2.35017pt too wide) in paragraph at lines 229--229
+[]|\T1/cmr/m/n/10 restaurant_tools| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+[]|\T1/cmr/m/n/10 Restaurant, Images,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+[]|\T1/cmr/m/n/10 Liste
+ []
+
+
+Overfull \hbox (5.2939pt too wide) in paragraph at lines 230--230
+[]|\T1/cmr/m/n/10 availability_tools| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 230--230
+[]|\T1/cmr/m/n/10 {available,
+ []
+
+
+Overfull \hbox (12.59264pt too wide) in paragraph at lines 231--231
+[]|\T1/cmr/m/n/10 estimate_daily_budget| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
+[]|\T1/cmr/m/n/10 {total,
+ []
+
+
+Overfull \hbox (7.34392pt too wide) in paragraph at lines 232--232
+[]|\T1/cmr/m/n/10 estimate_trip_budget| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 232--232
+[]|\T1/cmr/m/n/10 {total, moy.
+ []
+
+
+Overfull \hbox (9.06572pt too wide) in paragraph at lines 233--233
+[]|\T1/cmr/m/n/10 create_plan_structure| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+[]|\T1/cmr/m/n/10 {modified,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 236--236
+[]|\T1/cmr/m/n/10 {question,
+ []
+
+
+Overfull \hbox (4.06694pt too wide) in paragraph at lines 238--238
+[]|\T1/cmr/m/n/10 rag_search_for_plan| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 238--238
+[]|\T1/cmr/m/n/10 4 listes
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 239--240
+[]|\T1/cmr/m/n/10 Entités
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[45]
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[46]
+Overfull \hbox (13.41223pt too wide) in paragraph at lines 263--269
+[]\OT1/cmr/m/n/12 ([] \OMS/cmsy/m/n/12 ^^B \OT1/cmr/m/n/12 2\OML/cmm/m/it/12 ; 
+\OT1/cmr/m/n/12 10)$ \T1/cmr/m/n/12 pour les attractions. Cette adaptation empê
+che le sur-échantillonnage
+ []
+
+
+Overfull \hbox (38.77284pt too wide) in paragraph at lines 270--275
+[]\T1/cmr/m/n/12 Le résultat retourné contient un champ \T1/cmtt/m/n/12 WARNING
+ \T1/cmr/m/n/12 proéminent : ^^Pstays are ACCOMMODATION
+ []
+
+
+Overfull \hbox (92.45406pt too wide) in paragraph at lines 279--286
+\T1/cmr/m/n/12 contient pas nativement : \T1/cmtt/m/n/12 noise_level \T1/cmr/m/
+n/12 (calme/modéré/bruyant), \T1/cmtt/m/n/12 ambiance \T1/cmr/m/n/12 (romantiqu
+e/famille/aventure),
+ []
+
+
+Overfull \hbox (71.56612pt too wide) in paragraph at lines 279--286
+\T1/cmtt/m/n/12 physical_intensity \T1/cmr/m/n/12 (faible/modérée/élevée), \T1/
+cmtt/m/n/12 best_time_of_day \T1/cmr/m/n/12 (matin/après-midi/soir/indifférent)
+,
+ []
+
+
+Overfull \hbox (3.68694pt too wide) in paragraph at lines 279--286
+\T1/cmtt/m/n/12 ideal_weather\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 ideal_group_type\
+T1/cmr/m/n/12 , \T1/cmtt/m/n/12 age_friendly\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 in
+door_outdoor\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 tags\T1/cmr/m/n/12 , et un résumé
+ []
+
+
+Overfull \hbox (16.22935pt too wide) in paragraph at lines 279--286
+\T1/cmr/m/n/12 en une phrase. Ces métadonnées permettent à l'agent de prendre d
+es décisions de planification
+ []
+
+
+Overfull \hbox (69.51949pt too wide) in paragraph at lines 294--303
+\T1/cmr/m/n/12 exemple, une activité de catégorie ^^Pwater sports^^Q reçoit aut
+omatiquement \T1/cmtt/m/n/12 physical_intensity="high"
+ []
+
+
+Overfull \hbox (11.90434pt too wide) in paragraph at lines 308--315
+\T1/cmr/m/n/12 registre, et exécute chaque outil séquentiellement via \T1/cmtt/
+m/n/12 await tool_fn.ainvoke(tool_args)\T1/cmr/m/n/12 .
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[47]
+Overfull \hbox (35.90134pt too wide) in paragraph at lines 316--327
+\T1/cmr/m/n/12 (\T1/cmtt/m/n/12 rag_search\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 rag_
+search_for_plan\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 rag_get_similar\T1/cmr/m/n/12 )
+ mettent à jour le champ \T1/cmtt/m/n/12 rag_context \T1/cmr/m/n/12 ;
+ []
+
+
+Overfull \hbox (57.66252pt too wide) in paragraph at lines 316--327
+\T1/cmr/m/n/12 dans le cas spécifique de \T1/cmtt/m/n/12 rag_search_for_plan\T1
+/cmr/m/n/12 , les quatre sous-listes (\T1/cmtt/m/n/12 activities_for_time_slots
+\T1/cmr/m/n/12 ,
+ []
+
+<diagrams/fig_04_tool_execution_flow.png, id=1171, 1524.69624pt x 777.90625pt>
+File: diagrams/fig_04_tool_execution_flow.png Graphic file (type png)
+<use diagrams/fig_04_tool_execution_flow.png>
+Package pdftex.def Info: diagrams/fig_04_tool_execution_flow.png  used on input
+ line 339.
+(pdftex.def)             Requested size: 455.24411pt x 232.2579pt.
+
+Overfull \hbox (5.08797pt too wide) in paragraph at lines 349--356
+\T1/cmr/m/n/12 Le n÷ud de validation, défini dans \T1/cmtt/m/n/12 validator.py\
+T1/cmr/m/n/12 , implémente les garde-fous qui empêchent
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[48 <./diagrams/fig_04_tool_execution_flow.png>]
+Overfull \hbox (12.0529pt too wide) in paragraph at lines 357--364
+\T1/cmr/m/n/12 avec le contenu : ^^P\T1/cmtt/m/n/12 [VALIDATION] Validation iss
+ues: Day 2 has duplicate activity
+ []
+
+
+Overfull \hbox (3.13982pt too wide) in paragraph at lines 357--364
+\T1/cmtt/m/n/12 ID abc123; Day 3 has too many activities (9). Please fix these 
+issues.\T1/cmr/m/n/12 ^^Q Le
+ []
+
+
+Overfull \hbox (53.54239pt too wide) in paragraph at lines 383--389
+\T1/cmr/m/n/12 le dernier \T1/cmtt/m/n/12 AIMessage \T1/cmr/m/n/12 avec un cont
+enu non vide. Le contenu est normalisé via \T1/cmtt/m/n/12 _normalize_content()
+
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[49]
+Overfull \hbox (26.47528pt too wide) in paragraph at lines 419--425
+[]\T1/cmr/m/n/12 La détection de changements par hachage optimise la réindexati
+on incrémentale. Lorsqu'une
+ []
+
+
+Overfull \hbox (21.17294pt too wide) in paragraph at lines 426--432
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 rag_query() \T1/cmr/m/n/12 impléme
+nte une stratégie de sur-échantillonnage : le récupérateur
+ []
+
+<diagrams/screen_04_rag_search_result.png, id=1181, 803.0pt x 451.6875pt>
+File: diagrams/screen_04_rag_search_result.png Graphic file (type png)
+<use diagrams/screen_04_rag_search_result.png>
+Package pdftex.def Info: diagrams/screen_04_rag_search_result.png  used on inpu
+t line 435.
+(pdftex.def)             Requested size: 455.24411pt x 256.07921pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[50]
+Overfull \hbox (1.50546pt too wide) in paragraph at lines 471--476
+\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 summarize_if_needed()\T1/cmr/m/n/12 
+, définie dans \T1/cmtt/m/n/12 summarizer.py\T1/cmr/m/n/12 , vérifie deux condi
+tions
+ []
+
+
+Overfull \hbox (75.91383pt too wide) in paragraph at lines 471--476
+\T1/cmr/m/n/12 avant de déclencher un résumé : le nombre de messages doit dépas
+ser \T1/cmtt/m/n/12 CONVERSATION_SUMMARY_THRESHOLD
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[51 <./diagrams/screen_04_rag_search_result.png (PNG copy)>]
+Overfull \hbox (10.08127pt too wide) in paragraph at lines 477--484
+\T1/cmr/m/n/12 avec pour instruction de générer un JSON structuré contenant : \
+T1/cmtt/m/n/12 trip_overview \T1/cmr/m/n/12 (description
+ []
+
+
+Overfull \hbox (42.84961pt too wide) in paragraph at lines 477--484
+\T1/cmtt/m/n/12 confirmed_constraints \T1/cmr/m/n/12 (nombre de jours, budget, 
+taille du groupe, dates), \T1/cmtt/m/n/12 modifications_made
+ []
+
+
+Overfull \hbox (22.97383pt too wide) in paragraph at lines 477--484
+\T1/cmr/m/n/12 (liste des modifications demandées), \T1/cmtt/m/n/12 important_n
+otes \T1/cmr/m/n/12 (notes importantes), et \T1/cmtt/m/n/12 message_count
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[52]
+Overfull \hbox (2.51633pt too wide) in paragraph at lines 519--525
+[]\T1/cmr/m/n/12 La détection automatique est assurée par la fonction \T1/cmtt/
+m/n/12 parse_chat_to_plan_request()\T1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (6.58469pt too wide) in paragraph at lines 526--534
+\T1/cmr/m/n/12 prévisions météorologiques (\T1/cmtt/m/n/12 get_weather\T1/cmr/m
+/n/12 ), calcul des distances entre les lieux, et estimation
+ []
+
+<diagrams/fig_04_fast_pipeline.png, id=1195, 998.73125pt x 1011.78pt>
+File: diagrams/fig_04_fast_pipeline.png Graphic file (type png)
+<use diagrams/fig_04_fast_pipeline.png>
+Package pdftex.def Info: diagrams/fig_04_fast_pipeline.png  used on input line 
+543.
+(pdftex.def)             Requested size: 455.24411pt x 461.1943pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[53]
+<diagrams/screen_04_chat_plan_output.png, id=1200, 803.0pt x 451.6875pt>
+File: diagrams/screen_04_chat_plan_output.png Graphic file (type png)
+<use diagrams/screen_04_chat_plan_output.png>
+Package pdftex.def Info: diagrams/screen_04_chat_plan_output.png  used on input
+ line 550.
+(pdftex.def)             Requested size: 455.24411pt x 256.07921pt.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[54 <./diagrams/fig_04_fast_pipeline.png>]
+Overfull \hbox (13.61168pt too wide) in paragraph at lines 560--570
+\T1/cmr/m/n/12 Guidni. La machine à états LangGraph avec ses quatre n÷uds (THIN
+K, EXECUTE_TOOL,
+ []
+
+)
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[55 <./diagrams/screen_04_chat_plan_output.png (PNG copy)>]
+Chapter 4.
+(sections/05_sprint2.tex
+Overfull \hbox (38.431pt too wide) in paragraph at lines 15--24
+[]\T1/cmr/m/n/12 L'implémentation est organisée en cinq couches fonctionnelles 
+: l'ingénierie des caractéristiques
+ []
+
+
+Overfull \hbox (69.80566pt too wide) in paragraph at lines 15--24
+\T1/cmr/m/n/12 étapes de filtrage et d'ajustement, la couche de données runtime
+ (\T1/cmtt/m/n/12 db.py \T1/cmr/m/n/12 et \T1/cmtt/m/n/12 recommendation_router
+.py\T1/cmr/m/n/12 )
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 30.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 30.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 30.
+
+[56
+
+]
+Overfull \hbox (11.92958pt too wide) in paragraph at lines 47--57
+\T1/cmr/m/n/12 maximum de la plateforme. L'affinité maximale de tags est $\OML/
+cmm/m/it/12 x\OT1/cmr/m/n/12 [7] = []([])$
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 66.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 66.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 66.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[57]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 91.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\phi' on input line 91.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 91.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--127
+[]|$\OT1/cmr/m/n/10.95 [[](2\OML/cmm/m/it/10.95 ^^Y \OMS/cmsy/m/n/10.95 ^^A \OT
+1/cmr/m/n/10.95 10\OML/cmm/m/it/10.95 =\OT1/cmr/m/n/10.95 24)\OML/cmm/m/it/10.9
+5 ; []\OT1/cmr/m/n/10.95 (2\OML/cmm/m/it/10.95 ^^Y \OMS/cmsy/m/n/10.95 ^^A \OT1
+/cmr/m/n/10.95 10\OML/cmm/m/it/10.95 =\OT1/cmr/m/n/10.95 24)\OML/cmm/m/it/10.95
+ ; []\OT1/cmr/m/n/10.95 (2\OML/cmm/m/it/10.95 ^^Y \OMS/cmsy/m/n/10.95 ^^A \OT1/
+cmr/m/n/10.95 8\OML/cmm/m/it/10.95 =\OT1/cmr/m/n/10.95 12)\OML/cmm/m/it/10.95 ;
+ []\OT1/cmr/m/n/10.95 (2\OML/cmm/m/it/10.95 ^^Y \OMS/cmsy/m/n/10.95 ^^A
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[58]
+Overfull \hbox (9.90337pt too wide) in paragraph at lines 176--181
+[]\T1/cmr/m/n/12 La dataclass \T1/cmtt/m/n/12 ScoredArm \T1/cmr/m/n/12 retourné
+e expose le détail du calcul : \T1/cmtt/m/n/12 exploitation\T1/cmr/m/n/12 , \T1
+/cmtt/m/n/12 ucb_bonus\T1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (2.76161pt too wide) in paragraph at lines 176--181
+\T1/cmtt/m/n/12 position_discount\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 impressions\T
+1/cmr/m/n/12 , \T1/cmtt/m/n/12 conversions \T1/cmr/m/n/12 et \T1/cmtt/m/n/12 co
+mmission_rate\T1/cmr/m/n/12 . La décomposition
+ []
+
+
+Overfull \hbox (21.60603pt too wide) in paragraph at lines 176--181
+\T1/cmr/m/n/12 exploitation/bonus est rendue accessible via la variable d'envir
+onnement \T1/cmtt/m/n/12 EXPOSE_SCORES=true
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[59]
+Overfull \hbox (5.27475pt too wide) in paragraph at lines 206--215
+\T1/cmr/m/n/12 (pas de NaN/inf), \T1/cmtt/m/n/12 shape == (360, 360)\T1/cmr/m/n
+/12 , et \T1/cmtt/m/n/12 np.linalg.eigvalsh(A).min() > 0 \T1/cmr/m/n/12 (défini
+e
+ []
+
+
+Overfull \hbox (15.71759pt too wide) in paragraph at lines 206--215
+\T1/cmr/m/n/12 CRITICAL et retourne des matrices fraîches ($\OML/cmm/m/it/12 A 
+\OT1/cmr/m/n/12 = \OML/cmm/m/it/12 I$\T1/cmr/m/n/12 , $\OML/cmm/m/it/12 b \OT1/
+cmr/m/n/12 = 0$\T1/cmr/m/n/12 ) pour récupérer automatiquement. 
+ []
+
+
+Overfull \hbox (2.25293pt too wide) in paragraph at lines 226--229
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 rank() \T1/cmr/m/n/12 reçoit la li
+ste complète des bras, les matrices $\OML/cmm/m/it/12 A$ \T1/cmr/m/n/12 et $\OM
+L/cmm/m/it/12 b$\T1/cmr/m/n/12 , le \T1/cmtt/m/n/12 UserContext\T1/cmr/m/n/12 ,
+
+ []
+
+
+Overfull \hbox (23.0913pt too wide) in paragraph at lines 236--241
+[]\T1/cmr/bx/n/12 Étape 2 --- Filtre temporel \T1/cmr/m/n/12 (\T1/cmtt/m/n/12 a
+pply_time_filter\T1/cmr/m/n/12 ). Les annonces taguées \T1/cmtt/m/n/12 best_eve
+ning
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[60]
+Overfull \hbox (6.87488pt too wide) in paragraph at lines 277--282
+\T1/cmr/m/n/12 lorsque plusieurs annonces sont de qualité de recommandation équ
+ivalente pour l'utilisateur,
+ []
+
+<diagrams/fig_05_ranker_pipeline.png, id=1231, 443.6575pt x 782.925pt>
+File: diagrams/fig_05_ranker_pipeline.png Graphic file (type png)
+<use diagrams/fig_05_ranker_pipeline.png>
+Package pdftex.def Info: diagrams/fig_05_ranker_pipeline.png  used on input lin
+e 288.
+(pdftex.def)             Requested size: 455.24411pt x 803.36348pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[61]
+Overfull \vbox (125.08038pt too high) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[62 <./diagrams/fig_05_ranker_pipeline.png>]
+Overfull \hbox (9.74115pt too wide) in paragraph at lines 305--313
+[]\T1/cmr/m/n/12 Le prompt système défini dans \T1/cmtt/m/n/12 tag_extractor.py
+ \T1/cmr/m/n/12 instruit le LLM configuré de retourner
+ []
+
+
+Overfull \hbox (163.11731pt too wide) in paragraph at lines 305--313
+\T1/cmr/m/n/12 personnalisé accepté), \T1/cmtt/m/n/12 confidence \T1/cmr/m/n/12
+ (flottant 0--1), et \T1/cmtt/m/n/12 language_detected \T1/cmr/m/n/12 (darija/f
+rench/english/arabic/mixed/unknown).
+ []
+
+
+Overfull \hbox (10.51714pt too wide) in paragraph at lines 305--313
+\T1/cmr/m/n/12 L'étape de validation filtre strictement les tags : seuls les ta
+gs présents dans \T1/cmtt/m/n/12 set(TAG_VOCAB)
+ []
+
+
+Overfull \hbox (37.05595pt too wide) in paragraph at lines 335--341
+\T1/cmr/m/n/12 vecteur $\OML/cmm/m/it/12 b$ \T1/cmr/m/n/12 (360, float64) en RA
+M au niveau du module Python. La fonction \T1/cmtt/m/n/12 init_matrix_cache()
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[63]
+Overfull \hbox (7.66096pt too wide) in paragraph at lines 348--352
+\T1/cmtt/m/n/12 get_cached_matrices() \T1/cmr/m/n/12 retourne des copies (\T1/c
+mtt/m/n/12 A.copy()\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 b.copy()\T1/cmr/m/n/12 ) po
+ur que les opérations
+ []
+
+
+Overfull \hbox (100.59326pt too wide) in paragraph at lines 353--358
+[]\T1/cmr/m/n/12 La persistance est planifiée toutes les 2 minutes via APSchedu
+ler. La fonction \T1/cmtt/m/n/12 persist_matrices_to_db()
+ []
+
+
+Overfull \hbox (1.71936pt too wide) in paragraph at lines 353--358
+\T1/cmr/m/n/12 prend un instantané des matrices courantes sous le verrou, puis 
+écrit de manière asynchrone
+ []
+
+
+Overfull \hbox (14.95447pt too wide) in paragraph at lines 374--379
+\T1/cmr/m/n/12 (maximum 100). Les sessions inactives depuis plus de 2 heures so
+nt nettoyées paresseusement.
+ []
+
+
+Overfull \hbox (1.11903pt too wide) in paragraph at lines 390--394
+\T1/cmr/m/n/12 lentement --- les annonces ne sont pas ajoutées toutes les secon
+des) sont cachées. Lorsqu'un
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[64]
+Overfull \hbox (45.21413pt too wide) in paragraph at lines 416--423
+[]\T1/cmr/m/n/12 Les méthodes publiques de suivi couvrent l'ensemble du parcour
+s utilisateur : \T1/cmtt/m/n/12 trackImpression
+ []
+
+
+Overfull \hbox (2.9621pt too wide) in paragraph at lines 416--423
+\T1/cmr/m/n/12 depuis le temps d'entrée stocké, produit \T1/cmtt/m/n/12 quick_e
+xit \T1/cmr/m/n/12 ou \T1/cmtt/m/n/12 dwell_exit\T1/cmr/m/n/12 ), \T1/cmtt/m/n/
+12 trackGallerySwipe
+ []
+
+
+Overfull \hbox (41.4606pt too wide) in paragraph at lines 416--423
+\T1/cmr/m/n/12 (met en file si \T1/cmtt/m/n/12 swipeCount $\OMS/cmsy/m/n/12 ^^U
+$ \T1/cmtt/m/n/12 3\T1/cmr/m/n/12 ), \T1/cmtt/m/n/12 trackScrollToReviews\T1/cm
+r/m/n/12 , \T1/cmtt/m/n/12 trackWishlist\T1/cmr/m/n/12 , et \T1/cmtt/m/n/12 tra
+ckReservation
+ []
+
+
+Overfull \hbox (21.24802pt too wide) in paragraph at lines 427--432
+\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 _flush() \T1/cmr/m/n/12 est appelée 
+toutes les 15 secondes ou lorsque la file atteint 10 événements.
+ []
+
+
+Overfull \hbox (5.68646pt too wide) in paragraph at lines 433--439
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 _flushBeacon() \T1/cmr/m/n/12 est 
+utilisée \T1/cmr/bx/n/12 uniquement \T1/cmr/m/n/12 pour les événements de ferme
+ture
+ []
+
+
+Overfull \hbox (66.1435pt too wide) in paragraph at lines 433--439
+\T1/cmr/m/n/12 de page (\T1/cmtt/m/n/12 beforeunload \T1/cmr/m/n/12 et \T1/cmtt
+/m/n/12 visibilitychange \T1/cmr/m/n/12 en mode \T1/cmtt/m/n/12 hidden\T1/cmr/m
+/n/12 ). Elle utilise \T1/cmtt/m/n/12 navigator.sendBeacon()
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[65]
+Overfull \hbox (78.48253pt too wide) in paragraph at lines 445--451
+\T1/cmr/m/n/12 courante via beacon avant tout changement d'identité, (2) \T1/cm
+tt/m/n/12 POST /api/recommendations/merge-session
+ []
+
+
+Overfull \hbox (84.89078pt too wide) in paragraph at lines 445--451
+\T1/cmr/m/n/12 pour lier le \T1/cmtt/m/n/12 sessionId \T1/cmr/m/n/12 anonyme au
+ \T1/cmtt/m/n/12 userId \T1/cmr/m/n/12 désormais connu (mise à jour de \T1/cmtt
+/m/n/12 RecommendationEvent.userId
+ []
+
+<diagrams/fig_05_tracker_flush.png, id=1254, 1092.08pt x 876.27374pt>
+File: diagrams/fig_05_tracker_flush.png Graphic file (type png)
+<use diagrams/fig_05_tracker_flush.png>
+Package pdftex.def Info: diagrams/fig_05_tracker_flush.png  used on input line 
+454.
+(pdftex.def)             Requested size: 455.24411pt x 365.27806pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[66 <./diagrams/fig_05_tracker_flush.png>]
+Overfull \hbox (8.14972pt too wide) in paragraph at lines 478--483
+[]\T1/cmr/m/n/12 Les métriques dérivées sont calculées à partir des événements 
+de réservation uniquement :
+ []
+
+
+Overfull \hbox (11.5365pt too wide) in paragraph at lines 478--483
+\T1/cmtt/m/n/12 avg_booking_price \T1/cmr/m/n/12 et \T1/cmtt/m/n/12 price_std_d
+ev \T1/cmr/m/n/12 sont extraites des événements de type \T1/cmtt/m/n/12 reserva
+tion \T1/cmr/m/n/12 ;
+ []
+
+
+Overfull \hbox (13.55492pt too wide) in paragraph at lines 478--483
+\T1/cmr/m/n/12 10 dernières réservations. Le profil complet est inséré ou mis à
+ jour dans la table \T1/cmtt/m/n/12 UserProfile
+ []
+
+
+Overfull \hbox (83.2026pt too wide) in paragraph at lines 500--505
+[]\T1/cmr/m/n/12 La fonction \T1/cmtt/m/n/12 run_concept_drift_check() \T1/cmr/
+m/n/12 vérifie la condition $\OT1/cmr/m/n/12 ([] \OMS/cmsy/m/n/12 ^^@ []\OT1/cm
+r/m/n/12 ) \OMS/cmsy/m/n/12 ^^U
+ []
+
+
+Overfull \hbox (102.0823pt too wide) in paragraph at lines 509--515
+\T1/cmr/m/n/12 Le planificateur utilise \T1/cmtt/m/n/12 BackgroundScheduler \T1
+/cmr/m/n/12 d'APScheduler avec un \T1/cmtt/m/n/12 ThreadPoolExecutor(max_worker
+s=2)
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 532--532
+[]|\T1/cmr/m/n/10.95 Maj UserProfile
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 534--534
+[]|\T1/cmr/m/n/10.95 Re-extraction
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[67])
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 29.11858pt, for example:
+(fancyhdr)                \setlength{\headheight}{29.11858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-14.61858pt}.
+
+[68]
+Chapter 5.
+(sections/06_sprint3.tex
+Overfull \hbox (17.33217pt too wide) in paragraph at lines 7--13
+\T1/cmr/m/n/12 Ce chapitre évalue les deux sous-systèmes de Guidni à travers de
+s approches complémentaires :
+ []
+
+
+Overfull \hbox (10.13795pt too wide) in paragraph at lines 14--19
+\T1/cmr/m/n/12 métriques quantitatives (latence, précision, récompense cumulée)
+ et des analyses qualitatives
+ []
+
+
+Overfull \hbox (30.72334pt too wide) in paragraph at lines 35--40
+\T1/cmr/m/n/12 annonces réelles de Djerba (activités, hébergements, restaurants
+), Ollama exécutant \T1/cmtt/m/n/12 qwen2.5:7b
+ []
+
+[69
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 61--61
+[]|\T1/cmr/m/n/10 context.py /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--63
+[]|\T1/cmr/m/n/10 context.py /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--67
+[]|\T1/cmr/m/n/10 linucb.py /
+ []
+
+
+Overfull \hbox (1.84973pt too wide) in paragraph at lines 89--94
+\T1/cmr/m/n/12 scénarios couvrent la gamme complète des fonctionnalités : génér
+ation simple, planification
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[70]
+Underfull \hbox (badness 10000) in paragraph at lines 110--110
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--110
+[]|\T1/cmr/m/n/10 Plan famille
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 111--111
+[]|\T1/cmr/m/n/10 Plan valide $\OML/cmm/m/it/10 < \OT1/cmr/m/n/10 3$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
+[]|\T1/cmr/m/n/10 Budget luxe,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/10 Ajouter journée
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
+[]|\T1/cmr/m/n/10 ^^PJe cherche un
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
+\T1/cmr/m/n/10 plan détente à
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--118
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--120
+[]|\T1/cmr/m/n/10 SC-
+ []
+
+
+Underfull \hbox (badness 4621) in paragraph at lines 120--120
+[]|\T1/cmr/m/n/10 ^^PJe veux visiter
+ []
+
+
+Overfull \hbox (5.80028pt too wide) in paragraph at lines 143--147
+[]\T1/cmr/m/n/12 L'efficacité de la boucle de validation a été démontrée empiri
+quement : dans 3 exécutions
+ []
+
+
+Overfull \hbox (8.27698pt too wide) in paragraph at lines 155--155
+[]|\T1/cmr/bx/n/10 Scénario| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--158
+[]|\T1/cmr/m/n/10 profile, rag_plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--158
+\T1/cmr/m/n/10 weather, create_plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 160--160
+[]|\T1/cmr/m/n/10 profile, rag_plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 164--164
+[]|\T1/cmr/m/n/10 profile, rag_plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 164--164
+\T1/cmr/m/n/10 weather, create_plan,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 166--166
+[]|\T1/cmr/m/n/10 profile, rag_plan,
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[71]
+<diagrams/screen_06_plan_thinking_steps.png, id=1281, 803.0pt x 451.6875pt>
+File: diagrams/screen_06_plan_thinking_steps.png Graphic file (type png)
+<use diagrams/screen_06_plan_thinking_steps.png>
+Package pdftex.def Info: diagrams/screen_06_plan_thinking_steps.png  used on in
+put line 176.
+(pdftex.def)             Requested size: 455.24411pt x 256.07921pt.
+
+Overfull \hbox (17.64314pt too wide) in paragraph at lines 188--193
+\T1/cmr/m/n/12 et arabe à travers les quatre types d'entités (activités, héberg
+ements, restaurants, attractions).
+ []
+
+
+Overfull \hbox (5.27411pt too wide) in paragraph at lines 188--193
+\T1/cmr/m/n/12 Pour chaque requête, un évaluateur humain a jugé les 5 premiers 
+résultats comme pertinents
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[72 <./diagrams/screen_06_plan_thinking_steps.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 218--218
+[]|\T1/cmr/bx/n/10.95 Moyenne
+ []
+
+
+Overfull \hbox (7.3666pt too wide) in paragraph at lines 223--230
+[]\T1/cmr/m/n/12 Les requêtes en arabe obtiennent une précision inférieure (0.7
+1) car moins de descriptions
+ []
+
+
+Overfull \hbox (30.49988pt too wide) in paragraph at lines 223--230
+\T1/cmr/m/n/12 d'annonces sont rédigées en arabe dans la base de données (la ma
+jorité étant en français/anglais).
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[73]
+Overfull \hbox (1.22047pt too wide) in paragraph at lines 260--267
+\T1/cmr/m/n/12 générées à partir de la base d'annonces de Djerba. Chaque sessio
+n possède un \T1/cmtt/m/n/12 UserContext
+ []
+
+
+Overfull \hbox (9.79857pt too wide) in paragraph at lines 260--267
+\T1/cmr/m/n/12 échantillonné selon la distribution empirique famille:40%/couple
+:35%/solo:25%. Les signaux
+ []
+
+
+Overfull \hbox (20.97157pt too wide) in paragraph at lines 268--274
+\T1/cmr/m/n/12 popularité représente l'approche ^^Pnaïve^^Q la plus courante da
+ns les systèmes de recommandation
+ []
+
+<diagrams/fig_06_cumulative_reward.png, id=1290, 615.0177pt x 395.076pt>
+File: diagrams/fig_06_cumulative_reward.png Graphic file (type png)
+<use diagrams/fig_06_cumulative_reward.png>
+Package pdftex.def Info: diagrams/fig_06_cumulative_reward.png  used on input l
+ine 291.
+(pdftex.def)             Requested size: 455.24411pt x 292.44208pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[74]
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[75 <./diagrams/fig_06_cumulative_reward.png>]
+Overfull \hbox (2.65495pt too wide) in paragraph at lines 352--358
+\T1/cmr/m/n/12 de recommandation (p95 $\OML/cmm/m/it/12 < \OT1/cmr/m/n/12 100$\
+T1/cmr/m/n/12 ms) et le traitement d'événements (p95 $\OML/cmm/m/it/12 < \OT1/c
+mr/m/n/12 50$\T1/cmr/m/n/12 ms) respectent
+ []
+
+
+Overfull \hbox (0.59683pt too wide) in paragraph at lines 352--358
+\T1/cmr/m/n/12 les cibles de latence pour une expérience utilisateur interactiv
+e. L'endpoint de conversation
+ []
+
+
+Overfull \hbox (5.04776pt too wide) in paragraph at lines 352--358
+\T1/cmr/m/n/12 accepte une latence plus élevée (15 à 30 s) car il correspond à 
+une interaction de planification
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 370--370
+[]|\T1/cmr/m/n/10 GET
+ []
+
+<diagrams/screen_06_health_endpoint.png, id=1302, 826.08624pt x 525.965pt>
+File: diagrams/screen_06_health_endpoint.png Graphic file (type png)
+<use diagrams/screen_06_health_endpoint.png>
+Package pdftex.def Info: diagrams/screen_06_health_endpoint.png  used on input 
+line 379.
+(pdftex.def)             Requested size: 455.24411pt x 289.85144pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[76]
+Overfull \hbox (12.03911pt too wide) in paragraph at lines 389--396
+\T1/cmr/m/n/12 actuelle repose sur le n÷ud VALIDATE pour les erreurs structurel
+les (doublons, dépassement
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[77 <./diagrams/screen_06_health_endpoint.png (PNG copy)>]
+Overfull \hbox (19.99727pt too wide) in paragraph at lines 412--418
+\T1/cmr/m/n/12 développement). Les performances en production réelle pourraient
+ différer. Une infrastructure
+ []
+
+)
+Overfull \hbox (3.02446pt too wide) in paragraph at lines 441--103
+\T1/cmr/m/n/12 évaluation sur données simulées, latence de planification) défin
+issent les axes d'amélioration
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[78]
+Chapter 6.
+(sections/07_sprint4.tex
+Overfull \hbox (5.38936pt too wide) in paragraph at lines 7--12
+\T1/cmr/m/n/12 Ce chapitre présente le quatrième et dernier sprint du projet Gu
+idni, consacré à l'intégration
+ []
+
+
+Overfull \hbox (4.19936pt too wide) in paragraph at lines 7--12
+\T1/cmr/m/n/12 des deux sous-systèmes (agent planificateur et moteur de recomma
+ndation), au déploiement
+ []
+
+
+Overfull \hbox (10.30334pt too wide) in paragraph at lines 13--15
+[]\T1/cmr/m/n/12 Le sprint 4 clôture le cycle de développement Scrum en livrant
+ un produit potentiellement
+ []
+
+
+Overfull \hbox (31.98541pt too wide) in paragraph at lines 25--27
+[]\T1/cmr/bx/n/12 Intégrer \T1/cmr/m/n/12 les deux sous-systèmes développés sép
+arément (planificateur et recommandation)
+ []
+
+
+Overfull \hbox (0.2973pt too wide) in paragraph at lines 27--29
+[]\T1/cmr/bx/n/12 Déployer \T1/cmr/m/n/12 le système sur un serveur de producti
+on avec monitoring, logs et endpoints
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--47
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+[]|\T1/cmr/m/n/10.95 Health check
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 3746) in paragraph at lines 49--49
+[]|\T1/cmr/m/n/10.95 Créer dashboard admin rebuild-
+ []
+
+
+Underfull \hbox (badness 7468) in paragraph at lines 49--50
+[]|\T1/cmr/m/n/10.95 Endpoint POST
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--50
+\T1/cmr/m/n/10.95 /admin/rebuild-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--51
+[]|\T1/cmr/m/n/10.95 Swagger UI à
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--52
+[]|\T1/cmr/m/n/10.95 Logs info/debug
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--53
+[]|\T1/cmr/m/n/10.95 Vidéo démo +
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--53
+[]|\T1/cmr/m/n/10.95 US-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+[]|\T1/cmr/m/n/10.95 Chapitre
+ []
+
+
+Overfull \hbox (3.09442pt too wide) in paragraph at lines 43--56
+ [][] 
+ []
+
+[79
+
+]
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[80]
+Underfull \hbox (badness 1968) in paragraph at lines 112--117
+\T1/cmr/m/n/10.95 depuis DB (Activity, Stay, Restaurant, Attraction, Rental,
+ []
+
+
+LaTeX Warning: File `diagrams/fig_07_health_sequence.png' not found on input li
+ne 134.
+
+
+! Package pdftex.def Error: File `diagrams/fig_07_health_sequence.png' not foun
+d: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.134 ...dth]{diagrams/fig_07_health_sequence.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[81]
+
+LaTeX Warning: File `diagrams/fig_07_rebuild_sequence.png' not found on input l
+ine 143.
+
+
+! Package pdftex.def Error: File `diagrams/fig_07_rebuild_sequence.png' not fou
+nd: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.143 ...th]{diagrams/fig_07_rebuild_sequence.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[82] (/home/ahmed/.miktex/texmfs/install/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2025/11/14 1.11b listings language file
+)
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 157.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 159.
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[83]
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.166     # VÃ©rification 
+                          base de donnÃ©es
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.166     # VÃ©rification base de donnÃ©es
+                                          
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.175     # VÃ©rification 
+                          index RAG
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 ..."warning", "message": "Index non trouvÃ©"
+                                                  }
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.181     # VÃ©rification 
+                          LLM (si Ollama configurÃ©)
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+
+! LaTeX Error: Invalid UTF-8 byte sequence (Ã\lst@EC©).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.181 ... VÃ©rification LLM (si Ollama configurÃ©)
+                                                  
+The document does not appear to be in UTF-8 encoding.
+Try adding \UseRawInputEncoding as the first line of the file
+or specify an encoding such as \usepackage [latin1]{inputenc}
+in the document preamble.
+Alternatively, save the file in UTF-8 using your editor or another tool
+
+File: diagrams/screen_06_health_endpoint.png Graphic file (type png)
+<use diagrams/screen_06_health_endpoint.png>
+Package pdftex.def Info: diagrams/screen_06_health_endpoint.png  used on input 
+line 199.
+(pdftex.def)             Requested size: 318.66948pt x 202.89441pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[84]
+Overfull \hbox (0.99446pt too wide) in paragraph at lines 208--213
+\T1/cmr/m/n/12 peut déclencher une reconstruction complète via l'endpoint \T1/c
+mtt/m/n/12 POST /admin/rebuild-index\T1/cmr/m/n/12 .
+ []
+
+<diagrams/screen_A4_api_docs.png, id=1383, 826.08624pt x 1619.04875pt>
+File: diagrams/screen_A4_api_docs.png Graphic file (type png)
+<use diagrams/screen_A4_api_docs.png>
+Package pdftex.def Info: diagrams/screen_A4_api_docs.png  used on input line 22
+6.
+(pdftex.def)             Requested size: 386.96027pt x 758.40845pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[85]
+Overfull \vbox (80.12535pt too high) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[86 <./diagrams/screen_A4_api_docs.png (PNG copy)>]
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[87]
+Overfull \hbox (29.85953pt too wide) in paragraph at lines 286--288
+[]\T1/cmr/bx/n/12 Recommandations : \T1/cmr/m/n/12 En parallèle, la sidebar aff
+iche des recommandations personnalisées
+ []
+
+
+Overfull \hbox (34.63196pt too wide) in paragraph at lines 289--291
+[]\T1/cmr/bx/n/12 Health Check : \T1/cmr/m/n/12 L'administrateur consulte \T1/c
+mtt/m/n/12 /health \T1/cmr/m/n/12 qui retourne \T1/cmtt/m/n/12 "status": "healt
+hy"\T1/cmr/m/n/12 . 
+ []
+
+<diagrams/screen_A4_chat_interface.png, id=1418, 903.375pt x 501.875pt>
+File: diagrams/screen_A4_chat_interface.png Graphic file (type png)
+<use diagrams/screen_A4_chat_interface.png>
+Package pdftex.def Info: diagrams/screen_A4_chat_interface.png  used on input l
+ine 295.
+(pdftex.def)             Requested size: 386.96027pt x 214.98264pt.
+<diagrams/screen_A4_plan_output_full.png, id=1419, 1927.2pt x 2060.69875pt>
+File: diagrams/screen_A4_plan_output_full.png Graphic file (type png)
+<use diagrams/screen_A4_plan_output_full.png>
+Package pdftex.def Info: diagrams/screen_A4_plan_output_full.png  used on input
+ line 302.
+(pdftex.def)             Requested size: 386.96027pt x 413.73608pt.
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[88 <./diagrams/screen_A4_chat_interface.png (PNG copy)>]
+Overfull \hbox (1.81506pt too wide) in paragraph at lines 312--313
+\T1/cmr/m/n/12 Les tests d'intégration du sprint 4 vérifient la coexistence pac
+ifique des deux sous-systèmes : 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 321--321
+[]|\T1/cmr/bx/n/10.95 Résultat
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 324--324
+[]|\T1/cmr/m/n/10.95 Réindexation RAG
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 324--324
+\T1/cmr/m/n/10.95 n'interrompt pas scoring
+ []
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 325--325
+[]|\T1/cmr/m/n/10.95 Jobs nocturnes n'interfèrent
+ []
+
+
+Underfull \hbox (badness 2376) in paragraph at lines 325--325
+[]|\T1/cmr/m/n/10.95 Pas de timeout,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+[]|\T1/cmr/m/n/10.95 status=healthy,
+ []
+
+
+Underfull \hbox (badness 2671) in paragraph at lines 327--327
+[]|\T1/cmr/m/n/10.95 Rebuild-index complet avec
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 327--327
+[]|\T1/cmr/m/n/10.95 < 5 minutes,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 327--327
+\T1/cmr/m/n/10.95 aucun échec
+ []
+
+
+Overfull \hbox (19.54721pt too wide) in paragraph at lines 319--330
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[89 <./diagrams/screen_A4_plan_output_full.png (PNG copy)>]
+Overfull \hbox (2.00119pt too wide) in paragraph at lines 337--342
+\T1/cmr/m/n/12 nécessaires, et la documentation OpenAPI facilite l'adoption par
+ les développeurs frontend. 
+ []
+
+)
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[90] (sections/08_conclusion.tex
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 7.
+
+
+Overfull \hbox (13.0054pt too wide) in paragraph at lines 20--31
+\T1/cmr/m/n/12 bandit multi-bras contextuel avec un vecteur de caractéristiques
+ Kronecker de 360 dimensions
+ []
+
+
+Overfull \hbox (11.89189pt too wide) in paragraph at lines 20--31
+\T1/cmr/m/n/12 SHA-256 du vocabulaire de tags garantit que la matrice apprise n
+e devient jamais incohérente
+ []
+
+
+Overfull \hbox (9.87708pt too wide) in paragraph at lines 20--31
+\T1/cmr/m/n/12 touristique : apprentissage en ligne, données rares pour les nou
+velles annonces, et préférences
+ []
+
+[91
+
+]
+Overfull \hbox (3.02464pt too wide) in paragraph at lines 79--88
+\T1/cmr/m/n/12 traitement/contrôle, enregistre les métriques pour chaque groupe
+ de manière indépendante,
+ []
+
+
+Overfull \hbox (30.19511pt too wide) in paragraph at lines 79--88
+\T1/cmr/m/n/12 significatives. Ce framework permettrait de valider empiriquemen
+t les hypothèses d'amélioration
+ []
+
+
+Overfull \hbox (6.74446pt too wide) in paragraph at lines 79--88
+\T1/cmr/m/n/12 (nouvel algorithme, nouveau prompt, nouveaux tags) avant tout dé
+ploiement en production. 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[92]
+Overfull \hbox (23.12508pt too wide) in paragraph at lines 89--98
+\T1/cmr/m/n/12 nécessite que l'ajout de nouvelles données d'annonces et l'initi
+alisation des bras correspondants.
+ []
+
+)
+Overfull \hbox (3.88832pt too wide) in paragraph at lines 113--110
+\T1/cmr/m/n/12 système Guidni est une preuve de concept opérationnelle démontra
+nt que cette combinaison
+ []
+
+
+Overfull \hbox (30.95665pt too wide) in paragraph at lines 113--110
+\T1/cmr/m/n/12 est non seulement techniquement réalisable, mais pratiquement dé
+ployable sur une infrastructure
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.5pt): 
+(fancyhdr)                Make it at least 14.61858pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.61858pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-0.11858pt}.
+
+[93]
+Overfull \hbox (8.35542pt too wide) in paragraph at lines 115--115
+\T1/cmr/m/n/12 POI Recommendations^^Q. In: \T1/cmr/m/it/12 Proceedings of the 2
+019 IEEE Transactions on Multimedia\T1/cmr/m/n/12 .
+ []
+
+
+Overfull \hbox (57.33844pt too wide) in paragraph at lines 115--115
+[]\T1/cmr/m/n/12 Lihong Li et al. ^^P  A Contextual-Bandit Approach to Personal
+ized News Article Recommendation^^Q.
+ []
+
+
+Overfull \hbox (0.76651pt too wide) in paragraph at lines 115--115
+[]\T1/cmr/m/n/12 Ashish Vaswani et al. ^^P  Attention Is All You Need^^Q. In: \
+T1/cmr/m/it/12 Advances in Neural Information
+ []
+
+[94
+
+]
+Appendix A.
+(sections/09_annexes.tex
+Overfull \hbox (17.44745pt too wide) in paragraph at lines 10--18
+\T1/cmr/m/n/12 ce vocabulaire après le premier déploiement (ajout, suppression,
+ ou simple réordonnancement)
+ []
+
+
+Overfull \hbox (14.96724pt too wide) in paragraph at lines 10--18
+\T1/cmr/m/n/12 (caractéristique_utilisateur, position_tag) qui n'auraient plus 
+de correspondance sémantique
+ []
+
+
+Overfull \hbox (3.37169pt too wide) in paragraph at lines 19--27
+\T1/cmtt/m/n/12 assert D_TAGS == 40 \T1/cmr/m/n/12 à l'importation du module em
+pêche tout démarrage de l'application
+ []
+
+
+Overfull \hbox (61.48541pt too wide) in paragraph at lines 19--27
+\T1/cmr/m/n/12 si le nombre de tags a changé, et (2) un hachage SHA-256 du voca
+bulaire trié (\T1/cmtt/m/n/12 compute_vocab_hash()\T1/cmr/m/n/12 )
+ []
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 29.
+See the caption package documentation for explanation.
+
+
+Underfull \hbox (badness 1308) in paragraph at lines 38--39
+[]|\T1/cmr/m/n/10 Activité en plein air (excursion, sport
+ []
+
+
+Underfull \hbox (badness 5147) in paragraph at lines 39--40
+[]|\T1/cmr/m/n/10 Activités à sensations (quad, jet-ski,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+[]|\T1/cmr/m/n/10 Recommandé en saison fraîche
+ []
+
+
+Underfull \hbox (badness 2961) in paragraph at lines 52--53
+[]|\T1/cmr/m/n/10 Situé en zone urbaine (Houmt Souk,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+[]|\T1/cmr/m/n/10 Expérience culturelle, patrimoine,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--74
+[]|\T1/cmr/m/n/10 Cuisine de rue, stands, marchés
+ []
+
+
+ignored: Infinite glue shrinkage found in box being split [95
+
+]
+ignored: Infinite glue shrinkage found in box being split [96]
+Overfull \hbox (76.6108pt too wide) in paragraph at lines 87--94
+\T1/cmr/m/n/12 L'invite système (\T1/cmr/m/it/12 system prompt\T1/cmr/m/n/12 ) 
+de l'agent Guidni est définie dans le fichier \T1/cmtt/m/n/12 app/agent/persona
+lity.py
+ []
+
+
+Overfull \hbox (27.7587pt too wide) in paragraph at lines 87--94
+\T1/cmr/m/n/12 identité, langue, comportement, règles, construction de plan, mo
+dification de plan, interrogation
+ []
+
+
+Overfull \hbox (2.45898pt too wide) in paragraph at lines 87--94
+\T1/cmr/m/n/12 de l'utilisateur, et garde-fous de raisonnement. Cette structure
+ assure que l'agent maintient
+ []
+
+
+Overfull \hbox (0.74042pt too wide) in paragraph at lines 95--101
+\T1/cmr/m/n/12 stricte des types d'entités, la règle des 4--5 activités par jou
+r, les garde-fous de raisonnement
+ []
+
+[97]
+Overfull \hbox (46.39262pt too wide) in paragraph at lines 171--179
+\T1/cmr/m/n/12 Prisma par le frontend Next.js). La partition est stricte : les 
+tables planner (\T1/cmtt/m/n/12 PlannerConversation\T1/cmr/m/n/12 ,
+ []
+
+[98]
+Overfull \hbox (14.24821pt too wide) in paragraph at lines 180--187
+[]\T1/cmr/m/n/12 Les tables du moteur de recommandation (\T1/cmtt/m/n/12 Bandit
+ArmUCB\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 LinUCBGlobal\T1/cmr/m/n/12 , \T1/cmtt/m/
+n/12 SystemConfig\T1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (6.2224pt too wide) in paragraph at lines 180--187
+\T1/cmr/m/n/12 psycopg2 pour le runtime) permet de centraliser la gestion des m
+igrations tout en conservant
+ []
+
+[99]
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 231.
+ [100]
+Overfull \hbox (2.96149pt too wide) in paragraph at lines 295--301
+\T1/cmr/m/n/12 système Guidni dans son état opérationnel. Elles documentent vis
+uellement les composants
+ []
+
+[101]
+File: diagrams/screen_A4_chat_interface.png Graphic file (type png)
+<use diagrams/screen_A4_chat_interface.png>
+Package pdftex.def Info: diagrams/screen_A4_chat_interface.png  used on input l
+ine 304.
+(pdftex.def)             Requested size: 455.24411pt x 252.92029pt.
+File: diagrams/screen_A4_plan_output_full.png Graphic file (type png)
+<use diagrams/screen_A4_plan_output_full.png>
+Package pdftex.def Info: diagrams/screen_A4_plan_output_full.png  used on input
+ line 311.
+(pdftex.def)             Requested size: 455.24411pt x 486.77977pt.
+ [102]
+<diagrams/screen_A4_health_check.png, id=1633, 826.08624pt x 525.965pt>
+File: diagrams/screen_A4_health_check.png Graphic file (type png)
+<use diagrams/screen_A4_health_check.png>
+Package pdftex.def Info: diagrams/screen_A4_health_check.png  used on input lin
+e 318.
+(pdftex.def)             Requested size: 455.24411pt x 289.85144pt.
+ [103]
+<diagrams/screen_A4_admin_rebuild.png, id=1638, 903.375pt x 501.875pt>
+File: diagrams/screen_A4_admin_rebuild.png Graphic file (type png)
+<use diagrams/screen_A4_admin_rebuild.png>
+Package pdftex.def Info: diagrams/screen_A4_admin_rebuild.png  used on input li
+ne 325.
+(pdftex.def)             Requested size: 455.24411pt x 252.92029pt.
+File: diagrams/screen_A4_api_docs.png Graphic file (type png)
+<use diagrams/screen_A4_api_docs.png>
+Package pdftex.def Info: diagrams/screen_A4_api_docs.png  used on input line 33
+2.
+(pdftex.def)             Requested size: 455.24411pt x 892.23361pt.
+ [104 <./diagrams/screen_A4_health_check.png (PNG copy)> <./diagrams/screen_A4_
+admin_rebuild.png (PNG copy)>]
+Overfull \vbox (213.95052pt too high) has occurred while \output is active []
+
+
+[105]
+<diagrams/screen_A4_recommendations_response.png, id=1648, 1927.2pt x 903.375pt
+>
+File: diagrams/screen_A4_recommendations_response.png Graphic file (type png)
+<use diagrams/screen_A4_recommendations_response.png>
+Package pdftex.def Info: diagrams/screen_A4_recommendations_response.png  used 
+on input line 339.
+(pdftex.def)             Requested size: 455.24411pt x 213.3959pt.
+) [106 <./diagrams/screen_A4_recommendations_response.png (PNG copy)>]
+(main.aux)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-03-20>
+ ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 1FD9799ABBBC17AAD731B5DCCCB59FFF;28827.
+
+Package biblatex Warning: Please rerun LaTeX.
+
+Package logreq Info: Writing requests to 'main.run.xml'.
+\openout1 = `main.run.xml'.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 26799 strings out of 469628
+ 465439 string characters out of 5467007
+ 1774198 words of memory out of 5000000
+ 54733 multiletter control sequences out of 15000+600000
+ 654441 words of font info for 105 fonts, out of 8000000 for 9000
+ 0 hyphenation exceptions out of 8191
+ 75i,20n,85p,695b,2307s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{figure.caption.66} has been referenced but does not
+ exist, replaced by a fixed one
+
+ </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/eccc1200.p
+k> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ecit1095
+.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ectt10
+00.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm
+1000.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ec
+bx1000.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/
+ectt1095.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi60
+0/ecti1000.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi
+600/tcrm1200.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/d
+pi600/ecrm1095.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec
+/dpi600/ecbx1095.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/
+ec/dpi600/ectt1200.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknappe
+n/ec/dpi600/ecrm0800.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jknap
+pen/ec/dpi600/ecbx2488.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/jkn
+appen/ec/dpi600/ecti1200.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour/j
+knappen/ec/dpi600/ecbx1728.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfour
+/jknappen/ec/dpi600/ecbx1200.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/ljfo
+ur/jknappen/ec/dpi600/ecbx2074.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/lj
+four/jknappen/ec/dpi600/ecrm1200.pk> </home/ahmed/.miktex/texmfs/data/fonts/pk/
+ljfour/jknappen/ec/dpi600/eccc1728.pk> </home/ahmed/.miktex/texmfs/data/fonts/p
+k/ljfour/jknappen/ec/dpi600/ecrm1440.pk> </home/ahmed/.miktex/texmfs/data/fonts
+/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk></home/ahmed/.miktex/texmfs/install/f
+onts/type1/public/amsfonts/cm/cmex10.pfb></home/ahmed/.miktex/texmfs/install/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></home/ahmed/.miktex/texmfs/install/fon
+ts/type1/public/amsfonts/cm/cmmi12.pfb></home/ahmed/.miktex/texmfs/install/font
+s/type1/public/amsfonts/cm/cmmi8.pfb></home/ahmed/.miktex/texmfs/install/fonts/
+type1/public/amsfonts/cm/cmr10.pfb></home/ahmed/.miktex/texmfs/install/fonts/ty
+pe1/public/amsfonts/cm/cmr12.pfb></home/ahmed/.miktex/texmfs/install/fonts/type
+1/public/amsfonts/cm/cmr8.pfb></home/ahmed/.miktex/texmfs/install/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb></home/ahmed/.miktex/texmfs/install/fonts/type1/pu
+blic/amsfonts/cm/cmsy8.pfb></home/ahmed/.miktex/texmfs/install/fonts/type1/publ
+ic/amsfonts/symbols/msam10.pfb></home/ahmed/.miktex/texmfs/install/fonts/type1/
+public/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (123 pages, 2343616 bytes).
+PDF statistics:
+ 2987 PDF objects out of 3580 (max. 8388607)
+ 540 named destinations out of 1000 (max. 500000)
+ 1256 words of extra memory for PDF output out of 10000 (max. 10000000)
+

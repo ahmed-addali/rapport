@@ -1,0 +1,36 @@
+\babel@toc {english}{}\relax 
+\contentsline {table}{\numberline {2}{\ignorespaces Rôles Scrum dans le projet Guidni}}{6}{table.caption.10}%
+\contentsline {table}{\numberline {3}{\ignorespaces Planification des sprints}}{8}{table.caption.12}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Comparaison des fournisseurs LLM intégrés dans Guidni}}{15}{table.caption.16}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Comparaison des approches de recommandation}}{19}{table.caption.18}%
+\contentsline {table}{\numberline {1.3}{\ignorespaces Les 9 composantes du vecteur utilisateur $x_{\text {user}}$}}{23}{table.caption.20}%
+\contentsline {table}{\numberline {1.4}{\ignorespaces Comparaison avec les systèmes existants}}{26}{table.caption.21}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces UC-01~: Générer un plan de voyage}}{31}{table.caption.23}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces UC-02~: Obtenir des recommandations personnalisées}}{31}{table.caption.24}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces UC-03~: Tracker un événement comportemental}}{32}{table.caption.25}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Besoins non fonctionnels classifiés selon la norme ISO~25010}}{33}{table.caption.26}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces Description des tables AI-owned}}{37}{table.caption.30}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces Contrat API --- Sous-système Agent Planificateur}}{38}{table.caption.31}%
+\contentsline {table}{\numberline {2.7}{\ignorespaces Contrat API --- Sous-système de Recommandation}}{38}{table.caption.32}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Champs de l'AgentState et leur comportement}}{42}{table.caption.34}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Catalogue des 18 outils LLM}}{46}{table.caption.36}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Exemple de construction du vecteur $\phi $ pour un cas concret}}{58}{table.caption.41}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Planning des jobs nocturnes APScheduler}}{68}{table.caption.44}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Matrice de couverture des tests}}{70}{table.caption.45}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Scénarios de test de l'agent planificateur}}{71}{table.caption.46}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Résultats d'évaluation de l'agent planificateur}}{72}{table.caption.47}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Résultats de précision de récupération RAG par type et langue}}{73}{table.caption.49}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Latence de scoring LinUCB selon le nombre de bras}}{75}{table.caption.51}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Métriques de performance système mesurées}}{76}{table.caption.52}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Sprint Backlog — Sprint 4}}{80}{table.caption.54}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces UC-4.1~: Consulter l'état de santé}}{81}{table.caption.55}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces UC-4.2~: Reconstruire l'index RAG}}{81}{table.caption.56}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Tests d'intégration — Sprint 4}}{90}{table.caption.63}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {A.1}{\ignorespaces Vocabulaire complet des 40~tags (TAG\_VOCAB)}}{95}{table.A.1}%

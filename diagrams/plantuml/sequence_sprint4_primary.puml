@@ -73,7 +73,7 @@ note left of LinUCBSvc
   GPU optionnel pour inférence
 end note
 
-note bottom of HealthCheck
+note left of HealthCheck
   Endpoints exposés:
   - /health (liveness)
   - /ready (readiness)
