@@ -1,15 +1,6 @@
 ```
-# LaTeX auxiliary files
-*.aux
-*.toc
-*.lof
-*.lot
-*.out
-*.bbl
-*.blg
-*.log
-*.fls
-*.fdb_latexmk
-*.synctex.gz
-*.pdf
+# Diagrams build artifacts
+diagrams/plantuml/*.png
+
+# Original rules preserved
 ```

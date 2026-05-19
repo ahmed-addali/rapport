@@ -1,0 +1,108 @@
+@startuml
+skinparam classAttributeIconSize false
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Navy
+}
+
+class "LinUCBEngine" {
+  -lambda_reg: float
+  -alpha_explore: float
+  -feature_dim: int
+  -A_matrix: ndarray
+  -b_vector: ndarray
+  +initialize(dim: int)
+  +update(x: vector, reward: float)
+  +predict(x: vector): float
+  +get_upper_bound(x: vector): float
+  +train_batch(X: ndarray, y: ndarray)
+}
+
+class "FeatureEngineering" {
+  -user_features: dict
+  -context_features: dict
+  -item_features: dict
+  +extract_user_features(user_id: str): vector
+  +extract_context_features(context: dict): vector
+  +extract_item_features(item_id: str): vector
+  +compute_kronecker_product(u: vector, c: vector, i: vector): vector
+}
+
+class "TenStepRanker" {
+  -weights: dict
+  +step1_filter_by_relevance(items: list): list
+  +step2_boost_preferred_categories(items: list): list
+  +step3_diversify_geographic(items: list): list
+  +step4_balance_price_range(items: list): list
+  +step5_freshness_boost(items: list): list
+  +step6_local_popularity(items: list): list
+  +step7_time_compatibility(items: list): list
+  +step8_weather_aware(items: list): list
+  +step9_fine_personalization(items: list): list
+  +step10_final_reorder(items: list): list
+  +rank(items: list, user_ctx: dict): list
+}
+
+class "InteractionTracker" {
+  -db_connection: MongoDB
+  -batch_size: int
+  +track_click(user_id: str, item_id: str, timestamp: datetime)
+  +track_view(user_id: str, item_id: str, duration: int)
+  +track_rating(user_id: str, item_id: str, rating: float)
+  +flush_batch(): bool
+}
+
+class "NightlyJob" {
+  -scheduler: CronScheduler
+  -trainer: LinUCBTrainer
+  -validator: ModelValidator
+  +run_daily_at(hour: int)
+  +extract_yesterday_data(): Dataset
+  +retrain_model(data: Dataset): LinUCBModel
+  +validate_model(model: LinUCBModel): Metrics
+  +deploy_if_better(new_model: LinUCBModel)
+}
+
+class "ModelRegistry" {
+  -storage_path: str
+  -current_version: str
+  +save_model(model: LinUCBModel, version: str)
+  +load_model(version: str): LinUCBModel
+  +get_current_model(): LinUCBModel
+  +list_versions(): list
+}
+
+LinUCBEngine *-- FeatureEngineering : utilise
+LinUCBEngine *-- ModelRegistry : utilise
+TenStepRanker --> LinUCBEngine : utilise scores
+InteractionTracker --> LinUCBEngine : fournit feedback
+NightlyJob *-- LinUCBEngine : entraîne
+NightlyJob *-- ModelRegistry : met à jour
+
+note right of LinUCBEngine
+  Sprint 2: Implémentation
+  Algorithme LinUCB
+  λ = 1.0, α = 1.0
+  Dimension: 306
+end note
+
+note left of FeatureEngineering
+  Produit Kronecker:
+  user (36D) ⊗ context (17D) ⊗ item (17D)
+  → 306D sélectionnés
+end note
+
+note bottom of TenStepRanker
+  10 étapes de raffinement:
+  Filtrage → Boosting →
+  Diversification → Personnalisation
+end note
+
+note right of NightlyJob
+  Exécution: 02:00 UTC
+  Durée moyenne: 15 min
+  Validation: RMSE, NDCG@10
+end note
+
+@enduml

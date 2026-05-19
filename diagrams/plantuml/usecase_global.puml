@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Touriste" as Tourist
+actor "Administrateur" as Admin
+
+rectangle "Plateforme Guidni" {
+  usecase "Consulter recommandations personnalisées" as UC1
+  usecase "Interagir avec l'agent conversationnel" as UC2
+  usecase "Planifier un itinéraire de voyage" as UC3
+  usecase "Noter et commenter des lieux" as UC4
+  usecase "Gérer le profil utilisateur" as UC5
+  
+  usecase "Gérer les utilisateurs" as UC6
+  usecase "Modérer les contenus" as UC7
+  usecase "Consulter les statistiques" as UC8
+  usecase "Configurer le moteur LinUCB" as UC9
+}
+
+Tourist --> UC1
+Tourist --> UC2
+Tourist --> UC3
+Tourist --> UC4
+Tourist --> UC5
+
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+
+note right of UC2
+  L'agent utilise LangGraph
+  avec 18 outils spécialisés
+  et un pipeline RAG multilingue
+end note
+
+note left of UC3
+  Intègre le moteur LinUCB
+  pour l'optimisation des
+  recommandations en temps réel
+end note
+
+@enduml

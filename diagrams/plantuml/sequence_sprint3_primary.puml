@@ -1,0 +1,75 @@
+@startuml
+autonumber
+
+participant "Testeur QA" as Tester
+participant "Framework pytest" as Pytest
+participant "Suite Tests Unitaires" as UnitTests
+participant "Suite Tests Intégration" as IntegrationTests
+participant "Générateur Rapport" as ReportGen
+participant "Dashboard Couverture" as CoverageDash
+
+Tester -> Pytest : Lancement commande: pytest --cov=app tests/
+activate Pytest
+
+Pytest -> UnitTests : Exécution tests unitaires
+activate UnitTests
+UnitTests -> UnitTests : Test agent_planificateur.py
+UnitTests -> UnitTests : Test outils RAG (18 outils)
+UnitTests -> UnitTests : Test mémoire conversationnelle
+UnitTests -> UnitTests : Test feature_engineering.py
+UnitTests -> UnitTests : Test linucb_scorer.py
+UnitTests -> UnitTests : Test ranker_10_steps.py
+UnitTests --> Pytest : Résultats + assertions
+deactivate UnitTests
+
+Pytest -> IntegrationTests : Exécution tests intégration
+activate IntegrationTests
+IntegrationTests -> IntegrationTests : Test endpoint /api/chat
+IntegrationTests -> IntegrationTests : Test endpoint /api/recommendations
+IntegrationTests -> IntegrationTests : Test pipeline complet RAG
+IntegrationTests -> IntegrationTests : Test mise à jour modèle LinUCB
+IntegrationTests --> Pytest : Résultats + temps réponse
+deactivate IntegrationTests
+
+Pytest -> ReportGen : Génération rapport HTML
+activate ReportGen
+ReportGen -> ReportGen : Agrégation résultats tests
+ReportGen -> ReportGen : Calcul statistiques (pass/fail/skip)
+ReportGen -> ReportGen : Génération fichier report.html
+ReportGen --> Pytest : Rapport généré
+deactivate ReportGen
+
+Pytest -> CoverageDash : Calcul couverture code
+activate CoverageDash
+CoverageDash -> CoverageDash : Analyse lignes exécutées
+CoverageDash -> CoverageDash : Calcul % par module
+alt Couverture >= 80%
+    CoverageDash --> Pytest : [OK] Seuil atteint
+else Couverture < 80%
+    CoverageDash --> Pytest : [FAIL] Échec CI, blocage merge
+end
+deactivate CoverageDash
+
+Pytest --> Tester : Résumé exécution
+deactivate Pytest
+
+note right of UnitTests
+  45 tests unitaires
+  Temps moyen: 2.3s
+  Couverture cible: 85%
+end note
+
+note left of IntegrationTests
+  12 tests intégration
+  Temps moyen: 15.7s
+  Validation E2E
+end note
+
+note bottom of CoverageDash
+  Modules critiques:
+  - linucb_engine.py: 92%
+  - rag_pipeline.py: 88%
+  - langgraph_agent.py: 85%
+end note
+
+@enduml

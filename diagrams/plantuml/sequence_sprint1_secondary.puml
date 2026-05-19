@@ -1,0 +1,49 @@
+@startuml
+autonumber
+
+participant "Utilisateur" as User
+participant "Frontend React" as Frontend
+participant "API Gateway" as API
+participant "Agent Planificateur" as Agent
+participant "Graphe LangGraph" as Graph
+participant "Outil Météo" as WeatherTool
+participant "Service Externe Météo" as WeatherAPI
+
+User -> Frontend : "Quelle météo à Houmt Souk demain?"
+Frontend -> API : POST /api/chat {query: "météo demain"}
+API -> Agent : Requête utilisateur
+Agent -> Graph : Analyse intention
+
+activate Graph
+Graph -> Graph : Détection entité: location=Houmt Souk, date=demain
+
+Graph -> WeatherTool : Appel outil get_weather(location, date)
+activate WeatherTool
+WeatherTool -> WeatherAPI : GET /forecast?loc=Houmt Souk&date=tomorrow
+activate WeatherAPI
+WeatherAPI --> WeatherTool : JSON {temp: 24°C, condition: "Ensoleillé"}
+deactivate WeatherAPI
+WeatherTool --> Graph : Résultat formaté
+deactivate WeatherTool
+
+Graph -> Graph : Formatage réponse naturelle
+Graph --> Agent : "Demain à Houmt Souk: 24°C, ensoleillé..."
+Agent --> API : Réponse + données structurées
+API --> Frontend : JSON {response, weather_widget_data}
+Frontend --> User : Affiche réponse + widget météo
+
+deactivate Graph
+
+note right of WeatherTool
+  Outil get_weather()
+  Intégration OpenWeatherMap
+  Fallback: cache 1h
+end note
+
+note left of Graph
+  Extraction entités NER
+  Modèle: spaCy multilingue
+  Entités: LOC, DATE, TIME
+end note
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Testeur" as Tester
+actor "Système CI/CD" as CI
+
+rectangle "Sprint 3 - Tests et Évaluation" {
+  usecase "Exécuter les tests unitaires" as UC3_1
+  usecase "Lancer les tests d'intégration" as UC3_2
+  usecase "Réaliser les tests de performance" as UC3_3
+  usecase "Valider les scénarios E2E" as UC3_4
+  usecase "Générer le rapport de couverture" as UC3_5
+}
+
+Tester --> UC3_1
+Tester --> UC3_2
+Tester --> UC3_3
+Tester --> UC3_4
+CI --> UC3_5
+
+note right of UC3_1
+  pytest + unittest
+  Couverture > 80%
+end note
+
+note bottom of UC3_3
+  Métriques : latence, throughput,
+  précision LinUCB, recall RAG
+end note
+
+@enduml

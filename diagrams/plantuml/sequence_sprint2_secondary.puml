@@ -1,0 +1,71 @@
+@startuml
+autonumber
+
+participant "Script Nightly" as CronJob
+participant "Collecteur Données" as Collector
+participant "Base Interactions" as InteractionsDB
+participant "Feature Engineering" as Features
+participant "Entraîneur LinUCB" as Trainer
+participant "Modèle LinUCB" as Model
+participant "Validateur Modèle" as Validator
+participant "Registry Modèles" as ModelRegistry
+
+CronJob -> Collector : Déclenchement job nightly (02:00 UTC)
+activate CronJob
+
+Collector -> InteractionsDB : Extraction interactions J-1
+InteractionsDB --> Collector : Batch interactions (clicks, views, ratings)
+
+Collector -> Features : Préparation dataset entraînement
+activate Features
+Features -> Features : Construction matrice X (n_samples × 306)
+Features -> Features : Construction vecteur y (rewards)
+Features -> Features : Normalisation features
+Features --> Collector : Dataset prêt {X, y}
+deactivate Features
+
+Collector -> Trainer : Lancement entraînement
+activate Trainer
+Trainer -> Model : Initialisation paramètres LinUCB
+Model -> Model : Calcul (XᵀX + λI)⁻¹
+Model -> Model : Mise à jour θ = (XᵀX + λI)⁻¹Xᵀy
+Model --> Trainer : Nouveau modèle θ_t
+deactivate Trainer
+
+Trainer -> Validator : Validation modèle
+activate Validator
+Validator -> Validator : Split train/test (80/20)
+Validator -> Validator : Calcul métriques: RMSE, MAE, NDCG@10
+Validator -> Validator : Comparaison vs modèle production
+alt Performance améliorée
+    Validator --> Trainer : ✅ Modèle validé
+else Performance dégradée
+    Validator --> Trainer : [FAIL] Rejet modèle, alerte email
+end
+deactivate Validator
+
+Trainer -> ModelRegistry : Sauvegarde nouveau modèle
+activate ModelRegistry
+ModelRegistry -> ModelRegistry : Versioning: linucb_v{date}.pkl
+ModelRegistry -> ModelRegistry : Métadonnées: {metrics, training_date, samples_count}
+ModelRegistry --> Trainer : Confirmation sauvegarde
+deactivate ModelRegistry
+
+Trainer --> Collector : Entraînement terminé
+Collector --> CronJob : Job complété
+deactivate CronJob
+
+note right of CronJob
+  Exécution quotidienne
+  Horaire: 02:00 UTC
+  Durée moyenne: 15 min
+end note
+
+note left of Validator
+  Métriques de validation:
+  - RMSE < 0.85
+  - NDCG@10 > 0.72
+  - Amélioration vs prod: +2%
+end note
+
+@enduml

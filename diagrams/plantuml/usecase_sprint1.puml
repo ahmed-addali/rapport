@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Touriste" as Tourist
+
+rectangle "Sprint 1 - Agent Planificateur" {
+  usecase "Poser une question contextuelle" as UC1_1
+  usecase "Obtenir une réponse avec sources RAG" as UC1_2
+  usecase "Exécuter un outil spécialisé" as UC1_3
+  usecase "Maintenir la mémoire conversationnelle" as UC1_4
+}
+
+Tourist --> UC1_1
+Tourist --> UC1_2
+Tourist --> UC1_3
+Tourist --> UC1_4
+
+note right of UC1_2
+  Pipeline RAG multilingue
+  (Arabe, Français, Anglais)
+  avec base vectorielle Qdrant
+end note
+
+note bottom of UC1_3
+  18 outils : météo, hôtels,
+  restaurants, activités,
+  transport, traduction, etc.
+end note
+
+@enduml

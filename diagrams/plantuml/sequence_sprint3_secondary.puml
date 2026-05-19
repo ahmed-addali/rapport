@@ -1,0 +1,83 @@
+@startuml
+autonumber
+
+participant "Testeur Performance" as Tester
+participant "Script Benchmark" as Benchmark
+participant "Générateur Charge" as LoadGen
+participant "API Chat" as ChatAPI
+participant "API Recommandations" as RecAPI
+participant "Collecteur Métriques" as Metrics
+participant "Générateur Rapport Perf" as ReportPerf
+
+Tester -> Benchmark : Lancement: python benchmarks/perf_test.py
+activate Benchmark
+
+Benchmark -> LoadGen : Configuration scénarios de charge
+LoadGen -> LoadGen : Scénario 1: 100 req/s pendant 5 min
+LoadGen -> LoadGen : Scénario 2: 500 req/s pendant 10 min
+LoadGen -> LoadGen : Scénario 3: Pic à 1000 req/s pendant 2 min
+
+Benchmark -> ChatAPI : Exécution scénario 1 (Chat)
+activate ChatAPI
+ChatAPI -> ChatAPI : Mesure latence p50, p95, p99
+ChatAPI -> ChatAPI : Calcul throughput (req/s)
+ChatAPI -> ChatAPI : Taux d'erreur (%)
+ChatAPI --> Benchmark : Métriques Chat API
+deactivate ChatAPI
+
+Benchmark -> RecAPI : Exécution scénario 2 (Recommandations)
+activate RecAPI
+RecAPI -> RecAPI : Mesure latence p50, p95, p99
+RecAPI -> RecAPI : Calcul temps réponse LinUCB
+RecAPI -> RecAPI : Taux d'erreur (%)
+RecAPI --> Benchmark : Métriques Rec API
+deactivate RecAPI
+
+Benchmark -> Metrics : Agrégation toutes métriques
+activate Metrics
+Metrics -> Metrics : Latence moyenne Chat: < 800ms
+Metrics -> Metrics : Latence moyenne Rec: < 1.2s
+Metrics -> Metrics : Throughput max: 850 req/s
+Metrics -> Metrics : Erreurs: < 0.5%
+Metrics --> Benchmark : Tableau métriques consolidé
+deactivate Metrics
+
+Benchmark -> ReportPerf : Génération rapport performance
+activate ReportPerf
+ReportPerf -> ReportPerf : Comparaison vs objectifs SLA
+alt Tous objectifs atteints
+    ReportPerf -> ReportPerf : [OK] Validation performance
+else Objectifs non atteints
+    ReportPerf -> ReportPerf : [FAIL] Identification goulots
+    ReportPerf -> ReportPerf : Recommendations optimisation
+end
+ReportPerf --> Benchmark : Rapport HTML + graphs
+deactivate ReportPerf
+
+Benchmark --> Tester : Résultats complets
+deactivate Benchmark
+
+note right of ChatAPI
+  Objectifs SLA:
+  - p50 < 500ms
+  - p95 < 800ms
+  - p99 < 1.5s
+  - Disponibilité 99.9%
+end note
+
+note left of RecAPI
+  Objectifs SLA:
+  - p50 < 800ms
+  - p95 < 1.2s
+  - p99 < 2.0s
+  - Fraîcheur modèle < 24h
+end note
+
+note bottom of Metrics
+  Résultats obtenus:
+  - Chat p95: 720ms [OK]
+  - Rec p95: 1.1s [OK]
+  - Throughput: 850 req/s [OK]
+end note
+
+@enduml

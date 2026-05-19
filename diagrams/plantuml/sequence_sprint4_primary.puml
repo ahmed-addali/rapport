@@ -1,0 +1,84 @@
+@startuml
+autonumber
+
+participant "DevOps Engineer" as DevOps
+participant "Script CI/CD" as CICD
+participant "Registry Docker" as DockerReg
+participant "Cluster Kubernetes" as K8s
+participant "Service Agent" as AgentSvc
+participant "Service LinUCB" as LinUCBSvc
+participant "Load Balancer" as LB
+participant "Health Checker" as HealthCheck
+
+DevOps -> CICD : Déclenchement: git push main
+activate CICD
+
+CICD -> CICD : Build images Docker
+CICD -> DockerReg : Push guidni-agent:v2.4.0
+CICD -> DockerReg : Push guidni-linucb:v2.4.0
+DockerReg --> CICD : Images taguées
+
+CICD -> K8s : Apply deployment.yaml
+activate K8s
+K8s -> K8s : Rolling update Agent Service
+K8s -> AgentSvc : Création nouveaux pods
+AgentSvc -> AgentSvc : Pull image + démarrage
+AgentSvc --> K8s : Pods ready (3/3)
+
+K8s -> K8s : Rolling update LinUCB Service
+K8s -> LinUCBSvc : Création nouveaux pods
+LinUCBSvc -> LinUCBSvc : Pull image + démarrage
+LinUCBSvc --> K8s : Pods ready (2/2)
+
+K8s -> LB : Mise à jour endpoints
+LB -> LB : Routing vers nouveaux pods
+LB --> K8s : Traffic switché
+
+K8s -> HealthCheck : Vérification santé services
+activate HealthCheck
+HealthCheck -> AgentSvc : GET /health
+AgentSvc --> HealthCheck : 200 OK {status: "healthy", uptime: 12s}
+
+HealthCheck -> AgentSvc : GET /ready
+AgentSvc --> HealthCheck : 200 OK {status: "ready", deps: "ok"}
+
+HealthCheck -> LinUCBSvc : GET /health
+LinUCBSvc --> HealthCheck : 200 OK {status: "healthy", model_version: "v2025-01-15"}
+
+HealthCheck -> LinUCBSvc : GET /metrics
+LinUCBSvc --> HealthCheck : 200 OK {requests_total, latency_p95, errors_rate}
+
+alt Tous checks OK
+    HealthCheck --> K8s : [OK] Déploiement validé
+    K8S --> CICD : Succès déploiement
+else Check échoué
+    HealthCheck --> K8s : [FAIL] Échec health check
+    K8s -> K8s : Rollback automatique
+    K8s --> CICD : Alert: rollback triggered
+end
+deactivate HealthCheck
+
+CICD --> DevOps : Notification déploiement terminé
+deactivate CICD
+
+note right of AgentSvc
+  Deployment: 3 replicas
+  Resources: 2 CPU, 4GB RAM
+  Auto-scaling: 3-10 pods
+end note
+
+note left of LinUCBSvc
+  Deployment: 2 replicas
+  Resources: 4 CPU, 8GB RAM
+  GPU optionnel pour inférence
+end note
+
+note bottom of HealthCheck
+  Endpoints exposés:
+  - /health (liveness)
+  - /ready (readiness)
+  - /metrics (Prometheus)
+  Intervalle: 10s
+end note
+
+@enduml

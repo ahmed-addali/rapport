@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Système" as System
+actor "Base de données" as DB
+
+rectangle "Sprint 2 - Moteur LinUCB" {
+  usecase "Collecter les interactions utilisateur" as UC2_1
+  usecase "Générer le vecteur de caractéristiques 360D" as UC2_2
+  usecase "Calculer les scores LinUCB" as UC2_3
+  usecase "Appliquer le ranker à 10 étapes" as UC2_4
+  usecase "Mettre à jour le modèle nightly" as UC2_5
+}
+
+System --> UC2_1
+System --> UC2_2
+System --> UC2_3
+System --> UC2_4
+System --> UC2_5
+
+DB ..> UC2_1 : stocke interactions
+DB ..> UC2_2 : fournit contexte
+DB ..> UC2_5 : reçoit MàJ modèle
+
+note right of UC2_2
+  Vecteur Kronecker 306 dimensions
+  (utilisateur ⊗ contexte ⊗ item)
+end note
+
+note bottom of UC2_4
+  Filtrage → Boosting →
+  Diversification → Personalisation
+end note
+
+@enduml
