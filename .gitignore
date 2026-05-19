@@ -1,14 +1,15 @@
+```
+# LaTeX auxiliary files
 *.aux
-*.log
-*.out
 *.toc
 *.lof
 *.lot
+*.out
 *.bbl
 *.blg
-*.pdf
-*.fdb_latexmk
+*.log
 *.fls
+*.fdb_latexmk
 *.synctex.gz
-*.bcf
-*.xml
+*.pdf
+```
