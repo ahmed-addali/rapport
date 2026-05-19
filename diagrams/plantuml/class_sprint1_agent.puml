@@ -1,0 +1,104 @@
+@startuml
+skinparam classAttributeIconSize false
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Navy
+}
+
+class "AgentPlanificateur" {
+  -graph: StateGraph
+  -tools: List[BaseTool]
+  -memory: ConversationMemory
+  -rag_pipeline: RAGPipeline
+  +initialize_graph()
+  +process_query(query: str, context: dict): str
+  +select_tool(intent: str): BaseTool
+  +execute_tool(tool: BaseTool, params: dict): any
+  +save_memory(user_id: str, message: str)
+}
+
+class "StateGraph" {
+  -nodes: dict
+  -edges: list
+  -state_schema: type
+  +add_node(name: str, func: callable)
+  +add_edge(start: str, end: str)
+  +compile(): CompiledGraph
+}
+
+class "BaseTool" {
+  <<abstract>>
+  #name: str
+  #description: str
+  #parameters: dict
+  +execute(**kwargs): any
+  +validate_params(params: dict): bool
+}
+
+class "RAGPipeline" {
+  -embedder: MultilingualEmbedder
+  -vector_store: QdrantClient
+  -retriever: VectorRetriever
+  -generator: LLMGenerator
+  +embed_query(text: str): vector
+  +search_similar(query: str, k: int): list
+  +generate_response(query: str, docs: list): str
+}
+
+class "ConversationMemory" {
+  -redis_client: Redis
+  -max_turns: int
+  -ttl_seconds: int
+  +get_history(user_id: str): list
+  +add_message(user_id: str, role: str, content: str)
+  +clear_history(user_id: str)
+}
+
+class "WeatherTool" {
+  -api_key: str
+  -base_url: str
+  +execute(location: str, date: str): WeatherData
+  +_fetch_from_api(endpoint: str): dict
+}
+
+class "HotelSearchTool" {
+  -db_connection: PostgreSQL
+  +execute(location: str, check_in: date, guests: int): list
+  +_query_hotels(filters: dict): list
+}
+
+class "RestaurantRecommenderTool" {
+  -linucb_engine: LinUCBEngine
+  +execute(cuisine: str, price_range: str, location: str): list
+  +_rank_by_linucb(restaurants: list): list
+}
+
+AgentPlanificateur *-- StateGraph : compose
+AgentPlanificateur *-- BaseTool : utilise >
+AgentPlanificateur *-- RAGPipeline : utilise
+AgentPlanificateur *-- ConversationMemory : utilise
+
+BaseTool <|-- WeatherTool : hérite
+BaseTool <|-- HotelSearchTool : hérite
+BaseTool <|-- RestaurantRecommenderTool : hérite
+
+note right of AgentPlanificateur
+  Sprint 1: Implémentation
+  Graphe LangGraph avec 18 outils
+  Pipeline RAG multilingue
+end note
+
+note left of RAGPipeline
+  Embedding: mBERT
+  Base: Qdrant
+  Langues: AR, FR, EN
+end note
+
+note bottom of ConversationMemory
+  Stockage: Redis
+  Fenêtre: 10 tours
+  TTL: 30 minutes
+end note
+
+@enduml

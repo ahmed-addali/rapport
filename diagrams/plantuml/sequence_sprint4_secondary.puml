@@ -1,0 +1,69 @@
+@startuml
+autonumber
+
+participant "Utilisateur Final" as User
+participant "Interface Web" as WebUI
+participant "API Gateway" as API
+participant "Agent Planificateur" as Agent
+participant "Moteur LinUCB" as LinUCB
+participant "Base de Données" as DB
+
+User -> WebUI : Ouverture application Guidni
+WebUI -> API : GET /api/user/profile
+API -> DB : Récupération profil utilisateur
+DB --> API : Données profil + préférences
+API --> WebUI : Profil affiché
+
+User -> WebUI : "Je cherche des activités pour demain"
+WebUI -> API : POST /api/chat {query: "activités demain"}
+API -> Agent : Analyse demande
+
+activate Agent
+Agent -> Agent : Extraction contexte: date=demain, location=Djerba
+Agent -> DB : Récupération historique utilisateur
+DB --> Agent : Préférences: culture, gastronomie
+
+Agent -> LinUCB : Demande recommandations contextuelles
+activate LinUCB
+LinUCB -> DB : Features utilisateur + contexte
+DB --> LinUCB : Vecteurs 306D
+
+LinUCB -> LinUCB : Calcul scores LinUCB
+LinUCB -> LinUCB : Application ranker 10 étapes
+LinUCB --> Agent : Top-5 activités personnalisées
+deactivate LinUCB
+
+Agent -> Agent : Génération réponse naturelle avec recommandations
+Agent --> API : Réponse + activités structurées
+deactivate Agent
+
+API --> WebUI : JSON {response, activities[], map_markers[]}
+WebUI --> User : Affiche réponse + carte interactive + boutons réservation
+
+User -> WebUI : Clique "Réserver activité #3"
+WebUI -> API : POST /api/bookings {activity_id, user_id, date}
+API -> DB : Création réservation
+DB --> API : Confirmation booking_id=B789
+API --> WebUI : Confirmation réservation
+WebUI --> User : Message confirmation + email envoyé
+
+note right of Agent
+  Sprint 1: Agent LangGraph
+  18 outils spécialisés
+  Pipeline RAG multilingue
+end note
+
+note left of LinUCB
+  Sprint 2: Moteur LinUCB
+  Vecteurs 306D Kronecker
+  Ranker 10 étapes
+end note
+
+note bottom of WebUI
+  Sprint 4: Intégration complète
+  Dashboard admin
+  Documentation OpenAPI
+  Démo E2E validée
+end note
+
+@enduml

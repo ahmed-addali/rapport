@@ -1,0 +1,71 @@
+@startuml
+autonumber
+
+participant "Utilisateur" as User
+participant "Frontend React" as Frontend
+participant "API Gateway" as API
+participant "Moteur LinUCB" as LinUCB
+participant "Feature Engineering" as Features
+participant "Base Interactions" as InteractionsDB
+participant "Modèle LinUCB" as Model
+participant "Ranker 10 Étapes" as Ranker
+
+User -> Frontend : Consulte recommandations
+Frontend -> API : GET /api/recommendations?user_id=U123&context=vacation
+API -> LinUCB : Demande de recommandations personnalisées
+
+activate LinUCB
+LinUCB -> InteractionsDB : Récupère historique utilisateur U123
+InteractionsDB --> LinUCB : Interactions passées + feedback
+
+LinUCB -> Features : Génération vecteurs caractéristiques
+activate Features
+Features -> Features : Vecteur utilisateur (36D)
+Features -> Features : Vecteur contexte (17D)
+Features -> Features : Vecteur item (17D)
+Features -> Features : Produit Kronecker → 306D
+Features --> LinUCB : Matrice X ∈ ℝ^306
+deactivate Features
+
+LinUCB -> Model : Calcul scores LinUCB
+activate Model
+Model -> Model : θ = (XᵀX + λI)⁻¹Xᵀy
+Model -> Model : Score = xᵀθ + α√(xᵀ(XᵀX + λI)⁻¹x)
+Model --> LinUCB : Scores bruts + incertitudes
+deactivate Model
+
+LinUCB -> Ranker : Application ranker 10 étapes
+activate Ranker
+Ranker -> Ranker : Étape 1: Filtrage pertinence minimale
+Ranker -> Ranker : Étape 2: Boosting catégories préférées
+Ranker -> Ranker : Étape 3: Diversification géographique
+Ranker -> Ranker : Étape 4: Équilibrage prix
+Ranker -> Ranker : Étape 5: Fraîcheur contenus
+Ranker -> Ranker : Étape 6: Popularité locale
+Ranker -> Ranker : Étape 7: Compatibilité horaire
+Ranker -> Ranker : Étape 8: Météo-aware
+Ranker -> Ranker : Étape 9: Personnalisation fine
+Ranker -> Ranker : Étape 10: Réordonnancement final
+Ranker --> LinUCB : Top-N recommandations ordonnées
+deactivate Ranker
+
+LinUCB --> API : JSON {recommendations[], confidence_scores[]}
+API --> Frontend : Recommandations formatées
+Frontend --> User : Affiche liste personnalisée
+
+deactivate LinUCB
+
+note right of Features
+  Produit Kronecker:
+  user ⊗ context ⊗ item
+  36 × 17 × 17 = 10,404
+  Réduit à 306D sélectionnés
+end note
+
+note left of Model
+  Algorithme LinUCB
+  Exploration vs Exploitation
+  α = 1.0 (paramètre exploration)
+end note
+
+@enduml

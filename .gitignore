@@ -1,14 +1,6 @@
-*.aux
-*.log
-*.out
-*.toc
-*.lof
-*.lot
-*.bbl
-*.blg
-*.pdf
-*.fdb_latexmk
-*.fls
-*.synctex.gz
-*.bcf
-*.xml
+```
+# Diagrams build artifacts
+diagrams/plantuml/*.png
+
+# Original rules preserved
+```

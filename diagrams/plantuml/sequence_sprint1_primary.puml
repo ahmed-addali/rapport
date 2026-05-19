@@ -1,0 +1,53 @@
+@startuml
+autonumber
+
+participant "Utilisateur" as User
+participant "Frontend React" as Frontend
+participant "API Gateway" as API
+participant "Agent Planificateur" as Agent
+participant "Graphe LangGraph" as Graph
+participant "Outil RAG" as RAG
+participant "Base Vectorielle Qdrant" as Qdrant
+participant "Mémoire Conversationnelle" as Memory
+
+User -> Frontend : Pose question (ex: "Que visiter à Djerba?")
+Frontend -> API : POST /api/chat {query, context}
+API -> Agent : Requête utilisateur
+Agent -> Graph : Démarrage du graphe d'états
+
+activate Graph
+Graph -> Graph : État initial → Analyse intention
+
+alt Intention = Recherche d'information
+    Graph -> RAG : Activation outil RAG
+    RAG -> Qdrant : Recherche vectorielle similaire
+    Qdrant --> RAG : Documents pertinents + scores
+    RAG -> RAG : Génération réponse avec citations
+else Intention = Action spécifique
+    Graph -> Graph : Sélection outil (météo, hôtel, etc.)
+    Graph -> Graph : Exécution outil
+end
+
+Graph -> Memory : Sauvegarde contexte conversationnel
+Memory --> Graph : Historique mis à jour
+
+Graph --> Agent : Réponse finale + sources
+Agent --> API : JSON {response, sources, next_actions}
+API --> Frontend : Réponse formatée
+Frontend --> User : Affiche réponse + suggestions
+
+deactivate Graph
+
+note right of RAG
+  Pipeline multilingue
+  Arabe/Français/Anglais
+  Embedding: mBERT
+end note
+
+note left of Memory
+  Stockage Redis
+  Fenêtre de contexte: 10 tours
+  Expiration: 30 min
+end note
+
+@enduml

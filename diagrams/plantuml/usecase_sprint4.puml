@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Développeur" as Dev
+actor "Serveur de Production" as Prod
+
+rectangle "Sprint 4 - Intégration et Déploiement" {
+  usecase "Déployer les microservices" as UC4_1
+  usecase "Configurer les endpoints santé" as UC4_2
+  usecase "Activer le dashboard admin" as UC4_3
+  usecase "Générer la documentation OpenAPI" as UC4_4
+  usecase "Exécuter la démo E2E" as UC4_5
+}
+
+Dev --> UC4_1
+Dev --> UC4_2
+Dev --> UC4_3
+Dev --> UC4_4
+Dev --> UC4_5
+
+Prod ..> UC4_1 : reçoit déploiement
+Prod ..> UC4_2 : expose /health
+Prod ..> UC4_3 : sert dashboard
+
+note right of UC4_2
+  Endpoints : /health, /ready, /metrics
+  Monitoring Prometheus + Grafana
+end note
+
+note bottom of UC4_4
+  Documentation interactive
+  Swagger UI / ReDoc
+end note
+
+@enduml

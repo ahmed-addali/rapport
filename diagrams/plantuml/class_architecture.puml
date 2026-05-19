@@ -1,0 +1,70 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+package "Couche Présentation" {
+  component "Frontend React" as Frontend
+  component "Dashboard Admin" as AdminDash
+}
+
+package "Couche API" {
+  component "API Gateway" as Gateway
+  component "Auth Service" as Auth
+}
+
+package "Couche Métier" {
+  component "Agent Planificateur\n(LangGraph)" as Agent
+  component "Moteur LinUCB" as LinUCB
+  component "Pipeline RAG" as RAG
+}
+
+package "Couche Données" {
+  database "PostgreSQL\n(Données utilisateurs)" as PG
+  database "Qdrant\n(Base vectorielle)" as Qdrant
+  database "Redis\n(Cache + Mémoire)" as Redis
+  database "MongoDB\n(Logs + Interactions)" as Mongo
+}
+
+package "Services Externes" {
+  component "OpenWeatherMap" as Weather
+  component "Google Maps API" as Maps
+  component "LLM Provider\n(OpenAI/Anthropic)" as LLM
+}
+
+Frontend --> Gateway : HTTPS/REST
+AdminDash --> Gateway : HTTPS/REST
+Gateway --> Auth : Validation JWT
+Gateway --> Agent : Routage /api/chat
+Gateway --> LinUCB : Routage /api/recommendations
+
+Agent --> RAG : Pipeline recherche
+Agent --> Redis : Mémoire conversationnelle
+RAG --> Qdrant : Similarity search
+Agent --> LLM : Génération réponses
+
+LinUCB --> PG : Profil utilisateur
+LinUCB --> Mongo : Historique interactions
+LinUCB --> Redis : Cache scores
+
+Agent --> Weather : Météo locale
+Agent --> Maps : Géolocalisation
+
+note right of Agent
+  Sprint 1:
+  Graphe d'états LangGraph
+  18 outils spécialisés
+end note
+
+note left of LinUCB
+  Sprint 2:
+  Algorithme LinUCB
+  Ranker 10 étapes
+end note
+
+note bottom of RAG
+  Multilingue:
+  Arabe, Français, Anglais
+  Embedding: mBERT
+end note
+
+@enduml
