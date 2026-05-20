@@ -21,6 +21,7 @@
 \usepackage{enumitem}                 % For customized lists
 \usepackage{listings}                 % For code listings (system prompt, schema)
 \usepackage{caption}                  % Better caption control
+\usepackage{array}                    % For improved table formatting
 
 % --- Listings style ---
 \lstset{
@@ -45,7 +46,7 @@
 \addbibresource{references.bib}
 
 % --- Metadata ---
-\title{Rapport de Projet de Fin d'Études \\ \large Guidni : Application de Planification de Voyages Propulsée par l'IA}
+\title{Rapport de Projet de Fin d'Études \\ \large Guidni : Système de Planification de Voyage Intelligent basé sur Agents LLM et LinUCB}
 \author{Ahmed Addali}
 \date{\today}
 
@@ -82,28 +83,54 @@
 \newpage
 \pagenumbering{arabic}
 
-\chapter*{Introduction Générale}
-\addcontentsline{toc}{chapter}{Introduction Générale}
-\input{sections/00_introduction}
+% --------------------------------------------------------------------
+% CHAPTER 1: CONTEXTE GÉNÉRAL
+% --------------------------------------------------------------------
+\chapter{Contexte Général}
+\input{chapters/chapitre_01_contexte}
 
-\chapter{État de l'art et fondements théoriques}
-\input{sections/01_cadre_general}
+% --------------------------------------------------------------------
+% CHAPTER 2: LANCEMENT DE PROJET
+% --------------------------------------------------------------------
+\chapter{Lancement de Projet}
+\input{chapters/chapitre_02_lancement}
 
-\chapter{Analyse des besoins et conception du système}
-\input{sections/02_conception}
+% --------------------------------------------------------------------
+% CHAPTER 3: SPRINT 1
+% --------------------------------------------------------------------
+\chapter{Sprint 1 : Analyse et Architecture}
+\input{chapters/chapitre_03_sprint1}
 
-\chapter{Implémentation de l'agent planificateur IA}
-\input{sections/03_conception}
+% --------------------------------------------------------------------
+% CHAPTER 4: SPRINT 2
+% --------------------------------------------------------------------
+\chapter{Sprint 2 : Agent Planificateur LangGraph}
+\input{chapters/chapitre_04_sprint2}
 
-\chapter{Implémentation du moteur de recommandation Hybrid LinUCB}
-\input{sections/04_realisation}
+% --------------------------------------------------------------------
+% CHAPTER 5: SPRINT 3
+% --------------------------------------------------------------------
+\chapter{Sprint 3 : Pipeline RAG Multilingue}
+\input{chapters/chapitre_05_sprint3}
 
-\chapter{Tests et Évaluation}
-\input{sections/05_tests}
+% --------------------------------------------------------------------
+% CHAPTER 6: SPRINT 4
+% --------------------------------------------------------------------
+\chapter{Sprint 4 : Moteur de Recommandation LinUCB}
+\input{chapters/chapitre_06_sprint4}
 
-\chapter*{Conclusion et Perspectives}
-\addcontentsline{toc}{chapter}{Conclusion et Perspectives}
-\input{sections/06_conclusion}
+% --------------------------------------------------------------------
+% CHAPTER 7: SPRINT 5
+% --------------------------------------------------------------------
+\chapter{Sprint 5 : Tests, Évaluation et Déploiement}
+\input{chapters/chapitre_07_sprint5}
+
+% --------------------------------------------------------------------
+% CONCLUSION GÉNÉRALE
+% --------------------------------------------------------------------
+\chapter*{Conclusion Générale et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion Générale et Perspectives}
+\input{chapters/conclusion_generale}
 
 % ====================================================================
 % BACK MATTER
@@ -117,6 +144,6 @@
 \renewcommand{\chaptername}{Annexe}
 \chapter{Annexes}
 \addcontentsline{toc}{chapter}{Annexes}
-\input{sections/07_appendices}
+\input{chapters/annexes}
 
 \end{document}

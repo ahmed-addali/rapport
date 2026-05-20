@@ -1,0 +1,587 @@
+% ============================================================================
+% LISTE COMPLÈTE DES FIGURES ET TABLEAUX — RAPPORT GUIDNI (Ahmed Addali)
+% Structurée selon le modèle du rapport d'Amal Rahmeni
+% ============================================================================
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+
+\title{Liste des Figures et Tableaux du Rapport Guidni\\
+\large Système de Planification de Voyage Intelligent\\
+\small Structuré selon le modèle d'Amal Rahmeni}
+\author{Ahmed Addali}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+% ============================================================================
+% CHAPITRE 1 — CONTEXTE GÉNÉRAL
+% ============================================================================
+\section{Chapitre 1 : Contexte Général}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 1.1 & Logo de l'entreprise/organisme d'accueil (ISITCOM) \\
+    Figure 1.2 & Logo de la plateforme Guidni \\
+    Figure 1.3 & Les services de la plateforme Guidni (vue d'ensemble) \\
+    Figure 1.4 & Types d'agents LLM (ReAct simple, LangGraph, Agent avec RAG) \\
+    Figure 1.5 & Exemple d'agent ReAct simple (architecture basique) \\
+    Figure 1.6 & Exemple d'agent LangGraph (graphe d'états à 4 nœuds) \\
+    Figure 1.7 & Exemple d'agent avec RAG (pipeline de retrieval) \\
+    Figure 1.8 & Types de méthodologies agiles (2TUP / Scrum / Kanban) \\
+    Figure 1.9 & Processus 2TUP appliqué à Guidni \\
+    Figure 1.10 & Processus détaillé de 2TUP (phases et livrables) \\
+    Figure 1.11 & Notre équipe projet (photos des membres si disponible) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 1.1 & Identité de l'organisme d'accueil (ISITCOM : raison sociale, forme juridique, adresse, téléphone, site web) \\
+    Tableau 1.2 & Tableau des tâches (fonctionnalités à concevoir et à implémenter pour Guidni) \\
+    Tableau 1.3 & Tableau comparatif entre les méthodologies (2TUP vs Scrum vs Kanban avec colonnes : Description / Points Forts / Points Faibles) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 1.1 : Logo ISITCOM — \textbf{À CRÉER} (remplacer par logo officiel)
+    \item[\textcolor{green}{\checkmark}] Figure 1.2 : Logo Guidni — \textbf{À CRÉER} (design à réaliser)
+    \item[\textcolor{orange}{!}] Figure 1.3 : Services Guidni — \textbf{PARTIELLEMENT EXISTANT} (adapter screen\_01\_djerba\_tourism.png)
+    \item[\textcolor{green}{\checkmark}] Figure 1.4 : Types d'agents LLM — \textbf{À CRÉER} (diagramme comparatif)
+    \item[\textcolor{green}{\checkmark}] Figure 1.5 : Agent ReAct simple — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 1.6 : Agent LangGraph — \textbf{EXISTANT} (fig\_02\_langgraph\_graph.png)
+    \item[\textcolor{green}{\checkmark}] Figure 1.7 : Agent avec RAG — \textbf{EXISTANT} (fig\_02\_rag\_architecture.png)
+    \item[\textcolor{green}{\checkmark}] Figure 1.8 : Méthodologies agiles — \textbf{EXISTANT} (fig\_01\_2tup\_methodology.png à adapter)
+    \item[\textcolor{green}{\checkmark}] Figure 1.9 : Processus 2TUP — \textbf{EXISTANT} (fig\_01\_2tup\_methodology.png)
+    \item[\textcolor{green}{\checkmark}] Figure 1.10 : Processus détaillé 2TUP — \textbf{À ADAPTER} (à partir de fig\_01\_2tup\_methodology.png)
+    \item[\textcolor{red}{\times}] Figure 1.11 : Équipe projet — \textbf{OPTIONNEL} (photos non disponibles)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 1.1 : Identité ISITCOM — \textbf{À CRÉER} (informations institutionnelles)
+    \item[\textcolor{green}{\checkmark}] Tableau 1.2 : Tâches Guidni — \textbf{À CRÉER} (liste des fonctionnalités)
+    \item[\textcolor{green}{\checkmark}] Tableau 1.3 : Comparatif méthodologies — \textbf{À CRÉER} (2TUP/Scrum/Kanban)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 2 — LANCEMENT DE PROJET
+% ============================================================================
+\section{Chapitre 2 : Lancement de Projet}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 2.1 & Diagramme de contexte (acteurs et système Guidni) \\
+    Figure 2.2 & Architecture du pipeline RAG/LLM (flux de traitement) \\
+    Figure 2.3 & Domaine des LLMs et agents (cartographie conceptuelle) \\
+    Figure 2.4 & Architecture du Transformer (décodeur) \\
+    Figure 2.5 & Architecture LangGraph (graphe d'états avec 4 nœuds) \\
+    Figure 2.6 & Comparaison ReAct vs LangGraph (avantages/inconvénients) \\
+    Figure 2.7 & Architecture fonctionnelle de Guidni \\
+    Figure 2.8 & Architecture logique générale de Guidni \\
+    Figure 2.9 & Diagramme de Gantt / Organigramme Guidni \\
+    Figure 2.10 & Diagramme de cas d'utilisation global \\
+    Figure 2.11 & Definition of Done (DoD) pour Guidni \\
+    Figure 2.12 & Logo Python + description (5-6 lignes) \\
+    Figure 2.13 & Logo FastAPI + description (5-6 lignes) \\
+    Figure 2.14 & Logo PostgreSQL + description (5-6 lignes) \\
+    Figure 2.15 & Logo React/Next.js + description (5-6 lignes) \\
+    Figure 2.16 & Logo LangGraph + description (5-6 lignes) \\
+    Figure 2.17 & Logo OpenAI API + description (5-6 lignes) \\
+    Figure 2.18 & Logo FAISS/pgvector + description (5-6 lignes) \\
+    Figure 2.19 & Logo SQLAlchemy + description (5-6 lignes) \\
+    Figure 2.20 & Logo APScheduler + description (5-6 lignes) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 2.1 & Étude comparative entre modèles (LLM vs RAG vs LinUCB vs approches classiques) \\
+    Tableau 2.2 & Product Backlog (ID / User Story / Priorité MoSCoW) \\
+    Tableau 2.3 & Planification des différents Sprints (Release / Sprint / Objectif / Période) \\
+    Tableau 2.4 & Caractéristiques de l'ordinateur de développement \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 2.1 : Diagramme de contexte — \textbf{EXISTANT} (fig\_03\_use\_case\_global.png peut être adapté)
+    \item[\textcolor{green}{\checkmark}] Figure 2.2 : Pipeline RAG/LLM — \textbf{EXISTANT} (fig\_02\_rag\_architecture.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.3 : Domaine LLMs — \textbf{À CRÉER} (cartographie mentale)
+    \item[\textcolor{green}{\checkmark}] Figure 2.4 : Architecture Transformer — \textbf{EXISTANT} (fig\_02\_transformer\_attention.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.5 : Architecture LangGraph — \textbf{EXISTANT} (fig\_02\_langgraph\_graph.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.6 : ReAct vs LangGraph — \textbf{À CRÉER} (tableau comparatif visuel)
+    \item[\textcolor{green}{\checkmark}] Figure 2.7 : Architecture fonctionnelle — \textbf{EXISTANT} (fig\_03\_global\_architecture.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.8 : Architecture logique — \textbf{EXISTANT} (fig\_03\_global\_architecture.png peut être dupliqué)
+    \item[\textcolor{green}{\checkmark}] Figure 2.9 : Gantt — \textbf{EXISTANT} (fig\_01\_gantt.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.10 : UC global — \textbf{EXISTANT} (fig\_03\_use\_case\_global.png)
+    \item[\textcolor{green}{\checkmark}] Figure 2.11 : DoD — \textbf{À CRÉER} (diagramme ou tableau)
+    \item[\textcolor{orange}{!}] Figures 2.12-2.20 : Logos technologies — \textbf{À CRÉER} (récupérer logos officiels + rédiger descriptions)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 2.1 : Comparatif modèles — \textbf{À CRÉER} (LLM/RAG/LinUCB/classique)
+    \item[\textcolor{green}{\checkmark}] Tableau 2.2 : Product Backlog — \textbf{À CRÉER} (User Stories priorisées)
+    \item[\textcolor{green}{\checkmark}] Tableau 2.3 : Planification Sprints — \textbf{EXISTANT} (dans chapitre\_02\_lancement.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 2.4 : Ordinateur dev — \textbf{À CRÉER} (specs techniques)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 3 — SPRINT 1 : MISE EN PLACE ENVIRONNEMENT ET INTERFACE
+% ============================================================================
+\section{Chapitre 3 : Sprint 1 — Mise en place environnement et interface utilisateur}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 3.1 & Diagramme de cas d'utilisation "Sprint 1" (authentification + health check) \\
+    Figure 3.2 & Diagramme de séquence "Inscription/Connexion utilisateur" \\
+    Figure 3.3 & Diagramme de séquence "Vérification état santé système" \\
+    Figure 3.4 & Capture d'écran : Interface de connexion/inscription \\
+    Figure 3.5 & Capture d'écran : Dashboard administrateur (après connexion) \\
+    Figure 3.6 & Capture d'écran : Endpoint /health dans Swagger UI \\
+    Figure 3.7 & Capture d'écran : Réponse JSON de /health \\
+    Figure 3.8 & Capture d'écran : Schéma de base de données (pgAdmin) \\
+    Figure 3.9 & Capture d'écran : Configuration environnement (Docker/Poetry) \\
+    Figure 3.10 & Capture d'écran : Dépôt Git avec structure de projet \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 3.1 & Sprint BackLog du Sprint 1 (ID User Story / ID Task / Task / Complexité XS/S/M/L/XL) \\
+    Tableau 3.2 & Description Textuelle du cas d'utilisation "S'authentifier" (Titre, Acteur, Pré-condition, Scénario nominal, Post-condition) \\
+    Tableau 3.3 & Description Textuelle du cas d'utilisation "Consulter état santé" \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 3.1 : UC Sprint 1 — \textbf{À CRÉER} (sous-ensemble de fig\_03\_use\_case\_global.png)
+    \item[\textcolor{green}{\checkmark}] Figure 3.2 : Séquence authentification — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 3.3 : Séquence health check — \textbf{EXISTANT} (fig\_03\_security\_flow.png peut être adapté)
+    \item[\textcolor{orange}{!}] Figures 3.4-3.10 : Captures écran — \textbf{PARTIELLEMENT EXISTANT} (screen\_06\_health\_endpoint.png existe, autres à capturer)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 3.1 : Sprint Backlog 1 — \textbf{EXISTANT} (dans chapitre\_03\_sprint1.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 3.2 : UC Authentification — \textbf{À CRÉER} (description textuelle)
+    \item[\textcolor{green}{\checkmark}] Tableau 3.3 : UC Health Check — \textbf{EXISTANT} (tab:uc\_health dans chapitre\_03\_sprint1.tex)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 4 — SPRINT 2 : IMPLÉMENTATION DU PIPELINE RAG ET NLP
+% ============================================================================
+\section{Chapitre 4 : Sprint 2 — Pipeline RAG et traitement du langage}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 4.1 & Organigramme du Sprint 2 (flux de traitement RAG) \\
+    Figure 4.2 & Diagramme de séquence du Sprint 2 (requête → embedding → retrieval → reranking) \\
+    Figure 4.3 & Diagramme de classes : Entités RAG (Document, Chunk, Embedding) \\
+    Figure 4.4 & Capture d'écran : Interface de test du pipeline RAG \\
+    Figure 4.5 & Capture d'écran : Résultats de recherche vectorielle (top-k chunks) \\
+    Figure 4.6 & Capture d'écran : Scores de reranking (cross-encoder) \\
+    Figure 4.7 & Capture d'écran : Logs de réindexation incrémentale \\
+    Figure 4.8 & Capture d'écran : Interface admin de rebuild d'index \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 4.1 & Sprint BackLog du Sprint 2 (ID User Story / ID Task / Task / Complexité) \\
+    Tableau 4.2 & Description Textuelle du cas d'utilisation "Exécuter recherche RAG" \\
+    Tableau 4.3 & Comparaison des modèles d'embedding (BAAI/bge-m3 vs autres) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 4.1 : Organigramme RAG — \textbf{EXISTANT} (fig\_02\_rag\_architecture.png peut être adapté)
+    \item[\textcolor{green}{\checkmark}] Figure 4.2 : Séquence RAG — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 4.3 : Classes RAG — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{orange}{!}] Figures 4.4-4.8 : Captures écran — \textbf{PARTIELLEMENT EXISTANT} (screen\_04\_rag\_search\_result.png existe, autres à capturer)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 4.1 : Sprint Backlog 2 — \textbf{À CRÉER} (dans chapitre\_04\_sprint2.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 4.2 : UC Recherche RAG — \textbf{À CRÉER} (description textuelle)
+    \item[\textcolor{green}{\checkmark}] Tableau 4.3 : Embeddings — \textbf{À CRÉER} (comparatif technique)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 5 — SPRINT 3 : AGENT LLM ET PLANIFICATION CONVERSATIONNELLE
+% ============================================================================
+\section{Chapitre 5 : Sprint 3 — Agent LLM et planification conversationnelle}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 5.1 & Processus de l'agent LangGraph (équivalent "Processus de prédiction des intentions") \\
+    Figure 5.2 & Diagramme de séquence du Sprint 3 "Agent planificateur" \\
+    Figure 5.3 & Architecture détaillée des couches du modèle LangGraph (THINK/EXECUTE/VALIDATE/RESPOND) \\
+    Figure 5.4 & Diagramme d'activité : Cycle de vie d'une requête utilisateur \\
+    Figure 5.5 & Capture d'écran : Interface de chat avec l'agent \\
+    Figure 5.6 & Capture d'écran : Plan de voyage généré (sortie agent) \\
+    Figure 5.7 & Capture d'écran : Étapes de réflexion (node THINK) \\
+    Figure 5.8 & Capture d'écran : Outils appelés par l'agent (logs) \\
+    Figure 5.9 & Capture d'écran : Validation des sorties (node VALIDATE) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 5.1 & Sprint BackLog du Sprint 3 (ID User Story / ID Task / Task / Complexité) \\
+    Tableau 5.2 & Description Textuelle du cas d'utilisation "Générer un plan de voyage" \\
+    Tableau 5.3 & Liste des 18 outils LLM-callable (nom, description, paramètres) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 5.1 : Processus LangGraph — \textbf{EXISTANT} (fig\_02\_langgraph\_graph.png)
+    \item[\textcolor{green}{\checkmark}] Figure 5.2 : Séquence agent — \textbf{EXISTANT} (fig\_02\_agent\_sequence.png)
+    \item[\textcolor{green}{\checkmark}] Figure 5.3 : Couches LangGraph — \textbf{À CRÉER} (détail des 4 nœuds)
+    \item[\textcolor{green}{\checkmark}] Figure 5.4 : Activité requête — \textbf{EXISTANT} (fig\_04\_langgraph\_routing.png peut être adapté)
+    \item[\textcolor{orange}{!}] Figures 5.5-5.9 : Captures écran — \textbf{PARTIELLEMENT EXISTANT} (screen\_04\_chat\_plan\_output.png, screen\_06\_plan\_thinking\_steps.png existent)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 5.1 : Sprint Backlog 3 — \textbf{À CRÉER} (dans chapitre\_05\_sprint3.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 5.2 : UC Générer plan — \textbf{À CRÉER} (description textuelle)
+    \item[\textcolor{green}{\checkmark}] Tableau 5.3 : 18 outils — \textbf{À CRÉER} (catalogue des tools)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 6 — SPRINT 4 : MOTEUR DE RECOMMANDATION LINUCB
+% ============================================================================
+\section{Chapitre 6 : Sprint 4 — Moteur de recommandation LinUCB}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 6.1 & Processus du LinUCB (équivalent "Processus de l'inverted index") \\
+    Figure 6.2 & Organigramme du Sprint 4 "Générer les recommandations" \\
+    Figure 6.3 & Diagramme de cas d'utilisation "Générer les recommandations" \\
+    Figure 6.4 & Diagramme de séquence "Générer recommandation" \\
+    Figure 6.5 & Diagramme de séquence "Collecter événement comportemental" \\
+    Figure 6.6 & Architecture du vecteur de caractéristiques (produit de Kronecker) \\
+    Figure 6.7 & Pipeline de classement en 10 étapes \\
+    Figure 6.8 & Capture d'écran : Interface de recommandations avec résultats \\
+    Figure 6.9 & Capture d'écran : Événements comportementaux collectés (logs) \\
+    Figure 6.10 & Capture d'écran : Matrices LinUCB en mémoire \\
+    Figure 6.11 & Graphique : Cumulative reward sur période de test \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 6.1 & Sprint BackLog du Sprint 4 (ID User Story / ID Task / Task / Complexité) \\
+    Tableau 6.2 & Description Textuelle de cas d'utilisation "Générer les recommandations" \\
+    Tableau 6.3 & Signaux comportementaux (8 types de récompenses) \\
+    Tableau 6.4 & Performance de scoring (latence avant/après cache) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 6.1 : Processus LinUCB — \textbf{EXISTANT} (fig\_02\_linucb\_cycle.png)
+    \item[\textcolor{green}{\checkmark}] Figure 6.2 : Organigramme Sprint 4 — \textbf{À CRÉER} (flux de ranking)
+    \item[\textcolor{green}{\checkmark}] Figure 6.3 : UC Recommandations — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 6.4 : Séquence génération — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 6.5 : Séquence collecte — \textbf{EXISTANT} (fig\_05\_tracker\_flush.png peut être adapté)
+    \item[\textcolor{green}{\checkmark}] Figure 6.6 : Vecteur Kronecker — \textbf{À CRÉER} (schéma mathématique)
+    \item[\textcolor{green}{\checkmark}] Figure 6.7 : Pipeline ranking — \textbf{EXISTANT} (fig\_05\_ranker\_pipeline.png)
+    \item[\textcolor{orange}{!}] Figures 6.8-6.10 : Captures écran — \textbf{PARTIELLEMENT EXISTANT} (screen\_A4\_recommendations\_response.png existe)
+    \item[\textcolor{green}{\checkmark}] Figure 6.11 : Cumulative reward — \textbf{EXISTANT} (fig\_06\_cumulative\_reward.png)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 6.1 : Sprint Backlog 4 — \textbf{À CRÉER} (dans chapitre\_06\_sprint4.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 6.2 : UC Recommandations — \textbf{À CRÉER} (description textuelle)
+    \item[\textcolor{green}{\checkmark}] Tableau 6.3 : Signaux comportementaux — \textbf{À CRÉER} (8 types de rewards)
+    \item[\textcolor{green}{\checkmark}] Tableau 6.4 : Performance scoring — \textbf{À CRÉER} (benchmarks)
+\end{itemize}
+
+
+% ============================================================================
+% CHAPITRE 7 — SPRINT 5 : TESTS, ÉVALUATION ET DÉPLOIEMENT
+% ============================================================================
+\section{Chapitre 7 : Sprint 5 — Tests, évaluation et déploiement}
+
+\subsection*{Figures attendues}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure 7.1 & Diagramme de cas d'utilisation "Exécuter tests unitaires" \\
+    Figure 7.2 & Diagramme de séquence "Déploiement CI/CD" \\
+    Figure 7.3 & Organigramme de la stratégie de tests \\
+    Figure 7.4 & Capture d'écran : Rapports de tests pytest (couverture) \\
+    Figure 7.5 & Capture d'écran : Dashboard de monitoring (latences) \\
+    Figure 7.6 & Capture d'écran : Interface de déploiement (Docker/Kubernetes) \\
+    Figure 7.7 & Graphique : Latence moyenne par endpoint API \\
+    Figure 7.8 & Graphique : Taux de satisfaction utilisateur (enquête) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux attendus}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau 7.1 & Sprint BackLog du Sprint 5 (ID User Story / ID Task / Task / Complexité) \\
+    Tableau 7.2 & Résultats des tests unitaires (nombre de tests, couverture, échecs) \\
+    Tableau 7.3 & Métriques de performance (latence, throughput, disponibilité) \\
+    Tableau 7.4 & Checklist de déploiement (prérequis, validation, rollback) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure 7.1 : UC Tests — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 7.2 : Séquence CI/CD — \textbf{À CRÉER} (diagramme UML)
+    \item[\textcolor{green}{\checkmark}] Figure 7.3 : Stratégie tests — \textbf{À CRÉER} (organigramme)
+    \item[\textcolor{orange}{!}] Figures 7.4-7.8 : Captures/Graphiques — \textbf{À CAPTURER} (selon environnement de test)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau 7.1 : Sprint Backlog 5 — \textbf{À CRÉER} (dans chapitre\_07\_sprint5.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau 7.2 : Résultats tests — \textbf{À CRÉER} (rapports pytest)
+    \item[\textcolor{green}{\checkmark}] Tableau 7.3 : Métriques performance — \textbf{À CRÉER} (benchmarks finaux)
+    \item[\textcolor{green}{\checkmark}] Tableau 7.4 : Checklist déploiement — \textbf{À CRÉER} (procédure)
+\end{itemize}
+
+
+% ============================================================================
+% CONCLUSION GÉNÉRALE
+% ============================================================================
+\section{Conclusion Générale et Perspectives}
+
+\subsection*{Éléments attendus}
+
+\begin{itemize}
+    \item Synthèse des travaux réalisés par Sprint
+    \item Récapitulatif des objectifs atteints (vs Product Backlog initial)
+    \item Limitations identifiées (techniques, temporelles, fonctionnelles)
+    \item Perspectives d'amélioration (court terme / moyen terme / long terme)
+    \item Ouverture vers des travaux futurs (research directions)
+\end{itemize}
+
+
+% ============================================================================
+% ANNEXES
+% ============================================================================
+\section{Annexes}
+
+\subsection*{Figures annexes}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Figure A.1 & Schéma complet de la base de données (MCD/MLD) \\
+    Figure A.2 & Exemples de conversations avec l'agent (scénarios types) \\
+    Figure A.3 & Configuration des modèles LLM (prompts système) \\
+    Figure A.4 & Captures d'écran de l'interface complète (vue utilisateur) \\
+    Figure A.5 & API documentation (Swagger/OpenAPI) \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Tableaux annexes}
+
+\begin{longtable}{p{2cm} p{12cm}}
+    \textbf{Référence} & \textbf{Description} \\
+    \midrule
+    \endhead
+    
+    Tableau A.1 & Glossaire des termes techniques (LLM, RAG, LinUCB, etc.) \\
+    Tableau A.2 & Liste des abréviations utilisées dans le rapport \\
+    Tableau A.3 & Références bibliographiques complètes (format IEEE) \\
+    Tableau A.4 & Code source des endpoints API principaux \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Statut de création}
+
+\begin{itemize}
+    \item[\textcolor{green}{\checkmark}] Figure A.1 : Schéma DB — \textbf{EXISTANT} (fig\_03\_er\_diagram\_planner.png, fig\_03\_er\_diagram\_recommender.png)
+    \item[\textcolor{green}{\checkmark}] Figure A.2 : Conversations — \textbf{À CRÉER} (extraits de logs)
+    \item[\textcolor{green}{\checkmark}] Figure A.3 : Prompts — \textbf{À CRÉER} (system prompts)
+    \item[\textcolor{orange}{!}] Figure A.4 : Interface complète — \textbf{PARTIELLEMENT EXISTANT} (screen\_A4\_*.png existent partiellement)
+    \item[\textcolor{green}{\checkmark}] Figure A.5 : API docs — \textbf{EXISTANT} (screen\_A4\_api\_docs.png)
+    
+    \item[\textcolor{green}{\checkmark}] Tableau A.1 : Glossaire — \textbf{EXISTANT} (dans chapter\_00\_preliminaries.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau A.2 : Abréviations — \textbf{EXISTANT} (dans chapter\_00\_preliminaries.tex)
+    \item[\textcolor{green}{\checkmark}] Tableau A.3 : Bibliographie — \textbf{EXISTANT} (references.bib)
+    \item[\textcolor{green}{\checkmark}] Tableau A.4 : Code source — \textbf{À CRÉER} (extraits significatifs)
+\end{itemize}
+
+
+% ============================================================================
+% RÉCAPITULATIF GLOBAL
+% ============================================================================
+\newpage
+\section{Récapitulatif Global des Figures et Tableaux}
+
+\subsection*{Total des figures par chapitre}
+
+\begin{longtable}{p{4cm} r r r}
+    \textbf{Chapitre} & \textbf{Figures existantes} & \textbf{Figures à créer} & \textbf{Total} \\
+    \midrule
+    \endhead
+    
+    Chapitre 1 (Contexte) & 5 & 6 & 11 \\
+    Chapitre 2 (Lancement) & 9 & 11 & 20 \\
+    Chapitre 3 (Sprint 1) & 2 & 8 & 10 \\
+    Chapitre 4 (Sprint 2) & 2 & 6 & 8 \\
+    Chapitre 5 (Sprint 3) & 5 & 4 & 9 \\
+    Chapitre 6 (Sprint 4) & 5 & 6 & 11 \\
+    Chapitre 7 (Sprint 5) & 0 & 8 & 8 \\
+    Annexes & 3 & 2 & 5 \\
+    \midrule
+    \textbf{TOTAL} & \textbf{31} & \textbf{51} & \textbf{82} \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Total des tableaux par chapitre}
+
+\begin{longtable}{p{4cm} r r r}
+    \textbf{Chapitre} & \textbf{Tableaux existants} & \textbf{Tableaux à créer} & \textbf{Total} \\
+    \midrule
+    \endhead
+    
+    Chapitre 1 (Contexte) & 0 & 3 & 3 \\
+    Chapitre 2 (Lancement) & 1 & 3 & 4 \\
+    Chapitre 3 (Sprint 1) & 2 & 1 & 3 \\
+    Chapitre 4 (Sprint 2) & 0 & 3 & 3 \\
+    Chapitre 5 (Sprint 3) & 0 & 3 & 3 \\
+    Chapitre 6 (Sprint 4) & 0 & 4 & 4 \\
+    Chapitre 7 (Sprint 5) & 0 & 4 & 4 \\
+    Annexes & 3 & 1 & 4 \\
+    \midrule
+    \textbf{TOTAL} & \textbf{6} & \textbf{25} & \textbf{31} \\
+    \bottomrule
+\end{longtable}
+
+\subsection*{Priorisation des créations}
+
+\textbf{Priorité 1 (Critique - avant rédaction finale) :}
+\begin{itemize}
+    \item Toutes les figures de diagrammes UML (cas d'utilisation, séquence, activité)
+    \item Tous les Sprint Backlog (tableaux avec complexité XS/S/M/L/XL)
+    \item Definition of Done (Figure 2.11)
+    \item Product Backlog complet (Tableau 2.2)
+\end{itemize}
+
+\textbf{Priorité 2 (Important - pendant rédaction) :}
+\begin{itemize}
+    \item Captures d'écran des interfaces principales
+    \item Logos des technologies avec descriptions
+    \item Tableaux comparatifs (méthodologies, modèles, embeddings)
+\end{itemize}
+
+\textbf{Priorité 3 (Secondaire - relecture finale) :}
+\begin{itemize}
+    \item Graphiques de performance et métriques
+    \item Photos de l'équipe projet
+    \item Captures d'écran secondaires (logs, configuration)
+\end{itemize}
+
+
+% ============================================================================
+% CONCLUSION DU DOCUMENT
+% ============================================================================
+\section*{Conclusion}
+
+Ce document présente la liste exhaustive des 82 figures et 31 tableaux requis pour le rapport de PFE Guidni, structurés exactement selon le modèle du rapport d'Amal Rahmeni. 
+
+\textbf{État actuel :} 31 figures et 6 tableaux sont déjà existants ou partiellement existants dans le dépôt.
+
+\textbf{Travail restant :} 51 figures et 25 tableaux doivent être créés, principalement :
+\begin{itemize}
+    \item Diagrammes UML complémentaires (séquence, activité, cas d'utilisation par Sprint)
+    \item Tableaux de Sprint Backlog pour chaque itération
+    \item Captures d'écran des interfaces utilisateur
+    \item Logos des technologies avec descriptions académiques
+    \item Graphiques de performance et métriques d'évaluation
+\end{itemize}
+
+La numérotation suit strictement le format X.Y où X = numéro du chapitre et Y = numéro dans le chapitre, conformément aux standards académiques français.
+
+\end{document}
