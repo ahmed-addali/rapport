@@ -1,0 +1,79 @@
+% ============================================================================
+% CHAPITRE 7 — CONCLUSION GÉNÉRALE ET PERSPECTIVES
+% ============================================================================
+
+\section*{Bilan du projet}
+\addcontentsline{toc}{section}{Bilan du projet}
+
+Le présent rapport de Projet de Fin d'Études rend compte de la conception, l'implémentation
+et l'évaluation de \textbf{Guidni}, une plateforme de planification de voyage intelligente
+dédiée à l'île de Djerba. En suivant rigoureusement la méthodologie Scrum sur quatre Sprints
+(octobre 2024 -- février 2025), j'ai pu construire un système articulé autour de deux
+sous-systèmes complémentaires.
+
+Le premier sous-système, l'\textbf{Agent Planificateur conversationnel}, repose sur une
+machine à états LangGraph à quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND) disposant
+de dix-huit outils appelables par le LLM. Un pipeline RAG multilingue utilisant les embeddings
+BAAI/bge-m3 (français, anglais, arabe) et un cross-encoder de réordonnancement garantissent
+des réponses ancrées dans les données réelles du catalogue touristique de Djerba. L'abstraction
+multi-fournisseurs LLM permet de basculer entre Ollama, Groq, Gemini et Lightning AI selon
+les besoins. Le système de mémoire conversationnelle avec résumé automatique à 15~messages
+assure la cohérence des conversations longues.
+
+Le second sous-système, le \textbf{Moteur de Recommandation Hybride LinUCB}, exploite un
+bandit contextuel avec un vecteur de caractéristiques de dimension~306 construit par produit
+de Kronecker ($\phi = x_{\text{user}}(9) \otimes x_{\text{tags}}(34)$). Un pipeline de
+classement post-traitement en dix étapes garantit la diversité, l'exploration et l'équité
+des recommandations. Le cache matriciel en RAM avec verrou threading assure une latence de
+scoring inférieure à 100~ms. Le tracker JavaScript vanilla collecte huit signaux
+comportementaux en temps réel, alimentant l'apprentissage en ligne du modèle.
+
+L'organisation Scrum s'est avérée déterminante pour tempérer les incertitudes inhérentes à
+un projet d'intelligence artificielle. Les Sprint Reviews régulières ont permis de valider
+chaque composant incrémentalement, et la Definition of Done a garanti un critère de qualité
+objectif à chaque itération.
+
+
+\section*{Perspectives et travaux futurs}
+\addcontentsline{toc}{section}{Perspectives et travaux futurs}
+
+Malgré les contributions apportées, plusieurs perspectives d'évolution se dégagent~:
+
+\begin{enumerate}
+    \item \textbf{Affinage d'un LLM local sur les données du tourisme tunisien.}
+    L'historique de conversations stocké dans \texttt{PlannerMessage} constitue un corpus
+    d'entraînement naturel. Un fine-tuning supervisé produirait un modèle domaine-spécifique
+    comprenant la géographie locale et les niveaux de prix réalistes de Djerba.
+
+    \item \textbf{Remplacement de LinUCB linéaire par un bandit neuronal.}
+    Le modèle linéaire $r = \theta^\top \phi$ ne capture pas les interactions non linéaires
+    complexes. Des architectures comme Neural UCB modéliseraient ces effets par un réseau de
+    neurones tout en conservant la propriété UCB.
+
+    \item \textbf{Infrastructure d'expérimentation A/B.}
+    L'architecture actuelle ne permet pas de mesurer l'impact causal des changements
+    algorithmiques. Un framework A/B permettrait de valider empiriquement les hypothèses
+    d'amélioration avant déploiement.
+
+    \item \textbf{Extension multi-régions.}
+    Le champ \texttt{locationZone} est conçu pour supporter plusieurs zones géographiques.
+    L'extension à Hammamet, Sousse et Tunis ne nécessite que l'ajout de données et
+    l'initialisation des bras correspondants.
+
+    \item \textbf{Interface vocale et multimodale.}
+    L'intégration de la reconnaissance vocale arabe permettrait aux utilisateurs tunisiens
+    de planifier leur voyage sans saisie clavier. Le pipeline RAG pourrait accepter des
+    photos comme requêtes visuelles via des embeddings multimodaux.
+\end{enumerate}
+
+
+\section*{Mot de la fin}
+\addcontentsline{toc}{section}{Mot de la fin}
+
+Ce projet démontre que la combinaison de l'IA conversationnelle (agents LangGraph) et de
+l'apprentissage en ligne (bandits contextuels) ouvre une nouvelle génération de plateformes
+touristiques intelligentes~: simultanément personnalisées, adaptatives et ancrées dans des
+données réelles. Le système Guidni est une preuve de concept opérationnelle démontrant que
+cette combinaison est non seulement techniquement réalisable, mais pratiquement déployable
+sur une infrastructure modeste~: un serveur unique avec Ollama local, une base de données
+PostgreSQL standard et un tracker JavaScript sans aucune dépendance externe.

@@ -21,6 +21,7 @@
 \usepackage{enumitem}                 % For customized lists
 \usepackage{listings}                 % For code listings (system prompt, schema)
 \usepackage{caption}                  % Better caption control
+\usepackage{multirow}                 % For multirow cells in tables
 
 % --- Listings style ---
 \lstset{
@@ -86,24 +87,27 @@
 \addcontentsline{toc}{chapter}{Introduction Générale}
 \input{sections/00_introduction}
 
-\chapter{État de l'art et fondements théoriques}
-\input{sections/01_cadre_general}
+\chapter{Contexte Général du Projet}
+\input{sections/ch1_contexte_general}
 
-\chapter{Analyse des besoins et conception du système}
-\input{sections/02_conception}
+\chapter{Lancement du Projet}
+\input{sections/ch2_lancement_projet}
 
-\chapter{Implémentation de l'agent planificateur IA}
-\input{sections/03_conception}
+\chapter{Sprint~1~: Mise en Place de l'Environnement et Interface}
+\input{sections/ch3_sprint1}
 
-\chapter{Implémentation du moteur de recommandation Hybrid LinUCB}
-\input{sections/04_realisation}
+\chapter{Sprint~2~: Pipeline RAG Multilingue}
+\input{sections/ch4_sprint2}
 
-\chapter{Tests et Évaluation}
-\input{sections/05_tests}
+\chapter{Sprint~3~: Agent LLM et Planification Conversationnelle}
+\input{sections/ch5_sprint3}
 
-\chapter*{Conclusion et Perspectives}
-\addcontentsline{toc}{chapter}{Conclusion et Perspectives}
-\input{sections/06_conclusion}
+\chapter{Sprint~4~: Moteur LinUCB, Tests et Évaluation}
+\input{sections/ch6_sprint4}
+
+\chapter*{Conclusion Générale et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion Générale et Perspectives}
+\input{sections/ch7_conclusion}
 
 % ====================================================================
 % BACK MATTER
