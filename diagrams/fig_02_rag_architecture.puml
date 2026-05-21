@@ -10,9 +10,9 @@ title Architecture du pipeline RAG avec réindexation automatique
 package "Phase d'Indexation (Startup)" {
   rectangle "PostgreSQL(Activity, Stay,Yummy, Attraction,Rental, Transfer)" as PG1 #LightBlue
   rectangle "Document Builders(_activity_to_document,_stay_to_document, etc.)" as Builders #LightGreen
-  rectangle "BAAI/bge-m3 Embeddings 768-d" as Embed #LightYellow
+  rectangle "BAAI/bge-m3 Embeddings " as Embed #LightYellow
   rectangle "VectorStoreIndex (LlamaIndex)" as Index #LightCoral
-  rectangle "rag_storage/(persistance disque)" as Storage #LightGray
+  rectangle "Qdrant Database" as Storage #LightGray
   rectangle "SQLAlchemy Event Listeners" as Events #LightBlue
 }
 
@@ -26,7 +26,7 @@ package "Phase de Requête (Runtime)" {
 
 PG1 --> Builders : Ligne ORM
 Builders --> Embed : Texte + metadata
-Embed --> Index : Vecteurs 768-d
+Embed --> Index : Vecteurs 1024-d
 Index --> Storage : Persistance
 Events --> Index : upsert_entity() after_insert/update/delete
 

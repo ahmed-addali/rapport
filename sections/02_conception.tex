@@ -32,21 +32,19 @@ aux favoris --- est automatiquement capté par le tracker JavaScript pour alimen
 recommandation LinUCB.
 
 L'\textbf{Administrateur de la plateforme} est responsable de la supervision technique du système.
-Il peut déclencher une reconstruction complète de l'index RAG via l'endpoint
-\texttt{POST /admin/rebuild-index} lorsque l'indexation incrémentale se désynchronise, consulter
-l'état de santé du système via \texttt{GET /health} (qui vérifie la connexion à la base de données,
-la disponibilité d'Ollama si configuré, et l'état de l'index RAG), et sélectionner le fournisseur
-LLM par défaut via la configuration du serveur. L'administrateur n'interagit pas directement avec
+Il peut déclencher une reconstruction complète de l'index RAG et surveiller l'état de santé du
+système à travers des endpoints d'administration dédiés. L'endpoint de santé vérifie le statut
+de l'ensemble des composants du système. L'administrateur peut également sélectionner le
+fournisseur LLM par défaut via la configuration du serveur. Il n'interagit pas directement avec
 l'agent conversationnel mais supervise son bon fonctionnement.
 
 Le \textbf{Système} représente l'ensemble des processus automatisés qui s'exécutent sans
 intervention humaine. Il comprend les écouteurs d'événements SQLAlchemy qui déclenchent la
 réindexation RAG incrémentale lors de modifications en base de données, le tracker JavaScript
-qui collecte et transmet les événements comportementaux vers l'endpoint
-\texttt{POST /api/recommendations/events}, le planificateur APScheduler qui exécute les trois
-jobs nocturnes (mise à jour des profils utilisateur, vérification de la dérive conceptuelle,
-rafraîchissement des tags), et la tâche de persistance des matrices LinUCB qui sauvegarde
-les matrices A et b en base de données toutes les deux minutes.
+qui collecte et transmet les événements comportementaux vers un endpoint dédié, le planificateur
+de tâches qui exécute les trois jobs nocturnes (mise à jour des profils utilisateur, vérification
+de la dérive conceptuelle, rafraîchissement des tags), et la tâche de persistance qui sauvegarde
+les matrices de recommandation en base de données toutes les deux minutes.
 
 
 \subsection{Diagramme des cas d'utilisation global}
@@ -90,21 +88,21 @@ postconditions garanties.
         \midrule
         Acteur & Touriste \\[3pt]
         Précondition & L'utilisateur existe en base, une conversation est créée ou existante \\[3pt]
-        Déclencheur & L'utilisateur envoie un message de planification via \texttt{POST /chat} \\[3pt]
+        Déclencheur & L'utilisateur envoie un message de planification via l'endpoint de chat \\[3pt]
         Flux principal &
-        (1) Réception de la requête \texttt{ChatRequest} avec \texttt{user\_id} et \texttt{message} ;
+        (1) Réception de la requête avec l'identifiant utilisateur et le message ;
         (2) Validation de l'existence de l'utilisateur en base (HTTP~404 sinon) ;
-        (3) Chargement du contexte (8 derniers messages + plan courant + résumé) ;
-        (4) Appel de \texttt{run\_agent()} avec le graphe LangGraph ;
-        (5) Nœud THINK~: le LLM raisonne avec les 18 outils disponibles ;
-        (6) Exécution des outils (recherche RAG, météo, activités, géolocalisation) ;
-        (7) \texttt{create\_plan\_structure()} valide le plan contre la base de données ;
-        (8) Nœud VALIDATE~: vérification des doublons et du nombre de créneaux ;
-        (9) Nœud RESPOND~: sauvegarde du plan dans \texttt{GeneratedPlan} ;
-        (10) Retour du \texttt{PlannerResponse} au frontend. \\[3pt]
-        Flux alternatif & Le LLM a besoin d'informations $\rightarrow$ outil \texttt{ask\_user} $\rightarrow$
-        \texttt{needs\_more\_info=True} $\rightarrow$ RESPOND retourne une question \\[3pt]
-        Postcondition & Ligne \texttt{GeneratedPlan} créée, \texttt{PlannerMessage} sauvegardé \\
+        (3) Chargement du contexte conversationnel (messages récents, plan courant, résumé) ;
+        (4) L'agent conversationnel est activé avec le contexte chargé ;
+        (5) Phase de réflexion~: le LLM raisonne avec les outils disponibles ;
+        (6) Exécution des outils sélectionnés (recherche sémantique, météo, activités, géolocalisation) ;
+        (7) Le plan généré est validé contre les données réelles de la base ;
+        (8) Vérification de la cohérence~: absence de doublons et nombre de créneaux ;
+        (9) Sauvegarde du plan validé et formulation de la réponse ;
+        (10) Retour de la réponse structurée au frontend. \\[3pt]
+        Flux alternatif & Le LLM a besoin d'informations supplémentaires $\rightarrow$ l'agent
+        formule une question de clarification et la retourne à l'utilisateur \\[3pt]
+        Postcondition & Un plan versionné est créé en base et le message est sauvegardé dans l'historique \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -119,17 +117,17 @@ postconditions garanties.
         \textbf{Champ} & \textbf{Description} \\
         \midrule
         Acteur & Touriste / Système \\[3pt]
-        Précondition & Des lignes \texttt{BanditArm} existent pour la zone demandée \\[3pt]
-        Déclencheur & Requête \texttt{GET /api/recommendations} avec paramètres de contexte \\[3pt]
+        Précondition & Des annonces indexées existent pour la zone demandée \\[3pt]
+        Déclencheur & Requête de recommandation avec paramètres de contexte \\[3pt]
         Flux principal &
-        (1) Récupération des bras depuis le cache RAM ou la base de données ;
-        (2) Chargement du profil utilisateur si \texttt{user\_id} fourni ;
-        (3) Construction du \texttt{UserContext} à partir des paramètres de requête ;
-        (4) Chargement des matrices A et b depuis le cache RAM ;
-        (5) Calcul du vecteur $\phi$ par produit de Kronecker pour chaque bras ;
+        (1) Récupération des annonces candidates depuis le cache mémoire ou la base de données ;
+        (2) Chargement du profil utilisateur si un identifiant est fourni ;
+        (3) Construction du contexte utilisateur à partir des paramètres de requête ;
+        (4) Chargement des matrices de recommandation depuis le cache mémoire ;
+        (5) Calcul du vecteur de caractéristiques par produit de Kronecker pour chaque annonce ;
         (6) Exécution du pipeline de classement en 9~étapes ;
-        (7) Retour du \texttt{RecommendationResponse} avec items classés. \\[3pt]
-        Postcondition & \texttt{RecommendationEvent} de type \texttt{impression} enregistré \\
+        (7) Retour de la liste classée au frontend. \\[3pt]
+        Postcondition & Un événement d'impression est enregistré pour chaque annonce affichée \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -144,18 +142,18 @@ postconditions garanties.
         \textbf{Champ} & \textbf{Description} \\
         \midrule
         Acteur & Système (tracker JavaScript) \\[3pt]
-        Précondition & Session active avec un \texttt{session\_id} valide \\[3pt]
+        Précondition & Session active avec un identifiant de session valide \\[3pt]
         Déclencheur & L'utilisateur clique, consulte, ou réserve une annonce \\[3pt]
         Flux principal &
-        (1) Le tracker JS met l'événement en file d'attente ;
-        (2) Toutes les 15~secondes ou tous les 10~événements~: \texttt{flush()} ;
-        (3) \texttt{POST /api/recommendations/events} avec le lot d'événements ;
-        (4) \texttt{compute\_reward()} calcule la récompense delta pour chaque événement ;
-        (5) Le vecteur $\phi$ est calculé pour chaque bras concerné ;
-        (6) Les matrices A et b sont mises à jour en RAM ;
-        (7) \texttt{log\_event()} et \texttt{update\_arm\_counters()} enregistrent les compteurs ;
+        (1) Le tracker met l'événement en file d'attente côté client ;
+        (2) Toutes les 15~secondes ou tous les 10~événements, le lot est transmis au serveur ;
+        (3) Envoi du lot d'événements vers l'endpoint dédié ;
+        (4) Le serveur calcule la récompense différentielle pour chaque événement ;
+        (5) Le vecteur de caractéristiques est calculé pour chaque annonce concernée ;
+        (6) Les matrices de recommandation sont mises à jour en mémoire ;
+        (7) Les compteurs et le journal des événements sont enregistrés en base ;
         (8) Réponse avec les récompenses de session cumulées. \\[3pt]
-        Postcondition & Compteurs \texttt{BanditArm} mis à jour, \texttt{RecommendationEvent} créé \\
+        Postcondition & Les compteurs des annonces sont mis à jour et un événement de recommandation est créé \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -190,14 +188,14 @@ chapitre~5.
          & Scoring LinUCB pour $N=1000$ bras & $< 50$\,ms \\[3pt]
         Disponibilité & Uptime du service & 99,5\% \\
          & Démarrage sans index RAG & Non fatal (mode dégradé) \\[3pt]
-        Scalabilité & Pool de connexions psycopg2 & minconn$=2$, maxconn$=10$ \\
-         & Pool AsyncPG & pool\_size$=10$, max\_overflow$=20$ \\[3pt]
+        Scalabilité & Pool de connexions synchrone & Pool avec min et max configurables \\
+         & Pool de connexions asynchrone & Pool avec taille et débordement configurables \\[3pt]
         Maintenabilité & Ajout d'un nouveau fournisseur LLM & 1 fichier client + config \\
          & Journalisation rotative & 10\,MB info, 50\,MB debug \\[3pt]
-        Sécurité & Validation utilisateur & Chaque requête vérifie \texttt{user\_id} \\
+        Sécurité & Validation utilisateur & Chaque requête vérifie l'identifiant utilisateur \\
          & Limitation de débit événements & 10/listing/session, 100/session \\[3pt]
         Multilingue & Langues supportées & FR, EN, AR (auto-détection) \\
-         & Embeddings multilingues & BAAI/bge-m3 (100+ langues) \\[3pt]
+         & Embeddings multilingues & Modèle d'embedding multilingue (100+ langues) \\[3pt]
         Confidentialité & Données vers LLM externe & Pas de PII sans consentement \\
          & Option locale & Ollama pour souveraineté complète \\
         \bottomrule
@@ -222,16 +220,15 @@ via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommenda
 Le \textbf{backend IA} est une application FastAPI qui héberge les deux sous-systèmes
 intelligents~: l'agent planificateur LangGraph (9~endpoints REST) et le moteur de recommandation
 LinUCB (3~endpoints REST). Il possède en écriture 4~tables planificateur et 7~tables
-recommandation, et lit en lecture seule les tables Prisma du frontend. L'application utilise
-SQLAlchemy en mode asynchrone avec le pilote asyncpg pour les opérations du planificateur, et
-psycopg2 avec un pool de connexions threadé pour les opérations de recommandation en temps réel.
+recommandation, et lit en lecture seule les tables Prisma du frontend. Le planificateur utilise
+un pilote de base de données asynchrone, tandis que le moteur de recommandation recourt à un pool
+de connexions synchrone threadé adapté à ses opérations matricielles en temps réel.
 
 Les \textbf{services externes} comprennent l'API Open-Meteo pour les données météorologiques
 en temps réel, le service Nominatim pour le géocodage et le calcul de distances par la formule
 de Haversine, le serveur Ollama local pour l'inférence LLM sans réseau, l'API cloud Groq pour
 l'inférence rapide, l'API Google Gemini pour les contextes longs, et l'API Lightning AI comme
-quatrième fournisseur. Le stockage LlamaIndex sur disque (\texttt{rag\_storage/}) persiste
-l'index vectoriel entre les redémarrages.
+quatrième fournisseur. L'index vectoriel est persisté sur disque entre les redémarrages.
 
 Le \textbf{tracker JavaScript} est un module vanilla JS sans dépendance externe, intégré dans
 les pages du frontend. Il collecte les événements comportementaux (clics, temps de consultation,
@@ -249,11 +246,16 @@ garantir la transmission des événements même lors de la fermeture de la page.
 
 \subsection{Architecture en couches}
 
-La \textbf{couche de présentation} comprend les endpoints FastAPI définis dans \texttt{main.py}
-et \texttt{recommendation\_router.py}, les schémas Pydantic de requête et de réponse
-(\texttt{ChatRequest}, \texttt{PlannerResponse}, \texttt{UserPreferences}), le middleware CORS
-configuré pour accepter toutes les origines en développement, et la génération automatique de
-documentation OpenAPI accessible via l'endpoint \texttt{/docs}.
+Le choix d'une architecture en couches est directement motivé par la nature duale du système.
+Les deux sous-systèmes --- l'agent planificateur et le moteur de recommandation --- présentent
+des caractéristiques d'exécution fondamentalement différentes~: le premier repose sur des appels
+asynchrones vers des fournisseurs LLM et des APIs externes, tandis que le second effectue des
+opérations matricielles synchrones en temps réel. La séparation en couches permet à chacun
+d'évoluer indépendamment, sans que les modifications apportées à l'un n'affectent l'autre.
+
+La \textbf{couche de présentation} comprend les endpoints FastAPI, les schémas de validation
+Pydantic pour les requêtes et les réponses, le middleware CORS configuré pour la communication
+frontend-backend, et la génération automatique de documentation OpenAPI.
 
 La \textbf{couche de logique métier} contient le cœur intelligent du système~: l'agent LangGraph
 avec sa machine à états à quatre nœuds et ses 18~outils appelables, le moteur de classement
@@ -263,13 +265,11 @@ messages, résumé automatique au seuil de 15~messages, construction du profil u
 
 La \textbf{couche d'accès aux données} regroupe les modèles SQLAlchemy ORM et les requêtes
 asynchrones pour le sous-système planificateur, le constructeur d'index LlamaIndex avec
-persistance sur disque et réindexation incrémentale par événements, et le pool de connexions
-psycopg2 (\texttt{ThreadedConnectionPool}, minconn$=2$, maxconn$=10$) pour les opérations de
-recommandation en temps réel. La \textbf{couche d'infrastructure} fournit le moteur AsyncPG
-avec pool de connexions (pool\_size$=10$, max\_overflow$=20$), le planificateur APScheduler
-configuré sur le fuseau horaire Africa/Tunis, la journalisation rotative à deux niveaux
-(10~MB info, 50~MB debug), et la gestion de la configuration par variables d'environnement
-via \texttt{dotenv}.
+persistance sur Qdrant Database et réindexation incrémentale par événements, et un pool de connexions
+synchrone threadé pour les opérations de recommandation en temps réel. La \textbf{couche
+d'infrastructure} fournit un pool de connexions asynchrone configurable, le planificateur de
+tâches configuré sur le fuseau horaire Africa/Tunis, la journalisation rotative à deux niveaux
+(10~MB info, 50~MB debug), et la gestion de la configuration par variables d'environnement.
 
 La section suivante détaille la conception du schéma de base de données partagé.
 % ============================================================================
@@ -284,24 +284,21 @@ La section suivante détaille la conception du schéma de base de données parta
 
 Le système Guidni adopte un patron de base de données partagée~: la même instance PostgreSQL~15
 est utilisée simultanément par le frontend Next.js/Prisma et par le backend IA FastAPI. Le
-backend IA lit 14~tables gérées par Prisma (modèles en lecture seule~: \texttt{User},
-\texttt{Activity}, \texttt{Stay}, \texttt{Restaurant}, \texttt{Attraction}, \texttt{Rental},
-\texttt{Transfer}, etc.) et possède en écriture 4~tables planificateur et 7~tables
-recommandation. Cette architecture évite la duplication des données tout en maintenant des
-frontières de propriété claires entre les deux systèmes.
+backend IA lit les 14~tables d'entités gérées par l'ORM du frontend en mode lecture seule,
+et possède en écriture 4~tables planificateur et 7~tables recommandation. Cette architecture
+évite la duplication des données tout en maintenant des frontières de propriété claires entre
+les deux systèmes.
 
-La convention de nommage reflète l'origine de chaque table~: les tables Prisma utilisent le
-PascalCase avec guillemets doubles (\texttt{"User"}, \texttt{"Activity"}), les tables
-AI-owned du planificateur utilisent également le PascalCase (\texttt{"PlannerConversation"},
-\texttt{"GeneratedPlan"}), tandis que les tables de recommandation sont nommées selon les
-conventions définies dans le module \texttt{db\_init.py}. Cette distinction visuelle permet
-d'identifier immédiatement l'origine et le propriétaire de chaque table.
+La convention de nommage reflète l'origine de chaque table~: les tables du frontend et du
+planificateur utilisent le PascalCase, tandis que le sous-système de recommandation adopte
+sa propre convention de nommage, distincte de celle des tables frontend. Cette distinction
+visuelle permet d'identifier immédiatement l'origine et le propriétaire de chaque table.
 
-La stratégie de versionnement des plans repose sur le champ \texttt{isActive} de la table
-\texttt{GeneratedPlan}. Lorsqu'un utilisateur modifie un plan existant via un message de suivi,
-l'ancien plan est désactivé (\texttt{isActive=False}) et une nouvelle ligne est insérée avec
-le champ \texttt{version} incrémenté. Cette approche conserve l'historique complet des plans
-générés et permet la récupération de versions antérieures si nécessaire.
+La stratégie de versionnement des plans repose sur un mécanisme d'archivage. Lorsqu'un
+utilisateur modifie un plan existant via un message de suivi, la version précédente est
+archivée et une nouvelle version est créée avec un numéro de version incrémenté. Cette approche
+préserve l'historique complet des modifications et permet la récupération de versions
+antérieures si nécessaire.
 
 \begin{figure}[H]
     \centering
@@ -410,11 +407,11 @@ contrats API pour chacun des deux sous-systèmes.
 \section{Sécurité et gestion des données}
 % ────────────────────────────────────────────────────────────────
 
-La configuration CORS (\textit{Cross-Origin Resource Sharing}) est définie dans \texttt{main.py}
-avec \texttt{allow\_origins=["*"]} pour la phase de développement, permettant au frontend
-Next.js de communiquer avec le backend FastAPI sans restriction d'origine. En production, cette
-configuration devra être restreinte au domaine spécifique du frontend pour prévenir les
-requêtes cross-origin non autorisées.
+La politique CORS (\textit{Cross-Origin Resource Sharing}) est configurée de manière permissive
+durant la phase de développement, afin de permettre la communication entre le frontend et le
+backend sans restriction d'origine. Avant tout déploiement en production, cette configuration
+devra être restreinte au domaine spécifique du frontend pour prévenir les requêtes cross-origin
+non autorisées.
 
 La validation de l'utilisateur est effectuée sur chaque requête entrante. Avant tout traitement,
 le \texttt{user\_id} fourni dans la requête est vérifié par une requête
@@ -425,8 +422,8 @@ empêche tout traitement pour des identifiants inexistants ou forgés.
 Le moteur de recommandation implémente une limitation de débit en mémoire pour prévenir les
 abus~: un maximum de 10~événements par annonce et par session, et 100~événements au total par
 session. Les sessions inactives depuis plus de 2~heures sont automatiquement nettoyées du cache
-mémoire pour éviter les fuites de mémoire. Ces seuils sont configurés dans le module
-\texttt{recommendation\_router.py} et appliqués avant tout calcul de récompense.
+mémoire pour éviter les fuites de mémoire. Ces seuils sont appliqués avant tout calcul de
+récompense.
 
 La confidentialité des données est assurée par plusieurs mécanismes~: les résultats des outils
 transmis au LLM externe ne contiennent aucune donnée personnelle identifiable (PII) --- seuls

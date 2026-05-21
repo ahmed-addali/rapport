@@ -31,6 +31,17 @@ de son groupe, les conditions météorologiques en temps réel, les distances en
 horaires d'ouverture des établissements. Aucun outil existant ne propose une expérience
 conversationnelle capable de raisonner simultanément sur l'ensemble de ces dimensions.
 
+Force est de constater qu'aucun outil existant --- ni TripAdvisor, ni Booking, ni Google Maps ---
+ne couvre à lui seul l'intégralité de ce besoin~: chacun excelle sur un aspect isolé du voyage mais
+échoue à fournir une solution unifiée. Répondre à cette lacune suppose de combiner deux capacités
+fondamentalement distinctes~: d'une part, une planification intelligente capable de raisonner en
+plusieurs étapes sur des contraintes hétérogènes et, d'autre part, un classement personnalisé en
+temps réel qui s'adapte continuellement aux préférences révélées par le comportement de chaque
+utilisateur. La première capacité appelle naturellement un agent conversationnel fondé sur un grand
+modèle de langage, capable de décomposer une requête complexe en sous-tâches et de les orchestrer~;
+la seconde relève d'un bandit contextuel, cadre décisionnel conçu pour apprendre en ligne le
+compromis optimal entre exploration de nouveaux contenus et exploitation des préférences acquises.
+
 C'est dans ce contexte que s'inscrit le présent projet de fin d'études, qui propose \textbf{Guidni},
 une plateforme de planification de voyage intelligente articulée autour de deux sous-systèmes
 complémentaires. Le premier, l'\textbf{Agent Planificateur}, est un agent conversationnel construit
@@ -203,7 +214,7 @@ de développement sur les contributions techniques principales.
         Génération de plans de 1 à 14~jours &
         Paiement et exécution des réservations \\[4pt]
         Modification conversationnelle des plans &
-        Extension multi-région hors Djerba \\[4pt]
+         \\[4pt]
         Recherche sémantique RAG multilingue &
         Application mobile native \\[4pt]
         Intégration météo via Open-Meteo &

@@ -75,6 +75,13 @@ puis raisonne à nouveau sur la base de cette nouvelle information. Ce cycle sim
 permet de résoudre des tâches complexes en plusieurs étapes, où chaque étape affine la
 compréhension du problème et rapproche l'agent de la solution finale.
 
+Toutefois, une boucle ReAct simple ne suffit pas pour une tâche aussi structurée que la
+planification de voyage. Un cycle réflexion-action sans contrainte ne dispose d'aucun mécanisme
+pour vérifier la cohérence d'un plan généré, ne peut empêcher l'agent de tourner indéfiniment
+lorsque le raisonnement devient circulaire, et ne prévoit pas la transmission progressive des
+étapes intermédiaires à l'interface utilisateur. Ces limitations appellent un cadre plus
+expressif, capable de modéliser explicitement les états de l'agent et les transitions autorisées.
+
 LangGraph, développé par LangChain Inc., étend le concept ReAct avec une machine à états typée
 explicite. L'état de l'agent est défini par un \texttt{TypedDict} Python appelé \texttt{AgentState}
 qui accumule les messages via l'opérateur \texttt{operator.add}, et suit l'ensemble des données
@@ -86,18 +93,18 @@ courant, et le mode streaming permet l'affichage en temps réel des étapes de r
 l'interface utilisateur.
 
 Le graphe spécifique construit pour l'agent Guidni comporte quatre nœuds~: \textbf{THINK}
-(le LLM analyse la situation et décide de l'action), \textbf{EXECUTE\_TOOL} (l'outil appelé
-s'exécute et retourne un résultat), \textbf{VALIDATE} (vérification de la cohérence d'un plan
-généré), et \textbf{RESPOND} (formulation de la réponse finale). La topologie du graphe est la
-suivante~: le point d'entrée est THINK~; après THINK, la fonction \texttt{\_should\_continue()}
-route vers EXECUTE\_TOOL si le LLM a émis un appel d'outil, vers RESPOND si l'agent a besoin
-d'informations supplémentaires de l'utilisateur, vers VALIDATE si un plan structuré est prêt
-(\texttt{is\_plan\_ready=True}), ou vers RESPOND par défaut (réponse textuelle ou sortie forcée
-après \texttt{MAX\_AGENT\_ITERATIONS=15}). Après EXECUTE\_TOOL, la fonction
-\texttt{\_after\_tool\_execution()} renvoie à THINK pour réévaluation, sauf si l'outil
-\texttt{ask\_user} a été utilisé, auquel cas l'agent passe directement à RESPOND. Après VALIDATE,
-la fonction \texttt{\_after\_validation()} renvoie à THINK si des erreurs ont été détectées et
-qu'il reste des itérations, ou à RESPOND si la validation a réussi.
+(le LLM analyse la situation et décide de l'action suivante), \textbf{EXECUTE\_TOOL} (l'outil
+appelé s'exécute et retourne un résultat), \textbf{VALIDATE} (vérification de la cohérence
+d'un plan généré), et \textbf{RESPOND} (formulation de la réponse finale). La topologie du
+graphe est la suivante~: le point d'entrée est THINK~; après réflexion, un routage conditionnel
+oriente l'exécution vers l'appel d'outil si le LLM a émis une requête instrumentale, vers la
+validation si un plan structuré est prêt, vers la réponse si l'agent a besoin d'informations
+supplémentaires de l'utilisateur, ou vers une sortie forcée si le nombre maximal d'itérations
+est atteint. Après l'exécution d'un outil, l'agent retourne à la phase de réflexion pour
+réévaluation, sauf lorsqu'une question est adressée à l'utilisateur, auquel cas la réponse est
+transmise directement. Après la validation, l'agent revient à la phase de réflexion si des
+erreurs ont été détectées et qu'il reste des itérations, ou formule la réponse finale si la
+validation a réussi.
 
 LangGraph a été préféré aux alternatives plus simples (chaînes LangChain Expression Language,
 CrewAI) pour plusieurs raisons~: l'état explicite facilite le débogage en rendant visible
@@ -136,22 +143,21 @@ modèle cloud optimisé. De plus, certains environnements de déploiement exigen
 entièrement hors ligne, rendant indispensable la possibilité de basculer entre fournisseurs sans
 modification du code applicatif.
 
-Le système Guidni implémente un patron fabrique (\textit{factory pattern}) dans le module
-\texttt{provider.py}. La fonction centrale \texttt{get\_llm()} accepte quatre paramètres~:
-\texttt{temperature} (contrôle de la créativité), \texttt{json\_mode} (forçage du format JSON
-en sortie), \texttt{provider} (fournisseur à utiliser) et \texttt{model} (nom du modèle). La
-fonction \texttt{parse\_model\_id()} décompose un identifiant de la forme
-\texttt{"gemini/gemini-2.5-flash"} en un couple (fournisseur, nom du modèle). Chaque fournisseur
-dispose de son propre fichier client~: \texttt{ollama\_client.py} instancie \texttt{ChatOllama},
-\texttt{groq\_client.py} instancie \texttt{ChatGroq}, \texttt{gemini\_client.py} instancie
-\texttt{ChatGoogleGenerativeAI}, et \texttt{lightning\_client.py} instancie le client Lightning AI.
-Le code appelant ne change jamais lorsque le fournisseur change.
+Dans le contexte d'un projet académique, cette capacité de commutation revêt une importance
+particulièrement concrète~: le développeur doit pouvoir itérer hors ligne avec un modèle local
+gratuit lors des phases de prototypage, puis basculer vers un modèle cloud performant pour
+l'évaluation qualitative, sans modifier une seule ligne du code agentique. Il ne s'agit donc
+pas d'une préférence théorique mais d'une exigence d'ingénierie opérationnelle.
 
-Le schéma \texttt{ChatRequest} accepte un champ optionnel \texttt{model} permettant au frontend
-de sélectionner dynamiquement un modèle spécifique pour chaque requête, par exemple
-\texttt{"groq/llama-3.3-70b-versatile"} ou \texttt{"ollama/qwen2.5:7b"}, sans redémarrage du
-serveur. Cette flexibilité permet aux utilisateurs avancés de comparer les performances des
-différents modèles sur la même requête de planification.
+Le système Guidni implémente un patron fabrique (\textit{factory pattern}) qui route les
+requêtes vers le fournisseur approprié sur la base d'une simple chaîne de configuration,
+maintenant le code agentique entièrement découplé des implémentations spécifiques à chaque
+fournisseur.
+
+Le système supporte en outre la sélection du modèle au niveau de chaque requête individuelle,
+permettant une commutation dynamique sans redémarrage du serveur. Cette flexibilité offre aux
+utilisateurs avancés la possibilité de comparer les performances de différents modèles sur une
+même requête de planification.
 
 \begin{table}[H]
     \centering
@@ -238,14 +244,8 @@ familiale\fg{} retrouvera des documents mentionnant \og{}family beach\fg{} en an
 des termes équivalents en arabe. Cette propriété multilingue est
 essentielle pour le marché touristique de Djerba, intrinsèquement trilingue.
 
-La configuration retenue dans le module \texttt{settings.py} définit les paramètres suivants~:
-\texttt{chunk\_size=512} tokens pour le découpage des documents, \texttt{chunk\_overlap=50} tokens
-pour assurer la continuité sémantique entre les fragments, exécution sur CPU
-(\texttt{device="cpu"}) sans nécessité de GPU, et \texttt{trust\_remote\_code=True} pour le
-chargeur HuggingFace. Le modèle est initialisé une seule fois au démarrage de l'application
-via la fonction \texttt{initialize\_rag\_settings()} et stocké comme paramètre global LlamaIndex.
-Le LLM intégré de LlamaIndex est explicitement désactivé (\texttt{LlamaSettings.llm = None})
-car tout le raisonnement est délégué à l'agent LangGraph.
+Le modèle est exécuté localement sur CPU avec des paramètres de découpage standard, ne
+nécessitant ni GPU ni appel à une API externe.
 
 Le choix de bge-m3 par rapport aux alternatives a été motivé par plusieurs facteurs~: il est
 gratuit (aucune clé API nécessaire), respectueux de la vie privée (exécution entièrement locale),
@@ -263,14 +263,11 @@ l'index vectoriel devient obsolète et l'agent recommandera des informations pé
 reconstruction manuelle de l'index nécessiterait un redémarrage du serveur, ce qui est
 inacceptable pour un système en production.
 
-La solution implémentée dans le module \texttt{db\_events.py} repose sur les écouteurs
-d'événements SQLAlchemy. Au démarrage de l'application, la fonction \texttt{register\_db\_events()}
-attache des écouteurs sur les événements \texttt{after\_insert}, \texttt{after\_update} et
-\texttt{after\_delete} des six modèles suivis~: \texttt{Activity}, \texttt{Stay},
-\texttt{Restaurant}, \texttt{Attraction}, \texttt{Rental} et \texttt{Transfer}. Lorsqu'un de
-ces événements se produit, une tâche asynchrone en arrière-plan est créée via
-\texttt{loop.create\_task()} pour appeler \texttt{upsert\_entity()} (insertion ou mise à jour)
-ou \texttt{delete\_entity()} (suppression) sur l'entité concernée.
+La solution retenue repose sur les écouteurs d'événements SQLAlchemy. Au démarrage de
+l'application, des écouteurs sont attachés aux événements d'insertion, de mise à jour et de
+suppression des six types d'entités couverts par la plateforme. Lorsqu'un de ces événements se
+produit, une tâche asynchrone en arrière-plan déclenche automatiquement le recalcul de
+l'embedding pour l'entité concernée uniquement.
 
 Les bénéfices de cette approche sont triples~: l'index reste toujours à jour sans aucune
 intervention manuelle, la réindexation est non bloquante car elle s'exécute en arrière-plan
@@ -380,7 +377,7 @@ pour cette annonce est comptabilisée.
 % --- LinUCB cycle diagram ---
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/fig_02_linucb_cycle.png}
+    \includegraphics[width=\textwidth]{diagrams/fig_02_linucb_cycle.drawio.png}
     \caption{Cycle complet du bandit LinUCB dans le système Guidni}
     \label{fig:linucb_cycle}
 \end{figure}
@@ -398,9 +395,9 @@ entre caractéristiques utilisateur et tags d'annonces.
 La règle de mise à jour LinUCB est la suivante~: après avoir observé une récompense $r$ pour un
 contexte $\phi$, le système met à jour les matrices globales selon $A \leftarrow A + \phi\phi^\top$
 et $b \leftarrow b + r \cdot \phi$. L'estimateur du paramètre $\theta$ est alors
-$\hat{\theta} = A^{-1}b$, calculé dans le code via \texttt{np.linalg.solve(A, b)} --- jamais
-par inversion matricielle directe (\texttt{np.linalg.inv}) pour des raisons de stabilité
-numérique. En cas de matrice singulière, un repli vers \texttt{np.linalg.lstsq} est prévu.
+$\hat{\theta} = A^{-1}b$, obtenu en pratique par résolution directe du système linéaire
+plutôt que par inversion matricielle explicite, pour des raisons de stabilité numérique.
+En cas de matrice singulière, un mécanisme de repli par moindres carrés est prévu.
 
 La formule de score UCB combine exploitation et exploration~:
 \begin{equation}
@@ -441,16 +438,10 @@ type de voyage est encodé numériquement~: famille$=1.0$, couple$=0.67$, solo$=
 inconnu$=0.0$.
 
 Le vocabulaire de tags comprend \textbf{40~tags} en ordre alphabétique fixe. L'ordre ne doit
-jamais changer après le déploiement car toute modification invaliderait la matrice~$A$. Les
-tags couvrent les équipements (\texttt{beach\_access}, \texttt{pool}, \texttt{spa}, \texttt{wifi},
-\texttt{parking}, \texttt{gym}, \texttt{hammam}, \texttt{air\_conditioning}), les types
-d'activité (\texttt{adventure}, \texttt{cultural}, \texttt{nature}, \texttt{activity\_outdoor},
-\texttt{activity\_indoor}), les caractéristiques (\texttt{budget}, \texttt{luxury},
-\texttt{romantic}, \texttt{family}, \texttt{business}, \texttt{solo}), la restauration
-(\texttt{fine\_dining}, \texttt{casual\_dining}, \texttt{street\_food}, \texttt{bar}), les types
-d'hébergement (\texttt{hotel}, \texttt{hostel}, \texttt{riad}, \texttt{villa}), et la saisonnalité
-(\texttt{best\_morning}, \texttt{best\_evening}, \texttt{best\_summer}, \texttt{best\_winter},
-\texttt{all\_seasons}).
+jamais changer après le déploiement car toute modification invaliderait la matrice~$A$. Ce
+vocabulaire couvre six catégories sémantiques~: les équipements, les types d'activité, les
+caractéristiques de l'annonce, le style de restauration, le type d'hébergement et la
+saisonnalité. Le détail exhaustif du vocabulaire est présenté en Annexe~A.1.
 
 Le produit de Kronecker $\phi = \texttt{np.kron}(x_{\text{user}}, x_{\text{tags}})$ combine
 le vecteur utilisateur de dimension~9 avec un vecteur binaire de tags de longueur~40 (1 si
@@ -497,9 +488,8 @@ corruption silencieuse de la matrice~$A$.
 Le score brut LinUCB ne suffit pas pour produire une liste de recommandations optimale. Plusieurs
 contraintes métier doivent être appliquées en post-traitement~: diversité des types d'annonces,
 garantie d'exposition pour les nouvelles annonces, exploration de catégories inconnues de
-l'utilisateur, et optimisation des revenus de la plateforme. Le pipeline de classement
-(\texttt{ranker.py}) applique une chaîne de neuf filtres et ajustements dans un ordre précis
-après le scoring LinUCB initial.
+l'utilisateur, et optimisation des revenus de la plateforme. Le module de classement applique
+une chaîne de neuf filtres et ajustements dans un ordre précis après le scoring LinUCB initial.
 
 Les trois premiers filtres sont des filtres d'éligibilité qui réduisent l'ensemble des candidats
 avant le scoring~: la correction de popularité marque les annonces sous-exposées, le filtre
@@ -512,31 +502,30 @@ Les neuf étapes du pipeline sont les suivantes~:
 
 \begin{enumerate}[leftmargin=2cm]
     \item \textbf{Correction de popularité}~: marquer comme sous-exposées les annonces ayant
-    moins de 50~impressions, déclenchant le bonus $+0.15$ lors du scoring.
+    moins de 50~impressions, déclenchant le bonus d'exploration lors du scoring.
 
-    \item \textbf{Filtre temporel}~: retirer les annonces tagées \texttt{best\_evening} ou
-    \texttt{bar} le matin (6h--12h), et \texttt{best\_morning} le soir (20h--23h).
+    \item \textbf{Filtre temporel}~: retirer les annonces inadaptées à la plage horaire courante
+    (par exemple, les annonces à vocation nocturne le matin, et inversement).
 
-    \item \textbf{Filtre budgétaire}~: retirer les annonces dont le prix dépasse
-    $\text{budget} \times 1.25$ lorsqu'une estimation de budget est disponible.
+    \item \textbf{Filtre budgétaire}~: retirer les annonces dont le prix dépasse le budget
+    estimé de l'utilisateur, avec une marge de tolérance.
 
     \item \textbf{Construction des vecteurs $\phi$}~: calculer le produit de Kronecker pour chaque
     annonce restante à partir du contexte utilisateur courant.
 
     \item \textbf{Scoring LinUCB}~: calculer le score UCB pour toutes les annonces restantes.
 
-    \item \textbf{Filtre de diversité}~: parcourir la liste classée de haut en bas, n'accepter
-    au maximum que 2~annonces par type (\texttt{STAY}, \texttt{ACTIVITY}, \texttt{RESTAURANT}).
+    \item \textbf{Filtre de diversité}~: parcourir la liste classée de haut en bas, limiter le
+    nombre d'annonces par type afin de garantir une représentation équilibrée des catégories.
 
     \item \textbf{Garantie nouvelles annonces}~: si aucune annonce du résultat top-$k$ n'a moins
     de 50~impressions, remplacer le dernier créneau par l'annonce sous-exposée la mieux classée.
 
-    \item \textbf{Exploration de tags}~: remplacer 10\% des créneaux par les annonces les mieux
-    classées parmi les catégories de tags que l'utilisateur n'a pas encore explorées
-    (affinité $< 0.2$).
+    \item \textbf{Exploration de tags}~: remplacer une fraction des créneaux par les annonces les
+    mieux classées parmi les catégories de tags que l'utilisateur n'a pas encore explorées.
 
-    \item \textbf{Tri par marge}~: dans les paliers de score dont l'écart est inférieur à $0.05$,
-    trier par \texttt{commission\_rate} décroissant pour maximiser les revenus de la plateforme.
+    \item \textbf{Tri par marge}~: dans les paliers de score dont l'écart est négligeable,
+    trier par taux de commission décroissant pour maximiser les revenus de la plateforme.
 \end{enumerate}
 
 Le résultat final est tronqué à \texttt{top\_k} éléments (par défaut~10) avant d'être retourné.
