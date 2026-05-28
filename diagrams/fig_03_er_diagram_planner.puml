@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Schéma ER du sous-système agent planificateur
@@ -74,11 +74,5 @@ PC ||--o{ PM : "1..*"
 PC ||--o{ GP : "1..*"
 Activity ||--|| AI : "1..1"
 
-note right of PC
-  **Versioning des plans**
-  isActive=False sur l'ancien,
-  nouvelle ligne avec
-  version=N+1 et isActive=True
-end note
 
 @enduml

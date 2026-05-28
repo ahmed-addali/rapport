@@ -4,74 +4,16 @@
 % This file contains all preliminary pages of the PFE report.
 % Include it in main.tex BEFORE \pagenumbering{arabic}.
 % ============================================================================
-
-
 % ────────────────────────────────────────────────────────────────────────────
 % PAGE 1 — PAGE DE TITRE
 % ────────────────────────────────────────────────────────────────────────────
 \begin{titlepage}
-    \centering
-
-    % --- University logo ---
-    \vspace*{0.5cm}
-    \includegraphics[width=4cm]{images/university_logo.png}
-
-    \vspace{0.8cm}
-
-    % --- University name and department ---
-    {\large \textbf{Université de Sousse}}\\[4pt]
-    {\large \textbf{Institut Supérieur d'Informatique et des Technologies de Communication}}\\[4pt]
-    {\large \textbf{(ISITCOM)}}\\[4pt]
-    {\large Département Informatique}
-
-    \vspace{1.2cm}
-
-    % --- Report label ---
-    {\Large \textsc{Rapport de Projet de Fin d'Études}}\\[6pt]
-    {\normalsize Présenté en vue de l'obtention du diplôme national d'ingénieur en informatique}
-
-    \vspace{1.5cm}
-
-    % --- Project title ---
-    \rule{\textwidth}{0.4pt}
-    \vspace{0.6cm}
-    {\LARGE \textbf{Conception et Implémentation d'un Système de\\[6pt]
-    Planification de Voyage Intelligent basé sur les\\[6pt]
-    Agents LLM et un Moteur de Recommandation\\[6pt]
-    Contextuel par Bandits (LinUCB)}}
-    \vspace{0.6cm}
-    \rule{\textwidth}{0.4pt}
-
-    \vspace{1.5cm}
-
-    % --- Author and Supervisor (two-column layout) ---
-    \begin{minipage}[t]{0.45\textwidth}
-        \raggedright
-        {\large \textbf{Réalisé par~:}}\\[6pt]
-        {\large Ahmed Addali}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.45\textwidth}
-        \raggedleft
-        {\large \textbf{Encadré par~:}}\\[6pt]
-        {\large Nizar Tenzekhti}
-    \end{minipage}
-
-    \vspace{1.8cm}
-
-    % --- Jury table ---
-    {\large \textbf{Membres du jury}}\\[10pt]
-    \begin{tabular}{l l}
-        \textbf{Président}     & M./Mme \dotfill \\[8pt]
-        \textbf{Rapporteur}    & M./Mme \dotfill \\[8pt]
-        \textbf{Examinateur}   & M./Mme \dotfill \\
-    \end{tabular}
-
-    \vfill
-
-    % --- Academic year ---
-    {\large \textbf{Année universitaire~: 2024\,--\,2025}}
-
+    % Cette commande dit à LaTeX d'ignorer toutes les marges et de centrer sur la page physique
+    \begin{tikzpicture}[remember picture, overlay]
+        \node at (current page.center) {%
+            \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{images/Page_de_Garde_DNI.png}%
+        };
+    \end{tikzpicture}
 \end{titlepage}
 
 
@@ -82,36 +24,41 @@
 \thispagestyle{empty}
 \vspace*{\fill}
 \begin{center}
-    {\Large \textbf{Dédicace}}\\[1.5cm]
-    \begin{minipage}{0.75\textwidth}
-        \begin{center}
-            \textit{%
-            À mes chers parents, dont les sacrifices silencieux et le soutien
-            indéfectible ont pavé chaque étape de mon parcours. Aucun mot ne
-            saurait exprimer la profondeur de ma reconnaissance envers vous.}
 
-            \vspace{0.6cm}
+\renewcommand{\baselinestretch}{1.5}
+\begin{large}
+{\large \textit {Je dédie ce projet} \\
+\setlength{\parskip}{20pt}
+À mes êtres les plus chers,
+\setlength{\parskip}{12pt}
+Mes parents, mes piliers et mes sources d'inspiration.
 
-            \textit{%
-            À mes enseignants, qui ont su éveiller en moi une passion sincère
-            pour l'intelligence artificielle et les sciences de l'informatique,
-            et qui m'ont transmis la rigueur nécessaire à la recherche.}
+\setlength{\parskip}{12pt}
+Aucun hommage ne pourrait être à la hauteur de vos sacrifices, de l'amour
+et de l'affection dont vous n'avez cessé de m'entourer. Vos encouragements
+constants ont toujours été pour moi les plus précieux.
 
-            \vspace{0.6cm}
+\setlength{\parskip}{12pt}
+À ma chère famille, pour son soutien inconditionnel et son amour inébranlable tout au long de mon parcours.
 
-            \textit{%
-            À mes amis et camarades de promotion, compagnons de longues nuits
-            de travail et de discussions enrichissantes, dont la solidarité a
-            rendu ce parcours plus humain.}
+\setlength{\parskip}{12pt}
+À mes amis et camarades de classe, pour les moments de partage, les échanges d'idées et les défis relevés ensemble.
 
-            \vspace{0.6cm}
+\setlength{\parskip}{12pt}
+À mes enseignants et encadrants, pour leur expertise, leurs conseils éclairés et leur motivation à me pousser toujours plus loin.
 
-            \textit{%
-            À tous ceux qui, de près ou de loin, ont contribué à la réalisation
-            de ce travail\,: que ces pages soient le témoignage modeste de ma
-            gratitude.}
-        \end{center}
-    \end{minipage}
+\setlength{\parskip}{12pt}
+À toutes les personnes qui ont contribué de près ou de loin à la réalisation de ce projet, je vous exprime ma gratitude sincère.
+
+\setlength{\parskip}{12pt}
+Enfin, je dédie ce travail à moi-même, en reconnaissance de mon engagement, de ma détermination et de ma persévérance.
+
+\setlength{\parskip}{12pt}
+Je vous adresse mes vœux les plus chaleureux pour un avenir radieux, rempli de bonheur et de succès.
+
+}
+\end{large}
+
 \end{center}
 \vspace*{\fill}
 
@@ -124,35 +71,23 @@
 \chapter*{Remerciements}
 \addcontentsline{toc}{chapter}{Remerciements}
 
-Au terme de ce projet de fin d'études, il m'est agréable d'exprimer ma
-profonde gratitude envers toutes les personnes qui ont contribué, directement
-ou indirectement, à l'aboutissement de ce travail.
+\begin{center}
+\begin{large}
+Je commence par exprimer ma profonde gratitude et mes sincères remerciements à Allah, le Tout-Puissant, de m'avoir accordé la santé et la vie pour être ici aujourd'hui.
 
-Mes remerciements les plus sincères s'adressent en premier lieu à mon
-encadrant, \textbf{M.~Nizar Tenzekhti}, pour sa disponibilité constante, ses
-orientations judicieuses et son encadrement technique rigoureux tout au long
-de ce projet. Sa maîtrise des architectures logicielles et des systèmes
-d'intelligence artificielle a constitué une source d'inspiration permanente
-et a significativement enrichi la qualité de ce travail.
+Au terme de ce travail, je tiens à adresser mes remerciements les plus sincères à :
 
-Je tiens également à remercier les membres du jury pour l'honneur qu'ils me
-font en acceptant d'évaluer ce travail. Leurs remarques et observations
-contribueront sans nul doute à son amélioration.
+\begin{flushleft}
+\textbf{Madame Nadra Benromdhan}, pour sa considération, sa patience et sa bienveillance tout au long de la réalisation de ce projet. Ses encouragements et ses conseils lucides et pertinents ont été d'une grande valeur pour moi.
+\end{flushleft}
 
-Ma reconnaissance s'étend à l'ensemble du corps enseignant de l'ISITCOM, et
-en particulier au département d'informatique, pour la qualité de la formation
-dispensée au cours de ces années, formation qui m'a fourni les fondements
-théoriques et pratiques nécessaires à la réalisation de ce projet.
+\begin{flushleft}
+\textbf{M. Nizar Tenzekhti}, le Directeur Général de Tenovate Services, pour son accueil chaleureux et la confiance qu'il m'a accordée dès mon arrivée dans l'entreprise. Sa collaboration et son soutien ont été précieux tout au long de cette expérience.
+\end{flushleft}
 
-Je remercie chaleureusement ma famille pour son soutien moral et matériel
-inestimable, sa patience et ses encouragements constants, qui ont été un
-moteur essentiel durant les moments les plus exigeants de ce parcours.
-
-Enfin, j'adresse mes remerciements à mes collègues et amis pour les échanges
-fructueux, les relectures attentives et la collaboration productive qui ont
-accompagné chaque étape de ce travail.
-
-Que toutes ces personnes trouvent ici l'expression de ma profonde gratitude.
+Enfin, je tiens également à exprimer mes plus sincères remerciements aux membres du jury pour avoir accepté d'évaluer ce modeste travail. Leur expertise et leurs commentaires constructifs ont contribué à améliorer ce projet.
+\end{large}
+\end{center}
 
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -174,7 +109,7 @@ Ce travail propose \textbf{Guidni}, une plateforme de planification de voyage
 articulée autour de deux sous-systèmes complémentaires. Le premier est un
 \textbf{agent planificateur conversationnel} construit sur une machine à états
 LangGraph comportant quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
-et disposant de dix-huit outils appelables par le LLM, couvrant la gestion
+et disposant des outils appelables par le LLM, couvrant la gestion
 du profil utilisateur, la recherche d'activités, les données météorologiques
 via Open-Meteo, la géolocalisation par Nominatim et Haversine, ainsi qu'un
 pipeline RAG multilingue (français, anglais, arabe) reposant sur les
@@ -182,14 +117,14 @@ embeddings denses BAAI/bge-m3 et un ré-ordonnancement par cross-encoder
 BAAI/bge-reranker-v2-m3. Le second sous-système est un \textbf{moteur de
 recommandation hybride LinUCB} exploitant un vecteur de caractéristiques
 construit par produit de Kronecker ($\phi = x_{\text{user}} \otimes
-x_{\text{tags}}$, dimension~306), un pipeline de classement en dix étapes
+x_{\text{tags}}$, dimension~360), un pipeline de classement en dix étapes
 intégrant des filtres de diversité et d'exploration, et un apprentissage en
 ligne à partir de huit signaux comportementaux collectés en temps réel.
 
 Les résultats obtenus attestent d'un planificateur conversationnel de bout en
 bout opérant en trois langues, d'une latence de scoring inférieure à 100\,ms
 grâce à un cache matriciel en mémoire vive, et d'une ré-indexation RAG
-incrémentale déclenchée par les événements SQLAlchemy. Ce système contribue à
+incrémentale déclenchée par les Triggers. Ce système contribue à
 la convergence de la planification de voyage assistée par IA et de
 l'apprentissage en ligne à partir de signaux comportementaux pour le marché
 touristique de Djerba.
@@ -204,6 +139,7 @@ contextuel LinUCB, Recommandation personnalisée.
 % ────────────────────────────────────────────────────────────────────────────
 \newpage
 \chapter*{Abstract}
+
 \addcontentsline{toc}{chapter}{Abstract}
 
 Tourists visiting the island of Djerba lack intelligent planning tools that
@@ -223,14 +159,14 @@ computation, and a multilingual RAG pipeline (French, English, Arabic)
 powered by BAAI/bge-m3 dense embeddings and BAAI/bge-reranker-v2-m3
 cross-encoder reranking. The second sub-system is a \textbf{Hybrid LinUCB
 contextual bandit recommender} that leverages a Kronecker-product feature
-vector ($\phi = x_{\text{user}} \otimes x_{\text{tags}}$, dimension~306), a
+vector ($\phi = x_{\text{user}} \otimes x_{\text{tags}}$, dimension~360), a
 ten-step ranker pipeline incorporating diversity and exploration filters, and
 online learning from eight real-time behavioural reward signals.
 
 The experimental results demonstrate an end-to-end conversational planner
 supporting three languages, sub-100\,ms recommendation scoring latency
 through an in-RAM matrix cache, and incremental RAG re-indexing triggered by
-SQLAlchemy event listeners. The system contributes a joint approach to
+Triggers events. The system contributes a joint approach to
 AI-assisted trip planning and online learning from real-time behavioural
 signals for the Djerba tourism market.
 
@@ -279,7 +215,7 @@ Contextual Bandit, Personalised Recommendation.
 %   4.1 Introduction ...................................................... pp
 %   4.2 Machine à états LangGraph ......................................... pp
 %   4.3 Nœud THINK — raisonnement du LLM .................................. pp
-%   4.4 Les 18 outils LLM-callable ........................................ pp
+%   4.4 Les outils LLM-callable ........................................ pp
 %   4.5 Nœud VALIDATE — validation des sorties ............................ pp
 %   4.6 Nœud RESPOND — génération de la réponse ........................... pp
 %   4.7 Pipeline RAG multilingue .......................................... pp
@@ -352,21 +288,13 @@ Contextual Bandit, Personalised Recommendation.
     DB          & Database (Base de données) \\[3pt]
     EN          & Anglais \\[3pt]
     ER          & Entity-Relationship (Entité-Relation) \\[3pt]
-    ESM         & ECMAScript Modules \\[3pt]
-    FAQ         & Frequently Asked Questions (Foire Aux Questions) \\[3pt]
     FK          & Foreign Key (Clé étrangère) \\[3pt]
     FR          & Français \\[3pt]
     HTTP        & HyperText Transfer Protocol \\[3pt]
-    IA          & Intelligence Artificielle \\[3pt]
     IPS         & Inverse Propensity Scoring \\[3pt]
     JSON        & JavaScript Object Notation \\[3pt]
-    JWT         & JSON Web Token \\[3pt]
     LLM         & Large Language Model (Grand modèle de langage) \\[3pt]
     MAB         & Multi-Armed Bandit (Bandit multi-bras) \\[3pt]
-    ML          & Machine Learning (Apprentissage automatique) \\[3pt]
-    MoSCoW      & Must / Should / Could / Won't \\[3pt]
-    NLP         & Natural Language Processing (Traitement du langage naturel) \\[3pt]
-    NLU         & Natural Language Understanding (Compréhension du langage naturel) \\[3pt]
     ORM         & Object-Relational Mapping (Mapping objet-relationnel) \\[3pt]
     PFE         & Projet de Fin d'Études \\[3pt]
     PK          & Primary Key (Clé primaire) \\[3pt]
@@ -376,7 +304,6 @@ Contextual Bandit, Personalised Recommendation.
     REST        & Representational State Transfer \\[3pt]
     SQL         & Structured Query Language (Langage de requêtes structurées) \\[3pt]
     TND         & Tunisian Dinar (Dinar tunisien) \\[3pt]
-    TTL         & Time To Live (Durée de vie) \\[3pt]
     UCB         & Upper Confidence Bound (Borne de confiance supérieure) \\[3pt]
     UML         & Unified Modeling Language (Langage de modélisation unifié) \\[3pt]
     UP          & Unified Process (Processus unifié) \\[3pt]

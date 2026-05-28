@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Diagramme d'états du graphe LangGraph avec conditions de routage
@@ -14,7 +14,6 @@ state THINK {
 }
 
 THINK --> EXECUTE_TOOL : [tool_calls présents]
-THINK --> RESPOND : [needs_more_info = True]
 THINK --> VALIDATE : [is_plan_ready = True et current_plan existe]
 THINK --> RESPOND : [défaut] ou [iteration_count ≥ 15]
 
@@ -53,9 +52,8 @@ note right of THINK
   **_should_continue(state)**
   1. iteration_count ≥ 15 → "respond"
   2. tool_calls présents → "execute_tool"
-  3. needs_more_info → "respond"
-  4. is_plan_ready + current_plan → "validate"
-  5. [défaut] → "respond"
+  3. is_plan_ready + current_plan → "validate"
+  4. [défaut] → "respond"
 end note
 
 note right of EXECUTE_TOOL

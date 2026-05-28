@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Cycle complet du bandit LinUCB dans le système Guidni

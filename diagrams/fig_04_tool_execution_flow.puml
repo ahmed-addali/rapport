@@ -1,6 +1,5 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
 skinparam defaultFontName "Arial"
 
 title Flux d'exécution de l'outil create_plan_structure
@@ -9,9 +8,7 @@ participant "THINK Node" as Think
 participant "AIMessage tool_calls" as AIMsg
 participant "EXECUTE_TOOL Node" as Exec
 participant "create_plan_structure()" as Tool
-participant "Activity Table" as DB
 participant "AgentState" as State
-participant "_should_continue()" as Router
 
 Think -> AIMsg : LLM retourne tool_calls=[{name:"create_plan_structure",args:{plan_json:"..."}}]
 Think -> Exec : _should_continue → "execute_tool"
@@ -20,21 +17,21 @@ Exec -> Exec : Extraction tool call
 Exec -> Tool : ainvoke({plan_json})
 
 Tool -> Tool : Validation structure JSON
-Tool -> DB : SELECT FROM "Activity" WHERE id IN activity_ids
-DB --> Tool : Activity rows
+
 
 alt Plan valide
   Tool --> Exec : {valid: true, plan: {...}}
   Exec -> State : is_plan_ready = True
   Exec -> State : current_plan = plan
   Exec -> State : thinking_steps += "✅ create_plan_structure completed"
-  Exec -> Router : _should_continue
-  Router --> Exec : "validate"
+
+  Exec --> Think : État mis à jour (Retour au nœud principal)
+
 else Plan invalide
   Tool --> Exec : {valid: false, errors: [...]}
   Exec -> State : thinking_steps += "❌ create_plan_structure failed"
-  Exec -> Router : _should_continue
-  Router --> Exec : "respond" (ou "think" selon erreur)
+
+  Exec --> Think : Erreur interceptée (Retour au LLM)
 end
 
 @enduml

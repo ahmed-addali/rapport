@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Architecture globale du système Guidni
@@ -24,7 +24,7 @@ package "Base de Données" {
 }
 
 package "Stockage Vectoriel" {
-  rectangle "LlamaIndex Storage rag_storage/ sur disque" as VecStorage #LightGray
+  rectangle "LlamaIndex Storage sur Qdrant" as VecStorage #LightGray
 }
 
 package "APIs Externes" {
@@ -59,7 +59,7 @@ Scheduler --> LinUCB : Persist matrices, reset drift
 note right of NextJS
   Prisma ORM gère les tables
   frontend (User, Activity, Stay,
-  Yummy, etc.)
+  Restaurant, etc.)
 end note
 
 note right of Agent

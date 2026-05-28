@@ -1,14 +1,14 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Schéma ER du sous-système de recommandation LinUCB
 
 !define table entity
 
-entity "BanditArm" as BA {
-  * id : SERIAL <<PK>>
+entity "BanditArmUCB" as BA {
+  * id : UUID <<PK>>
   --
   * listingId : UUID
   * listingType : VARCHAR
@@ -28,7 +28,7 @@ entity "BanditArm" as BA {
 }
 
 entity "LinUCBGlobal" as LG {
-  * id : VARCHAR <<PK>>
+  * id : UUID <<PK>>
   --
   * aMatrix : JSON [360×360]
   * bVector : JSON [360]
@@ -50,7 +50,7 @@ entity "UserProfile" as UP {
 }
 
 entity "UserSession" as US {
-  * id : SERIAL <<PK>>
+  * id : UUID <<PK>>
   --
   * sessionId : VARCHAR <<UQ>>
   * userId : UUID <<FK>> (nullable)
@@ -67,8 +67,8 @@ entity "UserSession" as US {
   * createdAt : TIMESTAMP
 }
 
-entity "RecommendationEvent" as RE {
-  * id : SERIAL <<PK>>
+entity "RecommendationEventUCB" as RE {
+  * id : UUID <<PK>>
   --
   * eventType : VARCHAR
   * listingId : UUID
@@ -84,12 +84,12 @@ entity "RecommendationEvent" as RE {
 }
 
 entity "ListingTag" as LT {
-  * id : SERIAL <<PK>>
+  * id : UUID <<PK>>
   --
   * listingId : UUID
   * listingType : VARCHAR
   * tags : JSON
-  * confidence : DECIMAL
+  * confidence : Float
   --
   <<UQ>> (listingId, listingType)
 }
@@ -101,20 +101,22 @@ entity "SystemConfig" as SC {
   * updatedAt : TIMESTAMP
 }
 
-note right of LG
-  **Matrices globales partagées**
-  Une seule ligne "global"
-  A : 360×360 float64
-  b : 360 float64
-  RAM cache + persistance
-  toutes les 2 minutes
-end note
 
-note right of BA
-  **Compteurs par bras**
-  impressions, clicks, wishlists,
-  conversions pour le scoring
-  et le filtre de diversité
-end note
+
+' ============================================================
+' RELATIONS (VISUELLES)
+' ============================================================
+
+' Un UserProfile peut avoir plusieurs UserSessions (1 à N)
+UP ||--o{ US : "possède"
+
+' Une UserSession génère plusieurs RecommendationEvents (1 à N)
+US ||--o{ RE : "génère"
+
+' Un BanditArm est lié à plusieurs RecommendationEvents (1 à N)
+BA ||--o{ RE : "est recommandé dans"
+
+' Un ListingTag est utilisé par plusieurs BanditArms (1 à N)
+LT ||--o{ BA : "catégorise"
 
 @enduml

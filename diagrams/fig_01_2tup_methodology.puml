@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Processus 2TUP appliqué au projet Guidni

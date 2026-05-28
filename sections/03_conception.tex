@@ -5,9 +5,9 @@
 \section{Introduction}
 
 Ce chapitre présente l'implémentation complète de l'agent planificateur IA du système Guidni,
-conformément à l'architecture conçue au chapitre~3. L'implémentation est organisée autour de
+conformément à l'architecture conçue au chapitre~2. L'implémentation est organisée autour de
 quatre composants principaux~: la machine à états LangGraph qui orchestre le raisonnement de
-l'agent, les 18~outils appelables par le LLM qui permettent l'accès aux données en temps réel,
+l'agent, les outils appelables par le LLM qui permettent l'accès aux données en temps réel,
 le pipeline RAG qui ancre les réponses dans des données factuelles vérifiées, et le système de
 gestion de la mémoire conversationnelle qui assure la cohérence multi-tour.
 
@@ -39,18 +39,14 @@ LangChain) et \texttt{thinking\_steps} (les étapes de réflexion affichées dan
 utilisateur). Les champs \textbf{à écrasement} (tous les autres) sont remplacés par la dernière
 valeur fournie par un nœud, selon le comportement par défaut de LangGraph.
 
-Les champs sont regroupés par fonction~: les champs d'identité conversationnelle
-(\texttt{user\_id}, \texttt{conversation\_id}, \texttt{is\_modification}) identifient le contexte
-de la requête~; les champs de données peuplés par les outils (\texttt{user\_profile},
-\texttt{activities}, \texttt{enriched\_activities}, \texttt{weather}, \texttt{stays},
-\texttt{restaurants}, \texttt{rag\_context}, \texttt{current\_plan}) stockent les résultats
-intermédiaires~; les drapeaux de contrôle de flux (\texttt{needs\_more\_info} déclenche le
-routage vers RESPOND, \texttt{is\_plan\_ready} déclenche le routage vers VALIDATE,
-\texttt{iteration\_count} est incrémenté par THINK et vérifié contre
-\texttt{MAX\_AGENT\_ITERATIONS=15})~; les champs de sélection LLM (\texttt{llm\_provider},
-\texttt{llm\_model}) permettent le choix du fournisseur par requête~; et les champs de sortie
-(\texttt{response\_type}, \texttt{final\_response}, \texttt{final\_plan}, \texttt{questions})
-sont définis par RESPOND.
+Les champs sont regroupés en cinq familles fonctionnelles~: les champs d'identité
+conversationnelle, qui identifient le contexte de la requête~; les champs de données peuplés
+par les outils, qui stockent les résultats intermédiaires collectés au fil du raisonnement~;
+les drapeaux de contrôle de flux, qui orientent le routage conditionnel vers la validation,
+la réponse ou la poursuite du raisonnement~; les champs de sélection du fournisseur LLM, qui
+permettent le choix du modèle par requête~; et les champs de sortie, définis par le nœud
+RESPOND, qui contiennent la réponse finale et le plan structuré. Le tableau~\ref{tab:agent_state}
+documente chaque champ individuellement.
 
 \begin{table}[H]
     \centering
@@ -91,32 +87,26 @@ sont définis par RESPOND.
 
 \subsection{Fonctions de routage conditionnel}
 
-La fonction \texttt{\_should\_continue(state)} détermine le nœud suivant après THINK. Elle évalue
-cinq conditions dans un ordre de priorité strict. Premièrement, si
-\texttt{iteration\_count >= MAX\_AGENT\_ITERATIONS} (15), le routage force la réponse
-(\texttt{"respond"}) pour empêcher les boucles infinies~: sans ce garde-fou, un outil défaillant
-ou un LLM confus pourrait boucler indéfiniment, consommant des tokens et des crédits API.
-Deuxièmement, si le dernier message possède un attribut \texttt{tool\_calls} non vide, le routage
-envoie vers \texttt{"execute\_tool"} pour exécuter les outils demandés.
+La fonction de routage post-THINK détermine le nœud suivant après la phase de réflexion. Elle
+évalue quatre conditions dans un ordre de priorité strict. Premièrement, si le compteur
+d'itérations atteint le seuil maximal, le routage force la réponse pour empêcher les boucles
+infinies~: sans ce garde-fou, un outil défaillant ou un LLM confus pourrait boucler
+indéfiniment, consommant des tokens et des crédits API. Deuxièmement, si le LLM a émis un
+appel d'outil, le routage envoie vers le nœud d'exécution pour traiter la requête instrumentale~:
+cela inclut le cas où l'agent souhaite interroger l'utilisateur via l'outil \texttt{ask\_user},
+qui est traité comme n'importe quel autre outil. Troisièmement, si un plan structuré est prêt
+pour validation, le routage envoie vers le nœud de validation pour vérifier la cohérence du plan.
+Quatrièmement, par défaut (réponse textuelle), le routage envoie vers le nœud de réponse.
 
-Troisièmement, si \texttt{needs\_more\_info} est \texttt{True} (l'outil \texttt{ask\_user} a été
-invoqué), le routage envoie vers \texttt{"respond"} pour délivrer la question à l'utilisateur
-immédiatement. Quatrièmement, si \texttt{is\_plan\_ready} est \texttt{True} et
-\texttt{current\_plan} est non nul, le routage envoie vers \texttt{"validate"} pour vérifier
-la cohérence du plan. Cinquièmement, par défaut (réponse textuelle), le routage envoie vers
-\texttt{"respond"}.
+La fonction de routage post-EXECUTE\_TOOL détermine le nœud suivant après l'exécution des
+outils. Le routage renvoie vers le nœud de réflexion pour que le LLM réévalue la situation
+avec les résultats d'outils reçus, sauf si le compteur d'itérations est épuisé, auquel cas
+le routage force la réponse.
 
-La fonction \texttt{\_after\_tool\_execution(state)} détermine le nœud suivant après
-EXECUTE\_TOOL. Si \texttt{needs\_more\_info} est \texttt{True} (le tool \texttt{ask\_user} a
-été utilisé), le routage envoie vers \texttt{"respond"} pour éviter un retour inutile au LLM.
-Sinon, le routage renvoie vers \texttt{"think"} pour que le LLM réévalue la situation avec les
-résultats d'outils reçus.
-
-La fonction \texttt{\_after\_validation(state)} détermine le nœud suivant après VALIDATE.
-Si le plan a été invalidé (\texttt{is\_plan\_ready=False}) et qu'il reste des itérations
-(\texttt{iteration\_count < 15}), le routage renvoie vers \texttt{"think"} pour permettre au
-LLM de corriger les erreurs identifiées. Sinon, le routage envoie vers \texttt{"respond"}
-(soit la validation a réussi, soit les itérations sont épuisées).
+La fonction de routage post-VALIDATE détermine le nœud suivant après la validation. Si le
+plan a été invalidé et qu'il reste des itérations disponibles, le routage renvoie vers le
+nœud de réflexion pour permettre au LLM de corriger les erreurs identifiées. Sinon, le routage
+envoie vers le nœud de réponse (soit la validation a réussi, soit les itérations sont épuisées).
 
 \begin{figure}[H]
     \centering
@@ -132,8 +122,8 @@ LLM de corriger les erreurs identifiées. Sinon, le routage envoie vers \texttt{
 
 \subsection{Construction du prompt système}
 
-Le prompt système du module \texttt{personality.py} (122~lignes) définit l'identité de l'agent
-Guidni comme un ami local chaleureux et expert du tourisme à Djerba, qui parle français, anglais
+Le prompt système définit l'identité de l'agent
+Guidni comme un expert du tourisme à Djerba, qui parle français, anglais
 et arabe avec détection automatique de la langue de l'utilisateur. Le prompt interdit
 explicitement à l'agent d'inventer des données~: il ne doit recommander que des lieux, activités
 et hébergements effectivement récupérés par les outils de recherche. Les recommandations doivent
@@ -150,7 +140,7 @@ ne jamais forcer une recommandation si les données disponibles sont insuffisant
 Le prompt contient également des règles cruciales de désambiguïsation des types d'entités~:
 \texttt{activity} désigne une expérience payante (catégorie \og{}DO\fg{}), \texttt{stay} désigne
 un hébergement uniquement (ne \emph{jamais} placer un hébergement dans un créneau d'activité
-diurne), \texttt{restaurant}/\texttt{yummy} désigne un lieu de restauration (catégorie
+diurne), \texttt{restaurant} désigne un lieu de restauration (catégorie
 \og{}EAT\fg{}), et \texttt{attraction} désigne un site touristique gratuit. Cette
 désambiguïsation est essentielle car sans elle, le LLM peut confondre un hôtel avec une
 attraction à visiter dans la journée.
@@ -161,9 +151,8 @@ attraction à visiter dans la journée.
 Avant chaque appel au LLM, le nœud THINK construit un message de contexte à partir de l'état
 courant. Si \texttt{user\_profile} existe, un résumé du profil est ajouté. Si
 \texttt{current\_plan} existe, l'information \og{}version X avec N jours\fg{} est ajoutée. Si
-\texttt{weather} existe, les prévisions météorologiques sont incluses. Si \texttt{rag\_context}
-est non vide, les cinq premiers résultats sont formatés avec titre, type d'entité et score de
-similarité. Ce contexte est injecté comme un \texttt{SystemMessage} distinct du prompt de
+\texttt{weather} existe, les prévisions météorologiques sont incluses. Ce contexte est injecté 
+comme un \texttt{SystemMessage} distinct du prompt de
 personnalité, permettant au LLM de voir clairement les données déjà collectées.
 
 L'heuristique d'arrêt forcé constitue un mécanisme de sécurité critique~: si
@@ -173,19 +162,21 @@ suffisamment de données. Générez votre réponse FINALE maintenant. N'appelez 
 recherche.\fg{} Cette heuristique empêche l'agent de rechercher indéfiniment lorsqu'il dispose
 déjà d'un contexte suffisant, réduisant la latence et la consommation de tokens.
 
-La normalisation du contenu spécifique à Gemini est gérée par les fonctions utilitaires
-\texttt{\_get\_text\_content()} et \texttt{\_normalize\_content()}. Google Gemini retourne le
-contenu des messages sous forme de liste de dictionnaires
-(\texttt{[\{"type": "text", "text": "..."\}]}) au lieu d'une chaîne de caractères simple comme
-Ollama et Groq. Ces fonctions détectent le format et extraient le texte de manière transparente,
-assurant la compatibilité multi-fournisseurs sans modification du code des nœuds.
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Les 18 outils LLM}
+\section{Les outils LLM}
 % ────────────────────────────────────────────────────────────────
 
 \subsection{Vue d'ensemble et registre des outils}
+
+La planification de voyage exige l'accès à sept domaines distincts de données réelles~:
+l'historique de l'utilisateur, le catalogue d'activités, les conditions météorologiques, la
+géolocalisation, les hébergements, la restauration, et la construction structurée de plans.
+Aucun outil unique ne peut couvrir l'ensemble de ces domaines, ce qui justifie la nécessité
+des outils spécialisés. Le regroupement par domaine fonctionnel garantit que chaque
+outil reste focalisé sur une responsabilité unique, facilitant le test et la maintenance
+indépendants.
 
 Le décorateur \texttt{@tool} de LangChain transforme une fonction Python asynchrone en un outil
 appelable par le LLM. La décoration analyse la signature de la fonction, sa docstring et ses
@@ -194,13 +185,9 @@ description et les paramètres attendus. La méthode \texttt{bind\_tools()} de L
 ensuite ces schémas au LLM pour que le modèle puisse émettre des appels d'outils structurés.
 
 Le registre central défini dans \texttt{registry.py} exporte la fonction
-\texttt{get\_all\_tools()} qui retourne les 18~outils dans un ordre fixe. Lors de l'exécution,
+\texttt{get\_all\_tools()} qui retourne les outils dans un ordre fixe. Lors de l'exécution,
 le nœud EXECUTE\_TOOL construit un dictionnaire de correspondance
-\texttt{\{tool.name: tool\}} pour dispatcher les appels par nom. Les outils couvrent sept
-domaines fonctionnels~: le profil utilisateur (1~outil), la recherche d'entités (5~outils),
-la météo et la géolocalisation (3~outils), la disponibilité et le budget (3~outils), la
-construction de plans (3~outils), la communication (1~outil) et la recherche sémantique
-RAG (3~outils).
+\texttt{\{tool.name: tool\}} pour dispatcher les appels par nom. 
 
 La gestion des erreurs suit un patron uniforme~: chaque outil encapsule ses requêtes de base
 de données et ses appels API dans un bloc \texttt{try/except} et retourne un dictionnaire
@@ -211,32 +198,30 @@ jamais brutalement à cause d'un outil défaillant.
 
 \begin{table}[H]
     \centering
-    \caption{Catalogue des 18 outils LLM}
+    \caption{Catalogue des outils LLM}
     \label{tab:tools_catalog}
     \footnotesize
-    \begin{tabular}{p{3.2cm} p{2.5cm} p{3.5cm} p{2cm} p{2.5cm}}
+    \begin{tabular}{p{4.5cm} p{10.5cm}}
         \toprule
-        \textbf{Outil} & \textbf{Module} & \textbf{Tables DB} & \textbf{API ext.} & \textbf{Retourne} \\
+        \textbf{Outil} & \textbf{Description} \\
         \midrule
-        get\_user\_profile & user\_tools & User, Reservation, Review, Wishlist, Preference & — & Profil dict \\[2pt]
-        search\_activities & activity\_tools & Activity, Images & — & Liste activités \\[2pt]
-        get\_activity\_details & activity\_tools & Activity, Images & — & Activité complète \\[2pt]
-        enrich\_activity & activity\_tools & ActivityIntelligence & LLM & Enrichissement JSON \\[2pt]
-        get\_weather & weather\_tools & — & Open-Meteo & Météo dict \\[2pt]
-        get\_distance & geo\_tools & — & — (Haversine) & \{km, minutes\} \\[2pt]
-        geocode\_address & geo\_tools & — & Nominatim & \{lat, lon\} \\[2pt]
-        search\_stays & stay\_tools & Stay, Images & — & Liste hébergements \\[2pt]
-        search\_restaurants & restaurant\_tools & Restaurant, Images, Hours & — & Liste restaurants \\[2pt]
-        check\_availability & availability\_tools & Activity, Reservation & — & \{available, spots\} \\[2pt]
-        estimate\_daily\_budget & budget\_tools & — & — & \{total, ventilation\} \\[2pt]
-        estimate\_trip\_budget & budget\_tools & — & — & \{total, moy. jour\} \\[2pt]
-        create\_plan\_structure & plan\_tools & Activity (valid.) & — & \{valid, plan\} \\[2pt]
-        modify\_plan & plan\_tools & — & — & \{modified, plan\} \\[2pt]
-        save\_plan\_tool & plan\_tools & GeneratedPlan & — & \{saved, id\} \\[2pt]
-        ask\_user & communication & — & — & \{question, suggestions\} \\[2pt]
-        rag\_search & rag\_tools & VectorStoreIndex & — & Résultats scorés \\[2pt]
-        rag\_search\_for\_plan & rag\_tools & VectorStoreIndex & — & 4 listes thématiques \\[2pt]
-        rag\_get\_similar & rag\_tools & VectorStoreIndex & — & Entités similaires \\
+        get\_user\_profile & Récupère le profil historique, les affinités et les préférences de l'utilisateur depuis la base de données. \\[2pt]
+        search\_activities & Recherche des activités touristiques et des expériences payantes (catégorie DO). \\[2pt]
+        get\_activity\_details & Fournit les détails complets, les images et les caractéristiques d'une activité spécifique. \\[2pt]
+        enrich\_activity & Génère des métadonnées intelligentes (intensité, ambiance, tags) via LLM pour enrichir une activité. \\[2pt]
+        get\_weather & Récupère les prévisions météorologiques en temps réel pour la destination via Open-Meteo. \\[2pt]
+        get\_distance & Calcule la distance et le temps de trajet entre deux points en utilisant la formule de Haversine. \\[2pt]
+        geocode\_address & Convertit une adresse textuelle en coordonnées géographiques (latitude, longitude) via Nominatim. \\[2pt]
+        search\_stays & Recherche des options d'hébergement (hôtels, villas, maisons d'hôtes). \\[2pt]
+        search\_restaurants & Recherche des lieux de restauration avec leurs horaires d'ouverture et menus. \\[2pt]
+        check\_availability & Vérifie la disponibilité réelle et les places restantes pour une activité à une date donnée. \\[2pt]
+        estimate\_daily\_budget & Estime le budget nécessaire pour une journée complète, avec ventilation des coûts. \\[2pt]
+        estimate\_trip\_budget & Calcule le budget total estimé pour l'ensemble du séjour touristique. \\[2pt]
+        create\_plan\_structure & Construit et valide la structure logique (JSON) initiale du plan de voyage. \\[2pt]
+        modify\_plan & Modifie et ajuste un plan de voyage existant selon les nouvelles contraintes de l'utilisateur. \\[2pt]
+        ask\_user & Formule une question de clarification à l'utilisateur, accompagnée de suggestions de réponses. \\[2pt]
+        rag\_search & Effectue une recherche sémantique ciblée dans l'index vectoriel des données touristiques. \\[2pt]
+        rag\_search\_for\_plan & Exécute quatre recherches parallèles spécialisées (activités, restaurants, séjours, attractions) pour orchestrer un plan complet. \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -251,19 +236,18 @@ problème fondamental~: une requête RAG unique ne peut pas distinguer entre \og
 d'embedding de \og{}hôtel 3 étoiles avec piscine\fg{} sont sémantiquement proches de
 \og{}activité de natation\fg{}, produisant des recommandations incohérentes.
 
-L'outil exécute quatre recherches parallèles avec des requêtes spécialisées~: la recherche
-d'activités utilise la requête complète de l'utilisateur enrichie du thème de la journée~; la
-recherche de restaurants utilise une requête alimentaire spécifique
-(\og{}restaurant dining food cuisine local \{region\}\fg{}) indépendamment du thème du voyage,
-car des thèmes comme \og{}journée aventure\fg{} ne correspondent pas aux vecteurs de description
-des restaurants~; la recherche d'hébergements utilise la requête complète avec un filtre de
-prix~; la recherche d'attractions utilise une requête patrimoniale (\og{}sightseeing landmark
-museum heritage culture \{region\}\fg{}) pour trouver des sites gratuits.
+L'outil exécute quatre recherches parallèles par défaut, couvrant les besoins essentiels 
+(Activités, Restaurants, Hébergements, Attractions). Les deux catégories logistiques 
+(\textbf{Rentals} et \textbf{Transfers}) sont traitées comme des services conditionnels : 
+elles ne sont invoquées par l'agent que si l'utilisateur exprime explicitement un besoin 
+de mobilité ou d'équipement dans sa requête initiale. Cette stratégie de déclenchement à la 
+demande (\textit{on-demand retrieval}) permet de maintenir une haute pertinence sémantique et 
+d'optimiser le coût computationnel en évitant de traiter des données logistiques non sollicitées.
 
 La logique de dimensionnement adapte le nombre de résultats demandés à la durée du voyage.
-Les formules utilisées sont~: $\min(\text{num\_days} \times 4, 20)$ pour les activités,
-$\min(\text{num\_days} \times 2, 10)$ pour les restaurants, $\min(\text{num\_days}, 5)$ pour
-les hébergements, et $\min(\text{num\_days} \times 2, 10)$ pour les attractions. Cette
+Les formules utilisées sont~: $\min(\text{num\_days} \times 4, 70)$ pour les activités,
+$\min(\text{num\_days} \times 2, 28)$ pour les restaurants, $\min(\text{num\_days}, 5)$ pour
+les hébergements, et $\min(\text{num\_days} \times 2, 28)$ pour les attractions. Cette
 adaptation empêche le sur-échantillonnage pour les voyages courts et le sous-échantillonnage
 pour les voyages longs.
 
@@ -274,29 +258,6 @@ de placer un hôtel dans un créneau d'activité diurne --- un problème récurr
 de test qui corrompait les plans générés.
 
 
-\subsection{Outil enrich\_activity~: cache d'intelligence IA}
-
-L'outil \texttt{enrich\_activity} produit des métadonnées structurées que la base de données ne
-contient pas nativement~: \texttt{noise\_level} (calme/modéré/bruyant), \texttt{ambiance}
-(romantique/famille/aventure), \texttt{physical\_intensity} (faible/modérée/élevée),
-\texttt{best\_time\_of\_day} (matin/après-midi/soir/indifférent), \texttt{ideal\_weather},
-\texttt{ideal\_group\_type}, \texttt{age\_friendly}, \texttt{indoor\_outdoor}, \texttt{tags},
-et un résumé en une phrase. Ces métadonnées permettent à l'agent de prendre des décisions de
-planification plus intelligentes que le simple filtrage par catégorie.
-
-Le mécanisme de cache repose sur la table \texttt{ActivityIntelligence}. Avant tout appel au LLM,
-l'outil vérifie l'existence d'un enrichissement préexistant pour l'activité demandée. Si un
-enrichissement est trouvé, il est retourné immédiatement sans appel LLM (coût nul, réponse
-instantanée). Si aucun enrichissement n'existe, le LLM est appelé, la réponse JSON est analysée,
-et le résultat est inséré dans la table via un \texttt{upsert}. Les appels ultérieurs pour la
-même activité sont gratuits et instantanés.
-
-En cas d'échec de l'appel LLM (erreur réseau, quota dépassé, JSON malformé), un enrichissement
-de base est généré à partir du champ \texttt{categories} de l'activité. Par exemple, une
-activité de catégorie \og{}water sports\fg{} reçoit automatiquement
-\texttt{physical\_intensity="high"} et \texttt{indoor\_outdoor="outdoor"}. Ce mécanisme de
-repli garantit que l'outil ne retourne jamais une erreur à l'agent, maintenant la fluidité
-du cycle de raisonnement.
 % ============================================================================
 % CHAPITRE 4 — Part 2: 4.4–4.9 + Conclusion
 % ============================================================================
@@ -305,34 +266,22 @@ du cycle de raisonnement.
 \section{Le nœud EXECUTE\_TOOL}
 % ────────────────────────────────────────────────────────────────
 
-Le nœud d'exécution des outils, défini dans \texttt{tool\_executor.py}, constitue le pont entre
-les décisions du LLM et les systèmes de données. Il extrait tous les \texttt{tool\_calls} du
-dernier \texttt{AIMessage}, construit un dictionnaire de correspondance
-\texttt{\{name: tool\}} à partir du registre, et exécute chaque outil séquentiellement via
-\texttt{await tool\_fn.ainvoke(tool\_args)}. Chaque résultat est encapsulé dans un
-\texttt{ToolMessage} avec le contenu sérialisé en JSON compact et l'identifiant
-\texttt{tool\_call\_id} pour la corrélation avec l'appel d'origine.
+Le nœud d'exécution des outils constitue le pont entre les décisions du LLM et les systèmes
+de données. Il récupère l'ensemble des appels d'outils demandés par le LLM dans le dernier
+message, dispatche chacun vers la fonction correspondante du registre d'outils, et encapsule
+chaque résultat dans un message que le LLM peut exploiter lors de l'étape de raisonnement
+suivante.
 
-Les mises à jour critiques de l'état sont déclenchées par les résultats de certains outils.
-Lorsque \texttt{create\_plan\_structure} retourne \texttt{result["valid"]=True}, l'exécuteur
-met à jour \texttt{is\_plan\_ready=True} et \texttt{current\_plan=result["plan"]}, déclenchant
-le routage vers VALIDATE. Lorsque \texttt{ask\_user} est invoqué,
-\texttt{needs\_more\_info=True} et \texttt{questions} sont mis à jour, provoquant un routage
-direct vers RESPOND. Les trois outils RAG (\texttt{rag\_search}, \texttt{rag\_search\_for\_plan},
-\texttt{rag\_get\_similar}) mettent à jour le champ \texttt{rag\_context}~; dans le cas
-spécifique de \texttt{rag\_search\_for\_plan}, les quatre sous-listes
-(\texttt{activities\_for\_time\_slots}, \texttt{restaurants\_for\_meals},
-\texttt{stays\_for\_overnight\_only}, \texttt{attractions\_for\_time\_slots}) sont aplaties en
-une liste unifiée.
+Certains résultats d'outils déclenchent des transitions d'état spécifiques. Lorsqu'une
+structure de plan est validée avec succès, le routage vers le nœud de validation est activé.
+Lorsqu'une demande de clarification est formulée, le routage direct vers le nœud de réponse
+est activé. Dans le cas de la recherche
+multi-types, les quatre sous-listes thématiques sont aplaties en une liste unique.
 
-Pour chaque outil exécuté, une étape de réflexion (\textit{thinking step}) est créée avec une
-description lisible par l'humain (par exemple \og{}$\checkmark$ search\_activities completed ---
-Found 8 items\fg{}) et ajoutée à la liste accumulée \texttt{thinking\_steps}. En cas d'échec
-d'un outil, un message d'erreur est créé (\og{}$\times$ tool\_name failed: message\fg{}) et
-l'erreur est encapsulée dans un \texttt{ToolMessage} pour que le LLM puisse décider de la
-marche à suivre. L'exécuteur effectue également une journalisation détaillée au niveau DEBUG,
-incluant les arguments d'entrée complets et les résultats complets de chaque outil, facilitant
-le débogage des chaînes de raisonnement complexes.
+Pour chaque outil exécuté, une étape de réflexion lisible par l'humain est enregistrée et
+affichée progressivement dans l'interface frontend. En cas d'échec d'un outil, l'erreur est
+capturée gracieusement et transmise au LLM pour qu'il puisse décider de la marche à suivre
+plutôt que de provoquer un arrêt brutal du graphe.
 
 \begin{figure}[H]
     \centering
@@ -346,24 +295,20 @@ le débogage des chaînes de raisonnement complexes.
 \section{Le nœud VALIDATE}
 % ────────────────────────────────────────────────────────────────
 
-Le nœud de validation, défini dans \texttt{validator.py}, implémente les garde-fous qui
-empêchent la livraison de plans incohérents à l'utilisateur. La fonction
-\texttt{\_validate\_plan()} vérifie quatre règles~: le plan doit contenir au moins un jour,
-chaque jour doit comporter au moins un créneau, aucun jour ne doit dépasser 7~créneaux
-(pour éviter les plannings irréalistes surchargeant la journée), et aucun
-\texttt{activity\_id} ne doit apparaître plus d'une fois dans l'ensemble du plan (détection
-des doublons).
+Le module de validation implémente les garde-fous qui empêchent la livraison de plans
+incohérents à l'utilisateur. Quatre règles sont vérifiées~: le plan doit contenir au moins un
+jour, chaque jour doit comporter au moins un créneau, aucun jour ne doit dépasser 7~créneaux
+(pour éviter les plannings irréalistes surchargeant la journée), et aucun identifiant
+d'activité ne doit apparaître plus d'une fois dans l'ensemble du plan (détection des doublons).
 
-Le mécanisme d'injection d'erreurs repose sur les \texttt{SystemMessage} de LangChain. Si des
-erreurs de validation sont détectées, un message système est ajouté à la liste des messages
-avec le contenu~: \og{}\texttt{[VALIDATION] Validation issues: Day 2 has duplicate activity
-ID abc123; Day 3 has too many activities (9). Please fix these issues.}\fg{} Le champ
-\texttt{is\_plan\_ready} est remis à \texttt{False}, et la fonction de routage
-\texttt{\_after\_validation()} renvoie l'agent au nœud THINK. Le LLM lit le message d'erreur
-et corrige le plan lors de son prochain appel d'outil.
+Si des erreurs de validation sont détectées, un message d'erreur décrivant les problèmes
+spécifiques identifiés est injecté comme instruction système de haute priorité, provoquant
+la remise à zéro de l'indicateur de plan prêt. La fonction de routage post-validation renvoie
+alors l'agent au nœud de réflexion, où le LLM lit le message d'erreur et corrige le plan lors
+de son prochain appel d'outil.
 
-Le choix d'injecter les erreurs comme \texttt{SystemMessage} plutôt que comme résultat d'outil
-est un choix de conception délibéré. Les messages système sont traités avec une priorité élevée
+Le choix d'injecter les erreurs comme message système plutôt que comme résultat d'outil est
+un choix de conception délibéré. Les messages système sont traités avec une priorité élevée
 par les LLMs (instruction de niveau système), tandis que les résultats d'outils peuvent être
 enfouis dans un historique de messages long. Cette hiérarchie de priorité garantit que le LLM
 prend les erreurs de validation au sérieux et les corrige effectivement.
@@ -373,83 +318,67 @@ prend les erreurs de validation au sérieux et les corrige effectivement.
 \section{Le nœud RESPOND et la persistance}
 % ────────────────────────────────────────────────────────────────
 
-Le nœud de réponse, défini dans \texttt{responder.py}, détermine le type de réponse selon
-l'état courant~: si \texttt{needs\_more\_info} est \texttt{True} et \texttt{questions} est
-non nul, le type est \texttt{"question"}~; si \texttt{is\_plan\_ready} est \texttt{True} et
-\texttt{is\_modification} est \texttt{True}, le type est \texttt{"modification"}~; si
-\texttt{is\_plan\_ready} est \texttt{True}, le type est \texttt{"plan"}~; sinon, le type est
-\texttt{"text"} (réponse conversationnelle simple).
+Le nœud de réponse détermine le type de réponse à partir de quatre états mutuellement
+exclusifs~: une question de clarification en attente, une modification de plan existant, un
+nouveau plan complet, ou une réponse conversationnelle simple.
 
-L'extraction du texte final parcourt la liste des messages en ordre inverse pour trouver le
-dernier \texttt{AIMessage} avec un contenu non vide. Le contenu est normalisé via
-\texttt{\_normalize\_content()} pour gérer le format liste-de-dictionnaires de Gemini.
-Cette approche est nécessaire car dans un cycle multi-outils, plusieurs \texttt{ToolMessage}
-peuvent suivre le dernier \texttt{AIMessage} contenant du texte, et il faut retrouver la
-bonne source de texte.
+Lorsqu'un plan est produit, tout plan précédemment actif pour cette conversation est archivé
+et un nouveau plan versionné est sauvegardé, préservant l'historique complet des modifications
+pour un éventuel retour en arrière.
 
-La persistance des plans exploite le versionnement. Lorsque le type de réponse est
-\texttt{"plan"} ou \texttt{"modification"}, la fonction \texttt{save\_plan()} est appelée.
-Elle désactive d'abord tous les plans actifs existants pour cette conversation
-(\texttt{UPDATE SET isActive=False}), puis détermine le numéro de version en comptant les
-plans existants, et enfin insère une nouvelle ligne avec \texttt{isActive=True} et
-\texttt{version=N+1}. Ce mécanisme de versionnement permet de récupérer les itérations
-précédentes d'un plan si l'utilisateur souhaite revenir à une version antérieure.
-
-Les métadonnées sauvegardées avec chaque message assistant comprennent la liste
-\texttt{thinking\_steps}, la liste \texttt{tools\_used}, et le booléen \texttt{has\_plan}.
-Ces métadonnées sont stockées dans la colonne JSON \texttt{metadata} de la table
-\texttt{PlannerMessage}, permettant au frontend de reconstruire l'affichage des étapes de
-réflexion à partir de l'historique de conversation sans nécessiter de nouveaux appels à l'agent.
+Chaque message assistant est sauvegardé avec des métadonnées structurées incluant les étapes
+de raisonnement et les outils utilisés, permettant au frontend de reconstruire l'affichage
+des étapes de réflexion à partir de l'historique de conversation sans réexécution de l'agent.
 
 
 % ────────────────────────────────────────────────────────────────
 \section{Le pipeline RAG}
 % ────────────────────────────────────────────────────────────────
 
-L'architecture RAG a été présentée en détail au chapitre~2. Cette section se concentre sur les
-aspects spécifiques de l'implémentation. Chaque type d'entité dispose d'une fonction dédiée de
-construction de documents (\texttt{\_activity\_to\_document}, \texttt{\_stay\_to\_document},
-\texttt{\_yummy\_to\_document}, \texttt{\_attraction\_to\_document}) qui convertit une instance
-de modèle ORM en un \texttt{Document} LlamaIndex. Le document comprend un corps textuel riche
-incluant tous les champs pertinents (titre, description, catégorie, région, prix, durée,
-équipements) et un dictionnaire de métadonnées structurées contenant \texttt{entity\_type},
-\texttt{entity\_id}, \texttt{title}, \texttt{category}, \texttt{region}, \texttt{city} et
-\texttt{price}. Ces métadonnées sont utilisées pour le filtrage lors des requêtes.
+L'architecture RAG a été présentée en détail au chapitre~1. Cette section se concentre sur les
+décisions spécifiques à l'implémentation qui n'ont pas été abordées dans le chapitre
+théorique~: la manière dont chaque type d'entité est converti en un document interrogeable, et
+la stratégie de sur-échantillonnage qui compense les limitations du filtrage par métadonnées.
 
-La détection de changements par hachage optimise la réindexation incrémentale. Lorsqu'une
-entité est modifiée en base de données, la fonction \texttt{upsert\_entity()} recalcule le
-hash MD5 du texte du nouveau document et le compare au hash stocké dans le dictionnaire
-\texttt{\_entity\_hashes}. Si le hash est identique, le recalcul coûteux des embeddings est
-évité. Cette optimisation est particulièrement importante car le calcul d'un embedding par
-le modèle BAAI/bge-m3 prend environ 200\,ms par document sur CPU.
+Chaque type d'entité dispose d'un constructeur de document dédié qui produit un corps textuel
+riche à partir des champs descriptifs, accompagné d'un dictionnaire de métadonnées
+structurées utilisé pour le filtrage lors des requêtes. Afin d'optimiser la base de données vectorielle 
+et d'éviter les valeurs nulles, l'implémentation adopte un \textbf{schéma de métadonnées dynamique et hétérogène}. 
+Celui-ci se compose de champs de base communs à toutes les entités (type d'entité, identifiant, 
+destination, catégorie et prix) auxquels s'ajoutent des champs spécifiques injectés selon la nature 
+du service (par exemple, des \texttt{tags} booléens pour les équipements d'un hébergement, ou 
+l'attribut \texttt{capacity} pour les véhicules de location et les transferts).
 
-La fonction \texttt{rag\_query()} implémente une stratégie de sur-échantillonnage~: le
-récupérateur demande $\texttt{top\_k} \times 2$ résultats à l'index, puis filtre les résultats
-par type d'entité, seuil de score et prix maximum, et enfin limite à \texttt{top\_k}. Ce
-sur-échantillonnage compense le fait que les filtres de métadonnées dans LlamaIndex utilisent
-une logique AND qui peut être trop restrictive pour les requêtes multi-types, éliminant des
-résultats pertinents avant le post-filtrage applicatif.
+Le récupérateur utilise une stratégie hybride de filtrage sur \textbf{Qdrant}. 
+D'une part, des filtres \textit{must} imposent des contraintes strictes , 
+tandis que des filtres \textit{should} ajustent le score de pertinence pour les critères 
+préférentiels. 
+
+C'est précisément sur cet ensemble de candidats sur-échantillonné qu'intervient la seconde étape du pipeline : 
+le ré-ordonnancement (\textit{reranking}). Le système soumet ces résultats filtrés au modèle 
+Cross-Encoder \texttt{BAAI/bge-reranker-v2-m3}. Contrairement à l'indexation vectorielle qui compare des vecteurs 
+pré-calculés de manière isolée, le Cross-Encoder traite la requête et le document simultanément, générant un score de 
+pertinence fin. Seuls les \texttt{top\_k} documents ayant obtenu les meilleurs scores après ce processus rigoureux sont 
+finalement conservés et transmis au LLM.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/screen_04_rag_search_result.png}
+    \includegraphics[width=\textwidth]{images/screen_04_rag_search_result.png}
     \caption{Exemple de résultats d'une recherche RAG avec scores de similarité}
     \label{fig:rag_results}
 \end{figure}
 
 
 % ────────────────────────────────────────────────────────────────
+
 \section{Gestion de la mémoire et du contexte}
 % ────────────────────────────────────────────────────────────────
 
 \subsection{Chargement du contexte}
 
-La fonction \texttt{load\_context()}, définie dans \texttt{conversation.py}, ouvre une session de
-base de données et récupère la \texttt{PlannerConversation} avec ses 8~derniers
-\texttt{PlannerMessage}. Chaque message est converti en son type LangChain correspondant~:
-les messages de rôle \texttt{"user"} deviennent des \texttt{HumanMessage}, les messages
-\texttt{"assistant"} des \texttt{AIMessage}, et les messages \texttt{"system"} des
-\texttt{SystemMessage}. Le plan actif est ensuite récupéré via \texttt{get\_current\_plan()}.
+Au début de chaque exécution de l'agent, les huit derniers messages de la conversation sont
+chargés et convertis dans leurs types de messages respectifs (utilisateur, assistant, système),
+suivis du plan actif courant s'il en existe un.
 
 Le choix d'une fenêtre de 8~messages résulte d'un compromis empirique. Charger moins de
 messages risque de perdre un contexte pertinent (l'utilisateur a dit \og{}supprimez la journée
@@ -458,29 +387,21 @@ Charger plus de messages augmente la consommation de tokens et la latence de cha
 Huit messages représentent environ 2 à 4~tours de conversation, couvrant la plupart des
 scénarios de modification de plans.
 
-Si le champ \texttt{contextSummary} de la conversation est non nul (c'est-à-dire qu'un résumé
-a été généré par le résumeur automatique), un \texttt{SystemMessage} est inséré en position~0
-de la liste de messages contenant le résumé structuré. Cette injection donne au LLM une vue
-compressée de l'historique complet de la conversation, même si seulement 8~messages bruts sont
-chargés. Le résumé étant structuré en JSON (préférences confirmées, contraintes, modifications),
-il est plus exploitable qu'une simple concaténation de messages anciens.
+Si un résumé de conversation existe, il est injecté comme message de contexte de haute priorité
+en début de liste, donnant au LLM une vue compressée de l'historique complet de la conversation
+au-delà de la fenêtre de huit messages.
 
 
 \subsection{Résumé automatique}
 
-La fonction \texttt{summarize\_if\_needed()}, définie dans \texttt{summarizer.py}, vérifie deux
-conditions avant de déclencher un résumé~: le nombre de messages doit dépasser
-\texttt{CONVERSATION\_SUMMARY\_THRESHOLD} (15 par défaut), et au moins 10~nouveaux messages
-doivent avoir été ajoutés depuis le dernier résumé. Si un résumé récent existe et que moins de
-10~messages se sont accumulés, le résumé existant est conservé tel quel.
+Le résumeur s'active lorsque la conversation dépasse huit messages et qu'au moins six
+nouveaux messages se sont accumulés depuis le dernier résumé, évitant ainsi les résumés
+redondants.
 
-Le résumé est produit par un appel LLM dédié (\texttt{temperature=0.3}, \texttt{json\_mode=True})
-avec pour instruction de générer un JSON structuré contenant~: \texttt{trip\_overview}
-(description générale du voyage), \texttt{confirmed\_preferences} (préférences confirmées par
-l'utilisateur), \texttt{confirmed\_constraints} (nombre de jours, budget, taille du groupe,
-dates), \texttt{modifications\_made} (liste des modifications demandées),
-\texttt{important\_notes} (notes importantes), et \texttt{message\_count} (nombre de messages
-résumés). Ce format structuré est plus exploitable par l'agent qu'un résumé en texte libre.
+Le résumé est produit par un appel LLM dédié à basse température qui retourne un objet JSON
+structuré capturant l'aperçu général du voyage, les préférences et contraintes confirmées, les
+modifications demandées et les notes importantes~--- un format plus exploitable par l'agent
+qu'un résumé en texte libre.
 
 En cas d'échec de l'appel LLM (réseau, quota, JSON invalide), un résumé de base est construit
 à partir des métadonnées de la conversation (nombre de messages, outils utilisés, types de
@@ -490,13 +411,14 @@ lève jamais d'exception et ne bloque jamais le flux principal de l'agent.
 
 \subsection{Profil utilisateur}
 
-L'outil \texttt{get\_user\_profile} collecte l'ensemble des données historiques de l'utilisateur
-depuis la base de données~: les 30~dernières réservations d'activités, les avis publiés, les
-éléments de la liste de souhaits, et les préférences déclarées. Il calcule la fréquence par
-catégorie (\texttt{favorite\_categories} triées par nombre de réservations), les dépenses totales
-et moyennes, la note moyenne donnée dans les avis, et la liste des activités en favoris. Ces
-informations composent un dictionnaire de profil riche que le nœud THINK injecte dans le
-contexte du LLM.
+L'outil \texttt{get\_user\_profile} agit comme une interface de lecture rapide et optimisée. 
+Afin de garantir des temps de réponse minimaux et d'éviter les calculs redondants, cet outil 
+ne recalcule pas l'historique à la volée. Il interroge directement la table \texttt{UserProfile} pour 
+récupérer les métriques comportementales pré-calculées et consolidées par le traitement par lot nocturne 
+(Job Cron, voir Section 4.8.1). En appliquant le principe du \textit{Single Source of Truth} (source de vérité unique), 
+le nœud THINK accède instantanément à des données prêtes à l'emploi~: la fréquence par catégorie 
+(\texttt{favorite\_categories}), les dépenses totales et moyennes, ainsi que les éléments de la liste de souhaits. 
+Ces informations composent un dictionnaire de profil riche que le système injecte dans le contexte du LLM.
 
 Ce profil influence directement la qualité des recommandations de l'agent~: le LLM sait avant
 de générer un plan que cet utilisateur a réservé des sports nautiques 5~fois, dépense en
@@ -511,43 +433,34 @@ véritablement personnalisées sans recours au moteur LinUCB --- l'agent adapte 
 % ────────────────────────────────────────────────────────────────
 
 Le pipeline rapide existe en complément de la boucle agentique complète pour répondre à un
-besoin spécifique~: la boucle complète de l'agent nécessite 15 à 40~secondes (appels LLM
+besoin spécifique~: la boucle complète de l'agent nécessite moins de temps (appels LLM
 multiples, exécutions d'outils, boucle de validation), ce qui est acceptable pour une
 conversation exploratoire mais excessif lorsque l'utilisateur fournit toutes les informations
 nécessaires en un seul message structuré (dates, taille du groupe, budget, préférences).
 
-La détection automatique est assurée par la fonction \texttt{parse\_chat\_to\_plan\_request()},
-qui analyse le message de l'utilisateur à la recherche d'informations structurées~: dates ou
-durée en jours, mention de budget, composition du groupe (famille, couple, solo). Si ces
-éléments sont détectés, un objet \texttt{UserPreferences} est construit et le pipeline rapide
-est invoqué à la place de la boucle agentique, sans que l'utilisateur ne perçoive la différence
-dans l'interface.
-
-Le pipeline s'exécute en trois phases. La \textbf{phase~1} collecte toutes les données en
-parallèle via \texttt{asyncio.gather()}~: recherche RAG thématique
-(\texttt{rag\_search\_for\_plan}), prévisions météorologiques (\texttt{get\_weather}), calcul
-des distances entre les lieux, et estimation du budget total (\texttt{estimate\_trip\_budget}).
-La \textbf{phase~2} pré-traite les contraintes~: filtrage par budget, suppression des activités
-incompatibles avec la météo, regroupement par proximité géographique. La \textbf{phase~3}
-effectue un unique appel LLM avec toutes les données pré-chargées en contexte pour produire
-le plan JSON final.
+Le pipeline s'exécute en trois phases. La \textbf{phase~1} collecte toutes les données : recherche 
+sémantique thématique, prévisions météorologiques, calcul des distances
+entre les lieux, et estimation du budget total. La \textbf{phase~2} applique les filtres de
+contraintes~: filtrage par budget, suppression des activités incompatibles avec la météo,
+regroupement par proximité géographique. La \textbf{phase~3} effectue un unique appel LLM avec
+toutes les données pré-chargées en contexte pour produire le plan JSON final.
 
 Le compromis est explicite~: le pipeline rapide sacrifie la profondeur conversationnelle et la
-boucle de validation de l'agent complet au profit de la vitesse (5 à 10~secondes au lieu de
-15 à 40). Il est approprié pour les utilisateurs expérimentés qui fournissent des informations
+boucle de validation de l'agent complet au profit de la vitesse . Il est approprié pour les utilisateurs
+expérimentés qui fournissent des informations
 complètes dès le départ, tandis que l'agent complet est préférable pour les conversations
 exploratoires où les besoins de l'utilisateur se précisent progressivement.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/fig_04_fast_pipeline.png}
-    \caption{Pipeline de génération rapide de plans (3 phases parallèles)}
+    \caption{Pipeline de génération rapide de plans }
     \label{fig:fast_pipeline}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/screen_04_chat_plan_output.png}
+    \includegraphics[width=\textwidth]{images/screen_04_chat_plan_output.png}
     \caption{Exemple de plan de voyage généré par l'agent Guidni}
     \label{fig:chat_output}
 \end{figure}
@@ -560,12 +473,11 @@ exploratoires où les besoins de l'utilisateur se précisent progressivement.
 Ce chapitre a présenté l'implémentation complète de l'agent planificateur IA du système Guidni.
 La machine à états LangGraph avec ses quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
 et ses trois fonctions de routage conditionnel a été détaillée, incluant les mécanismes de
-sécurité (arrêt forcé à 15~itérations, heuristique de force-stop à 2~itérations avec contexte
-RAG). Les 18~outils ont été catalogués et les plus complexes décrits en profondeur~:
-\texttt{rag\_search\_for\_plan} avec ses quatre recherches parallèles et son garde-fou de
-désambiguïsation des types d'entités, et \texttt{enrich\_activity} avec son cache
-d'intelligence IA. Le pipeline RAG, le système de mémoire conversationnelle (fenêtre de
-8~messages, résumé automatique au seuil de 15~messages, profil utilisateur), et le pipeline
+sécurité . Les outils ont été catalogués et les plus complexes décrits en profondeur~:
+l'outil de recherche RAG multi-types avec ses quatre recherches parallèles et son garde-fou de
+désambiguïsation des types d'entités, et l'outil d'enrichissement d'activités par IA avec son
+cache d'intelligence. Le pipeline RAG, le système de mémoire conversationnelle (fenêtre de
+8~messages, résumé automatique au seuil de 8~messages, profil utilisateur), et le pipeline
 rapide de génération de plans en trois phases ont complété la présentation.
 
 Le chapitre suivant présente l'implémentation du second sous-système~: le moteur de

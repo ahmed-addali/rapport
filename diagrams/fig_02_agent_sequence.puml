@@ -1,6 +1,5 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
 skinparam defaultFontName "Arial"
 
 actor "Utilisateur" as User
@@ -11,6 +10,7 @@ participant "run_agent() LangGraph" as Agent
 participant "THINK Node" as Think
 participant "LLM Provider" as LLM
 participant "EXECUTE_TOOL Node" as Exec
+participant "VALIDATE Node" as Validate 
 participant "RESPOND Node" as Respond
 participant "PostgreSQL" as DB
 
@@ -27,7 +27,7 @@ FastAPI -> Agent : run_agent(state)
 Agent -> Think : _should_continue → "think"
 
 Think -> Think : Construit prompt système + contexte dynamique
-Think -> LLM : Appel avec 18 outils bindés
+Think -> LLM : Appel avec les outils bindés
 LLM --> Think : AIMessage(tool_calls=[...])
 
 Think -> Agent : _should_continue → "execute_tool"
@@ -40,9 +40,25 @@ Exec -> Agent : _after_tool_execution → "think"
 Agent -> Think : Ré-évaluation avec résultats outils
 Think -> LLM : Nouvel appel LLM
 LLM --> Think : AIMessage(content="Plan généré...")
-Think -> Agent : _should_continue → "respond"
 
-Agent -> Respond : _after_validation → "respond"
+' ==========================================
+' --- L'ETApe LI SALA7NAHA TBDÉ MNA HNA ---
+' ==========================================
+
+' 1. El Think yba3ath l'ordre lel Agent bech ya3mel validation
+Think -> Agent : _should_continue → "validate"
+
+' 2. L'Agent ykallem el Validate node
+Agent -> Validate : Exécute la validation
+Validate -> Validate : Vérifie la réponse (format, règles, etc.)
+
+' 3. El Validate howa li ysayeb l'transition s7i7a
+Validate -> Agent : _after_validation → "respond"
+
+' ==========================================
+
+' 4. L'Agent yet3adda lel Respond node
+Agent -> Respond : Exécute la réponse finale
 Respond -> Respond : Détermine response_type
 Respond -> DB : save_plan() (versioning)
 Respond -> DB : INSERT PlannerMessage

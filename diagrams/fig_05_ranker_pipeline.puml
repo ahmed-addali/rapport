@@ -18,8 +18,8 @@ note right: N bras initiaux
 :5. score_arms(A, b, phi)
 —— Scoring LinUCB + UCB bonus;
 note right: Triés par score ↓
-:6. apply_diversity_filter(max=2/type)
-—— Max 2 par listing_type;
+:6. apply_diversity_filter(max=top_k/type)
+——  Garentire diversité par type d'entité;
 :7. apply_new_listing_guarantee()
 —— Au moins 1 sous-exposé garanti;
 :8. apply_tag_exploration(10% slots)

@@ -1,13 +1,13 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 [*] --> THINK
 
 state THINK {
   THINK : - Appelle LLM avec prompt système
-  THINK : - Inclut 18 outils bindés
+  THINK : - Inclut les outils bindés
   THINK : - Incrémente iteration_count
 }
 

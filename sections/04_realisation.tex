@@ -12,15 +12,12 @@ historique, le moteur LinUCB met à jour ses paramètres à chaque interaction u
 s'adaptant continuellement aux préférences émergentes et aux tendances saisonnières du marché
 touristique de Djerba.
 
-L'implémentation est organisée en cinq couches fonctionnelles~: l'ingénierie des
-caractéristiques (\texttt{context.py}) qui transforme les signaux bruts de session en vecteurs
-de caractéristiques normalisés, le moteur de scoring LinUCB (\texttt{linucb.py}) qui calcule
-les scores d'exploitation et d'exploration, le pipeline de classement post-LinUCB
-(\texttt{ranker.py}) qui applique dix étapes de filtrage et d'ajustement, la couche de données
-runtime (\texttt{db.py} et \texttt{recommendation\_router.py}) qui gère le cache matriciel en
-RAM et le traitement par lots des événements, et enfin le tracker JavaScript client
-(\texttt{tracker.js}) couplé aux jobs nocturnes (\texttt{nightly\_job.py} et
-\texttt{scheduler.py}).
+L'implémentation est organisée en cinq couches fonctionnelles~: le module d'ingénierie des
+caractéristiques qui transforme les signaux bruts de session en vecteurs normalisés, le moteur
+de scoring LinUCB qui calcule les scores d'exploitation et d'exploration, le pipeline de
+classement post-LinUCB qui applique dix étapes de filtrage et d'ajustement, la couche de
+données runtime qui gère le cache matriciel en mémoire et le traitement par lots des
+événements, et enfin le tracker comportemental client couplé aux jobs de maintenance nocturne.
 
 
 % ────────────────────────────────────────────────────────────────
@@ -29,11 +26,10 @@ RAM et le traitement par lots des événements, et enfin le tracker JavaScript c
 
 \subsection{Le vecteur utilisateur $x_{user}$}
 
-La fonction \texttt{build\_user\_vector()} reçoit un objet \texttt{UserContext} (dataclass
-contenant les signaux de session et les données de profil historique) et produit un vecteur
-numpy de forme $(9,)$ en float64. Chaque dimension capture un aspect distinct du contexte
-utilisateur, combinant des signaux temporels, comportementaux et historiques dans un espace
-de caractéristiques uniformément normalisé à $[0, 1]$.
+Le constructeur du vecteur utilisateur reçoit les signaux de session courants et le profil
+historique, et produit un vecteur normalisé de neuf dimensions où chaque dimension capture un
+aspect distinct du contexte utilisateur, combinant des signaux temporels, comportementaux et
+historiques dans un espace de caractéristiques uniformément normalisé à $[0, 1]$.
 
 L'encodage cyclique du temps constitue les quatre premières dimensions. L'heure et le mois
 sont encodés par paires sinus/cosinus~: $x[0] = \sin(2\pi \cdot h/24)$,
@@ -45,56 +41,54 @@ rendrait l'heure 23 et l'heure 0 maximalement distantes alors qu'elles sont tout
 $\sin(2\pi \cdot 23/24) \approx \sin(2\pi \cdot 1/24)$.
 
 Les caractéristiques comportementales occupent les dimensions 4 à 7. La profondeur de
-défilement (\texttt{scroll\_depth}) est directement bornée à $[0, 1]$ par
-\texttt{np.clip()}. Le temps de séjour est normalisé par transformation logarithmique~:
+défilement est directement bornée à $[0, 1]$. Le temps de séjour est normalisé par
+transformation logarithmique~:
 $x[5] = \text{clip}(\ln(1 + t) / \ln(1 + 300), 0, 1)$, où la borne de 300~secondes
 assure que la différence entre 5~et 30~secondes (signal fort de désintérêt vs intérêt modéré)
 est beaucoup plus grande que la différence entre 300~et 600~secondes (les deux indiquent un
 intérêt élevé). L'affinité de prix est calculée comme
-$x[6] = \text{clip}(\text{avg\_booking\_price}/2000, 0, 1)$, où 2000~TND est le prix maximum
-de la plateforme. L'affinité maximale de tags est
-$x[7] = \max(\text{tag\_affinity.values()})$ si un profil existe, 0 sinon.
+$x[6] = \text{clip}(\text{prix\_moyen\_réservation}/2000, 0, 1)$, où 2000~TND est le prix
+maximum de la plateforme par exemple. L'affinité maximale de tags est
+$x[7] = \max(\text{affinités\_tags})$ si un profil existe, 0 sinon.
 
 La dimension 8 encode le type de voyage~: \texttt{family}$=1.0$, \texttt{couple}$=0.67$,
 \texttt{solo}$=0.33$, \texttt{unknown}$=0.0$. Cet ordinal reflète la taille croissante du
 groupe social et les patrons de consommation associés (les familles dépensent plus en activités
-de groupe, les solos en expériences individuelles). Tous les vecteurs sont nettoyés par
-\texttt{np.nan\_to\_num()} qui remplace les NaN et inf par 0.0 avant retour, garantissant
-qu'aucune valeur non finie ne corrompe les calculs matriciels.
+de groupe, les solos en expériences individuelles). Une étape finale de nettoyage remplace
+toute valeur non finie par zéro avant le retour du vecteur, garantissant qu'aucune valeur
+aberrant ne corrompe les calculs matriciels.
 
 
 \subsection{Le vocabulaire de tags et le vecteur $x_{tags}$}
 
-Le vocabulaire \texttt{TAG\_VOCAB} est une liste fixe de \textbf{exactement 40~tags} en ordre
-alphabétique strict, de \texttt{activity\_indoor} à \texttt{wifi}. L'assertion
-\texttt{assert D\_TAGS == 40} est vérifiée à l'importation du module, empêchant tout
+Le vocabulaire de tags est une liste fixe de \textbf{exactement 40~tags} en ordre
+alphabétique strict. Son intégrité est vérifiée au chargement du module, empêchant tout
 démarrage de l'application si le vocabulaire a été altéré. Un dictionnaire de correspondance
-inverse \texttt{\_TAG\_INDEX} pré-calculé à l'importation (\texttt{\{tag: i\}}) permet le
-lookup en $O(1)$ lors de la construction du vecteur.
+inverse pré-calculé au chargement permet la résolution tag-index en temps constant lors de la
+construction du vecteur.
 
 L'immutabilité du vocabulaire est critique~: la position de chaque tag dans cette liste
 détermine son index dans le vecteur $x_{tags}$ et par conséquent ses lignes dans la matrice
 $A$. Si le vocabulaire change après le premier déploiement (même un simple réordonnancement),
 la structure entière de la matrice $A$ ($360 \times 360$) est invalidée car ses
 coefficients encodent des associations apprises pour des paires spécifiques
-(caractéristique\_utilisateur, tag) à des positions spécifiques. La vérification de sécurité
-\texttt{vocab\_hash} (SHA-256 du vocabulaire trié) dans \texttt{SystemConfig} empêche ce
-scénario~: au chargement des matrices depuis la base de données, le hash stocké est comparé
-au hash courant, et une \texttt{RuntimeError} est levée en cas de discordance.
+(caractéristique\_utilisateur, tag) à des positions spécifiques. Un hash SHA-256 du vocabulaire
+trié est stocké dans la table de configuration système et comparé au chargement des matrices
+depuis la base de données~; toute discordance provoque un refus de démarrage, empêchant
+une corruption silencieuse de la matrice apprise.
 
 L'encodage binaire est direct~: $x_{tags}$ est un vecteur de longueur 40 où
-$x_{tags}[i] = 1.0$ si \texttt{TAG\_VOCAB[i]} est présent dans la liste de tags de l'annonce,
-$0.0$ sinon. Les tags d'une annonce proviennent de la table \texttt{ListingTag} (peuplée
-par l'extracteur LLM) ou du champ \texttt{BanditArm.tags} en repli.
+$x_{tags}[i] = 1.0$ si le $i$\textsuperscript{e} tag du vocabulaire est présent dans la liste
+de tags de l'annonce, $0.0$ sinon. Les tags d'une annonce proviennent de la table de tags
+extraits par le LLM, avec un repli sur les tags stockés dans le bras de recommandation.
 
 
 \subsection{Le produit de Kronecker $\phi$}
 
-Le produit de Kronecker $\phi = \text{np.kron}(x_{user}, x_{tags})$ produit un vecteur de
-longueur $9 \times 40 = 360$ où chaque élément $\phi[i \cdot 40 + j] = x_{user}[i] \times
+Le produit de Kronecker $\phi = x_{user} \otimes x_{tags}$ produit un vecteur de
+360~dimensions où chaque élément $\phi[i \cdot 40 + j] = x_{user}[i] \times
 x_{tags}[j]$ encode l'interaction entre la $i$\textsuperscript{e} caractéristique utilisateur
-et le $j$\textsuperscript{e} tag de l'annonce. La dimension de $\phi$ est définie par la
-constante \texttt{D\_PHI = 360}, vérifiée par assertion à l'importation.
+et le $j$\textsuperscript{e} tag de l'annonce.
 
 Cette expansion capture les effets d'interaction que ni les caractéristiques utilisateur
 seules ni les tags seuls ne peuvent modéliser. La dimension correspondant à
@@ -105,10 +99,10 @@ utilisateurs matinaux cliquent rarement sur les activités de soirée. Ces effet
 sont la raison fondamentale du choix du modèle Hybrid LinUCB~: un modèle linéaire simple
 sur la concaténation $[x_{user}; x_{tags}]$ ne capturerait que les effets marginaux.
 
-La fonction \texttt{validate\_phi()} vérifie que la forme est $(360,)$, remplace tout NaN
-ou inf par 0.0 et journalise un WARNING. Ce nettoyage garantit qu'un vecteur de
-caractéristiques malformé ne corrompe jamais la mise à jour de la matrice $A$, car
-$A \mathrel{+}= \text{outer}(\phi, \phi)$ propagerait les NaN à toute la matrice.
+Une étape de validation vérifie la forme et la finitude du vecteur résultant, remplaçant
+toute valeur non finie par zéro pour prévenir la corruption de la matrice lors de la mise
+à jour, car $A \mathrel{+}= \text{outer}(\phi, \phi)$ propagerait les valeurs aberrantes à
+l'ensemble de la matrice.
 
 \begin{table}[H]
     \centering
@@ -143,27 +137,22 @@ $A \mathrel{+}= \text{outer}(\phi, \phi)$ propagerait les NaN à toute la matric
 
 \subsection{Score UCB et paramètres}
 
-Le calcul du score UCB dans \texttt{score\_arms()} procède en six étapes. (1) Le vecteur de
-paramètres estimé est calculé par $\hat{\theta} = \text{solve}(A, b)$ via la résolution de
-moindres carrés~; (2) l'exploitation est le produit scalaire
-$\text{exploitation} = \hat{\theta}^\top \phi$, représentant la récompense prédite pour cette
+Le calcul du score UCB procède en six étapes. (1) Le vecteur de paramètres estimé est calculé
+par résolution du système linéaire $A\hat{\theta} = b$~; (2) le terme d'exploitation est le
+produit scalaire $\hat{\theta}^\top \phi$, représentant la récompense prédite pour cette
 paire contexte-bras~; (3) la variance est calculée par
-$\text{variance} = \phi^\top A^{-1} \phi$ via un second appel à \texttt{solve(A, phi)},
+$\phi^\top A^{-1} \phi$ via une seconde résolution du système linéaire,
 mesurant l'incertitude --- élevée lorsque $A$ n'a pas été mis à jour souvent dans la direction
 de $\phi$~; (4) le bonus UCB est
-$\text{ucb\_bonus} = \alpha \cdot \sqrt{\max(\text{variance}, 0)}$ avec
-$\alpha = 0.3$~; (5) si \texttt{is\_underexposed} est \texttt{True},
-$\text{ucb\_bonus} \mathrel{+}= 0.15$~; (6) le score final est
-$\text{score} = (\text{exploitation} + \text{ucb\_bonus}) \times
-\text{position\_discount}$, où le discount de position est
-$1 / \log_2(\text{rank} + 1)$ si une information de rang antérieur est disponible.
+$\alpha \cdot \sqrt{\max(\text{variance}, 0)}$ avec
+$\alpha = 0.3$~; (5) les bras sous-exposés reçoivent un bonus fixe additionnel de
+$+0.15$~; (6) le score final est $\text{exploitation} + \text{bonus\_UCB}$
 
-Le choix de \texttt{np.linalg.solve()} plutôt que \texttt{np.linalg.inv()} est critique
-pour la stabilité numérique. Le calcul explicite de l'inverse matricielle est numériquement
-instable pour les matrices quasi-singulières et computationnellement plus coûteux ($O(n^3)$
-avec un facteur constant plus élevé). La fonction \texttt{solve(A, b)} calcule $A^{-1}b$
-directement par décomposition LU, qui est plus stable et plus efficace. En cas d'échec
-(matrice singulière), un repli vers \texttt{np.linalg.lstsq()} est utilisé.
+Le vecteur de paramètres est estimé par résolution directe du système linéaire plutôt que par
+calcul explicite de l'inverse matricielle, ce qui est plus stable numériquement pour les
+matrices quasi-singulières et computationnellement plus efficace ($O(n^3)$ avec un facteur
+constant plus faible). En cas d'échec (matrice singulière), un repli vers la résolution
+par moindres carrés est utilisé.
 
 La calibration $\alpha = 0.3$ résulte d'un compromis adapté au domaine du tourisme. Un $\alpha$
 plus élevé augmente l'exploration (recommandations plus diversifiées mais potentiellement moins
@@ -173,42 +162,39 @@ valeur 0.3 a été choisie car les sessions touristiques sont courtes (typiqueme
 30~minutes) et les nouvelles annonces nécessitent une exposition rapide pour accumuler
 suffisamment de données d'apprentissage.
 
-La dataclass \texttt{ScoredArm} retournée expose le détail du calcul~:
-\texttt{exploitation}, \texttt{ucb\_bonus}, \texttt{position\_discount}, \texttt{impressions},
-\texttt{conversions} et \texttt{commission\_rate}. La décomposition
-exploitation/bonus est rendue accessible via la variable d'environnement
-\texttt{EXPOSE\_SCORES=true} pour le débogage et l'analyse A/B.
+La fonction de scoring expose la décomposition entre les composantes d'exploitation et
+d'exploration, qui peut être journalisée pour le débogage et l'analyse A/B via un indicateur
+de configuration.
 
 
 \subsection{Mise à jour des matrices et récompenses}
 
-La règle de mise à jour en ligne est implémentée dans la fonction \texttt{update()}~:
-après observation d'une récompense $r$ pour un contexte $\phi$, la matrice est mise à jour
-par $A \mathrel{+}= \phi \phi^\top$ (le produit extérieur ajoute la contribution de cette
-observation) et le vecteur par $b \mathrel{+}= r \cdot \phi$. Cette mise à jour correspond
-à la descente de gradient en ligne pour la régression linéaire avec régularisation $L_2$
-(l'initialisation identitaire $A = I$ agit comme régularisateur).
+La règle de mise à jour en ligne~: après observation d'une récompense $r$ pour un contexte
+$\phi$, la fonction de mise à jour applique $A \mathrel{+}= \phi \phi^\top$ (le produit
+exterieur ajoute la contribution de cette observation) et $b \mathrel{+}= r \cdot \phi$. Cette
+mise à jour correspond à la descente de gradient en ligne pour la régression linéaire avec
+régularisation $L_2$ (l'initialisation identitaire $A = I$ agit comme régularisateur).
 
-La hiérarchie de récompenses est définie dans le dictionnaire \texttt{REWARDS}~:
+Les valeurs de récompense associées à chaque type d'événement sont~:
 impression$=0.0$, click$=0.3$, dwell\_30s$=0.5$, dwell\_60s$=0.7$, gallery\_swipe$=0.4$,
 scroll\_reviews$=0.6$, wishlist$=0.85$, reservation$=1.0$, quick\_exit$=-0.2$. Le type
-\texttt{dwell\_exit} est traité spécialement~: la fonction vérifie
-\texttt{dwell\_seconds} pour retourner 0.1 ($<30$s), 0.5 ($30$--$59$s), ou 0.7
-($\geq 60$s) plutôt qu'une valeur fixe.
+dwell\_exit est traité spécialement~: la récompense varie selon la durée de séjour,
+retournant 0.1 ($5--30$s), 0.5 ($30$--$59$s), ou 0.7 ($\geq 60$s) plutôt qu'une valeur fixe.
 
 Le mécanisme de récompenses delta par session empêche le double comptage. Le dictionnaire
-\texttt{session\_rewards} trace la récompense maximale reçue par annonce dans la session
-courante. Lorsqu'un nouvel événement arrive, \texttt{compute\_reward()} retourne
-$\max(r_{new}, r_{max}) - r_{max}$ (le delta). Un utilisateur qui clique (0.3), consulte
+de récompenses de session trace la récompense maximale reçue par annonce dans la session
+courante. Lorsqu'un nouvel événement arrive, la fonction de calcul de récompense delta
+retourne $\max(r_{new}, r_{max}) - r_{max}$. Un utilisateur qui clique (0.3), consulte
 longuement (0.7), puis ajoute aux favoris (0.85) une annonce contribue un delta total de
 0.85 et non $0.3 + 0.7 + 0.85 = 1.85$, évitant l'inflation des récompenses.
 
-La fonction \texttt{is\_matrix\_healthy()} vérifie trois conditions~:
-\texttt{np.all(np.isfinite(A))} (pas de NaN/inf), \texttt{shape == (360, 360)},
-et \texttt{np.linalg.eigvalsh(A).min() > 0} (définie positive). Si la matrice est
-malsaine (possible après des erreurs numériques ou de très nombreuses mises à jour sans
-réinitialisation), le système journalise un avertissement CRITICAL et retourne des matrices
-fraîches ($A = I$, $b = 0$) pour récupérer automatiquement.
+Une vérification de santé contrôle que la matrice reste définie positive avec toutes les
+valeurs finies. Si la vérification échoue (possible après des erreurs numériques ou de
+très nombreuses mises à jour sans réinitialisation), le système tente d'abord un repli
+par moindres carrés (\texttt{np.linalg.lstsq}) pour préserver l'historique d'apprentissage
+accumulé. Ce n'est qu'en cas d'échec de cette récupération que le système journalise un
+avertissement critique et réinitialise des matrices fraîches ($A = I$, $b = 0$) en dernier
+recours.
 % ============================================================================
 % CHAPITRE 5 — Part 2: Ranker, Tag Extractor, Runtime, Tracker, Jobs
 % ============================================================================
@@ -219,69 +205,65 @@ fraîches ($A = I$, $b = 0$) pour récupérer automatiquement.
 
 Après que le moteur LinUCB a produit les scores bruts, dix étapes séquentielles de
 post-traitement affinent le classement pour respecter les contraintes métier et améliorer
-l'expérience utilisateur. Les étapes opèrent sur des objets \texttt{ArmState} (avant scoring)
-et \texttt{ScoredArm} (après scoring), et sont orchestrées par la fonction \texttt{rank()}
-définie dans \texttt{ranker.py}.
+l'expérience utilisateur. Le pipeline de classement orchestre ces dix étapes opérant sur les
+candidats avant et après le scoring.
 
-La fonction \texttt{rank()} reçoit la liste complète des bras, les matrices $A$ et $b$,
-le \texttt{UserContext}, et retourne une liste de \texttt{ScoredArm} triés. Les dix étapes
-sont décrites ci-dessous dans leur ordre exact d'exécution.
-
-\textbf{Étape~1 --- Correction de popularité} (\texttt{apply\_popularity\_correction}).
-Tout bras avec \texttt{impressions < 50} est marqué \texttt{is\_underexposed=True}. Ce
-drapeau est lu par \texttt{score\_arms()} pour ajouter le bonus $+0.15$, garantissant que les
+\textbf{Étape~1 --- Correction de popularité}.
+Tout bras avec moins de 50~impressions est marqué comme sous-exposé. Ce
+drapeau est lu par le moteur de scoring pour ajouter le bonus $+0.15$, garantissant que les
 nouvelles annonces reçoivent suffisamment d'exposition pour que le LinUCB apprenne leur vraie
 valeur avant d'être enfouies par les annonces bien établies.
 
-\textbf{Étape~2 --- Filtre temporel} (\texttt{apply\_time\_filter}). Les annonces taguées
-\texttt{best\_evening} ou \texttt{bar} sont supprimées le matin (6h--12h), et les annonces
-\texttt{best\_morning} sont supprimées le soir (20h--23h). Ce filtre empêche de recommander
-un cocktail bar à une famille à 9h ou une séance de yoga au lever du soleil à un utilisateur
-naviguant à minuit, améliorant la pertinence à coût nul en apprentissage automatique.
+\textbf{Étape~2 --- Filtre saisonnier}. Les annonces taguées
+\texttt{best\_summer} ou \texttt{beach} sont supprimées durant l'hiver (décembre--février), 
+et les annonces \texttt{best\_winter} ou \texttt{ski} sont supprimées en été (juin--août). 
+Ce filtre empêche de recommander des articles de plage à un utilisateur en plein mois de 
+janvier ou un séjour de ski au milieu du mois de juillet, améliorant la pertinence à coût 
+nul en apprentissage automatique.
 
-\textbf{Étape~3 --- Filtre budgétaire} (\texttt{apply\_budget\_filter}). Si
-\texttt{budget\_estimate} est fourni, les annonces dont le prix dépasse
+\textbf{Étape~3 --- Filtre budgétaire}. Si
+une estimation de budget est fournie, les annonces dont le prix dépasse
 $\text{budget} \times 1.25$ sont supprimées. La tolérance de 25\% évite de rejeter des
 annonces légèrement au-dessus du budget que l'utilisateur pourrait encore considérer, tout
 en filtrant les options clairement inabordables.
 
 \textbf{Étape~4 --- Construction de $\phi$ par bras}. Pour chaque bras survivant après les
-filtres, \texttt{build\_phi(build\_user\_vector(ctx), arm.tags)} calcule le vecteur de
-contexte de 360~dimensions. Cette étape est la plus coûteuse en calcul (opérations
-matricielles) mais opère uniquement sur les bras survivants après réduction par les filtres.
+filtres, le vecteur de contexte de 360~dimensions est calculé. Cette étape est la plus
+coûteuse en calcul (opérations matricielles) mais opère uniquement sur les bras survivants
+après réduction par les filtres.
 
-\textbf{Étape~5 --- Scoring LinUCB} (\texttt{score\_arms}). Calcule les scores UCB pour tous
-les bras restants en utilisant les matrices $A$ et $b$ cachées en RAM. Retourne une liste de
-\texttt{ScoredArm} triée par score décroissant.
+\textbf{Étape~5 --- Scoring LinUCB}. Calcule les scores UCB pour tous
+les bras restants en utilisant les matrices $A$ et $b$ cachées en mémoire. Retourne la liste
+triée par score décroissant.
 
-\textbf{Étape~6 --- Filtre de diversité} (\texttt{apply\_diversity\_filter}). Parcourt la
-liste classée du haut vers le bas, comptant les bras acceptés par \texttt{listing\_type}.
+\textbf{Étape~6 --- Filtre de diversité}. Parcourt la
+liste classée du haut vers le bas, comptant les bras acceptés par type d'annonce.
 Tout bras dont le type a déjà 2~bras acceptés est ignoré. Ce filtre empêche le top-10 d'être
 entièrement composé d'hôtels (si les hôtels scorent bien dans cette session) et garantit que
 l'utilisateur voit une variété de types d'annonces.
 
-\textbf{Étape~7 --- Garantie de nouvelle annonce}
-(\texttt{apply\_new\_listing\_guarantee}). Si le résultat top-$k$ ne contient aucun bras
-avec \texttt{impressions < 50}, le bras sous-exposé avec le score le plus élevé de la liste
+\textbf{Étape~7 --- Garantie de nouvelle annonce}.
+Si le résultat final ne contient aucun bras
+sous-exposé, le bras sous-exposé avec le score le plus élevé de la liste
 complète est inséré en dernière position. Cette garantie assure que chaque session de
 recommandation introduit au moins une nouvelle annonce, maintenant l'exploration même lorsque
 le classeur exploiterait uniquement les annonces connues.
 
-\textbf{Étape~8 --- Exploration de tags} (\texttt{apply\_tag\_exploration}). Identifie les
+\textbf{Étape~8 --- Exploration de tags}. Identifie les
 catégories de tags où l'utilisateur a une faible affinité (valeur $< 0.2$ ou absente du
 profil), trouve les bras les mieux scorés de ces catégories qui ne sont pas déjà dans le
 résultat, et remplace 10\% des créneaux finaux (minimum~1) avec ces bras d'exploration.
 Ce mécanisme prévient les bulles de filtrage et introduit l'utilisateur à des catégories
 d'annonces qu'il n'a pas encore essayées.
 
-\textbf{Étape~9 --- Tri par marge} (\texttt{apply\_margin\_sort}). Au sein de groupes de
+\textbf{Étape~9 --- Tri par marge}. Au sein de groupes de
 bras dont les scores diffèrent de moins de 0.05 (un \og{}tier\fg{} de qualité essentiellement
-équivalente), trie par \texttt{commission\_rate} décroissant. Ce mécanisme maximise le revenu
+équivalente), trie par taux de commission décroissant. Ce mécanisme maximise le revenu
 de la plateforme lorsque plusieurs annonces sont de qualité de recommandation équivalente pour
 l'utilisateur, sans impact significatif sur l'expérience utilisateur.
 
-\textbf{Étape~10 --- Troncature top-$k$}. La liste finale est tronquée à
-\texttt{top\_k} (défaut~10) et retournée au \texttt{recommendation\_router}.
+\textbf{Étape~10 --- Troncature}. La liste finale est tronquée au nombre de résultats
+demandé (défaut~10) et retournée au routeur de recommandation.
 
 \begin{figure}[H]
     \centering
@@ -295,35 +277,26 @@ l'utilisateur, sans impact significatif sur l'expérience utilisateur.
 \section{Extracteur de tags par LLM}
 % ────────────────────────────────────────────────────────────────
 
-L'extraction de tags par LLM répond à un besoin fondamental~: les 40~tags du
-\texttt{TAG\_VOCAB} doivent être assignés à chaque annonce (hôtel, activité, restaurant,
-location, transfert) à partir de sa description textuelle. Le taggage manuel de centaines
-d'annonces est impraticable, et les descriptions contiennent déjà des informations riches
-(\og{}suite avec vue sur la mer, piscine privée, idéale pour couples\fg{}) qui correspondent
-directement aux tags (\texttt{sea\_view}, \texttt{pool}, \texttt{romantic}).
+Le taggage manuel de centaines d'annonces est impraticable et source d'erreurs. Les
+approches à base de règles ne captureraient pas la richesse sémantique des descriptions en
+langage naturel. Le LLM constitue l'outil adapté car il peut lire une description telle que
+\og{}suite romantique avec vue sur mer et piscine privée\fg{} et la projeter sur les tags
+corrects du vocabulaire sans aucune règle explicite.
 
-Le prompt système défini dans \texttt{tag\_extractor.py} instruit le LLM configuré de
-retourner \textbf{uniquement} du JSON valide (pas de markdown, pas de préambule) contenant
-trois champs~: \texttt{tags} (liste de chaînes provenant exclusivement du \texttt{TAG\_VOCAB},
-aucun tag personnalisé accepté), \texttt{confidence} (flottant 0--1), et
-\texttt{language\_detected} (darija/french/english/arabic/mixed/unknown). L'étape de
-validation filtre strictement les tags~: seuls les tags présents dans \texttt{set(TAG\_VOCAB)}
-sont conservés, les tags hallucinés sont rejetés. Si aucun tag valide ne subsiste, le repli
+L'extraction de tags par LLM répond à un besoin fondamental~: les 40~tags du vocabulaire
+doivent être assignés à chaque annonce (hôtel, activité, restaurant, location, transfert) à
+partir de sa description textuelle.
+
+Le prompt système instruit le LLM de retourner \textbf{uniquement} du JSON valide
+contenant deux champs~: la liste des tags extraits (provenant exclusivement du vocabulaire
+fixe, aucun tag personnalisé accepté), un score de confiance (flottant 0--1). Seuls les tags 
+appartenant au vocabulaire fixe sont conservés~;
+les tags hallucinés sont silencieusement écartés. Si aucun tag valide ne subsiste, le repli
 \texttt{["all\_seasons"]} est appliqué.
 
-Le traitement par lots opère en tranches de 10~annonces. Les annonces manquantes dans
-\texttt{ListingTag} sont identifiées par \texttt{LEFT JOIN} sur les cinq tables d'entités
-(Activity, Stay, Restaurant, Rental, Transfer), le LLM extrait les tags pour chacune, les
-résultats sont insérés dans \texttt{ListingTag} par \texttt{upsert}, et les tags de
-\texttt{BanditArmUCB} sont mis à jour pour toutes les zones de localisation de cette annonce.
-Un délai de 1~seconde entre les lots prévient la saturation de l'API LLM.
-
-Les mesures de fiabilité comprennent le décorateur \texttt{@retry} de la bibliothèque
-tenacity avec un maximum de 3~tentatives et un backoff exponentiel (\texttt{min=2s},
-\texttt{max=30s}) pour gérer les erreurs transitoires de l'API. En cas d'échec permanent
-(après 3~tentatives), la fonction \texttt{\_extract\_with\_fallback()} retourne le tag de
-repli \texttt{["all\_seasons"]} avec une confiance de 0.0, garantissant que chaque annonce
-possède toujours au moins un tag valide.
+Les erreurs transitoires de l'API sont gérées par des tentatives automatiques avec un backoff
+exponentiel. Après trois tentatives échouées, un tag de repli sûr est assigné avec une
+confiance de 0.0, garantissant que chaque annonce possède toujours au moins un tag valide.
 
 
 % ────────────────────────────────────────────────────────────────
@@ -332,46 +305,46 @@ possède toujours au moins un tag valide.
 
 \subsection{Cache matriciel en RAM}
 
+Le moteur de recommandation doit répondre en moins de 100\,ms au 95\textsuperscript{e}
+percentile, ce qui rend inacceptable toute lecture de base de données sur le chemin critique.
+La solution retenue consiste à conserver les matrices apprises en mémoire applicative et à les
+synchroniser vers la base de données de manière asynchrone.
+
 La décision architecturale fondamentale est de stocker la matrice $A$ ($360 \times 360$,
-float64) et le vecteur $b$ (360, float64) en RAM au niveau du module Python. La fonction
-\texttt{init\_matrix\_cache()} charge les matrices depuis la base de données une seule fois
-au démarrage de l'application et les stocke dans les variables \texttt{\_GLOBAL\_A} et
-\texttt{\_GLOBAL\_B}. Toutes les lectures ultérieures lors du scoring utilisent uniquement
-la RAM --- jamais la base de données.
+float64) et le vecteur $b$ (360, float64) en mémoire au niveau du module Python. La fonction
+d'initialisation du cache charge les matrices depuis la base de données une seule fois au
+démarrage de l'application et les stocke dans les variables matricielles globales du module.
+Toutes les lectures ultérieures lors du scoring utilisent uniquement la mémoire --- jamais
+la base de données.
 
 Cette stratégie est critique pour la performance~: une matrice $360 \times 360$ en float64
 occupe environ 1~Mo en mémoire. La désérialisation depuis le JSON PostgreSQL à chaque
-requête de recommandation ajouterait 10 à 50~ms par requête. Avec le cache en RAM, le scoring
-opère à la vitesse mémoire ($<1$\,ms). Le surcoût mémoire est négligeable comparé au gain
-de latence.
+requête de recommandation ajouterait 10 à 50~ms par requête. Avec le cache en mémoire, le
+scoring opère à la vitesse mémoire ($<1$\,ms). Le surcoût mémoire est négligeable comparé
+au gain de latence.
 
-La sécurité thread est assurée par un \texttt{threading.Lock()} (\texttt{\_matrix\_lock}).
-La fonction \texttt{get\_cached\_matrices()} retourne des copies (\texttt{A.copy()},
-\texttt{b.copy()}) pour que les opérations de scoring en cours utilisent un instantané
+La sécurité thread est assurée par un verrou au niveau du module~; le cache retourne des
+copies des matrices pour que les opérations de scoring en cours utilisent un instantané
 cohérent tandis que les opérations de mise à jour progressent concurremment.
 
-La persistance est planifiée toutes les 2~minutes via APScheduler. La fonction
-\texttt{persist\_matrices\_to\_db()} prend un instantané des matrices courantes sous le
-verrou, puis écrit de manière asynchrone dans la table \texttt{LinUCBGlobal} avec un
-\texttt{upsert} qui incrémente \texttt{n\_updates}. À l'arrêt de l'application, un flush
-final est effectué dans le gestionnaire de contexte du \texttt{lifespan} FastAPI.
+Un job d'arrière-plan persiste les matrices en mémoire vers la base de données toutes les
+2~minutes, et un flush final est effectué à l'arrêt de l'application pour prévenir toute
+perte de données.
 
 
 \subsection{Traitement par lots d'événements}
 
-La fonction \texttt{process\_event\_batch()} traite une liste d'événements comportementaux
-reçus du tracker JavaScript en un seul appel. Pour chaque événement, elle calcule la
-récompense delta via \texttt{compute\_reward()}, met à jour les matrices en RAM
-($A \mathrel{+}= \phi\phi^\top$, $b \mathrel{+}= r \cdot \phi$), journalise l'événement
-dans \texttt{RecommendationEventUCB}, et met à jour les compteurs du bras
-(\texttt{impressions}, \texttt{clicks}, \texttt{wishlists}, \texttt{conversions}).
+La fonction de traitement par lots gère l'ensemble des événements reçus d'un flush du tracker
+en un seul appel~: calcul de la récompense delta pour chaque événement, mise à jour des
+matrices en mémoire ($A \mathrel{+}= \phi\phi^\top$, $b \mathrel{+}= r \cdot \phi$),
+journalisation de l'événement, et incrémentation des compteurs du bras.
 
 La contrainte fondamentale est que les mises à jour de matrices se font \textbf{uniquement
-en RAM} pendant \texttt{process\_event\_batch()}~; la base de données n'est jamais écrite
+en mémoire} pendant le traitement du lot~; la base de données n'est jamais écrite
 pour les matrices dans cette fonction. Cette séparation garantit que le chemin de traitement
 des requêtes de recommandation n'a aucune latence d'écriture en base de données.
 
-La limitation de débit \texttt{\_check\_rate\_limit()} utilise un dictionnaire en mémoire pour
+Le vérificateur de limite de débit utilise un dictionnaire en mémoire pour
 compter les événements par annonce par session (maximum~10) et le total par session
 (maximum~100). Les sessions inactives depuis plus de 2~heures sont nettoyées paresseusement.
 Ce mécanisme empêche les abus de scripts automatisés qui pourraient corrompre les matrices
@@ -380,12 +353,10 @@ en envoyant des milliers de signaux de récompense artificiels.
 
 \subsection{Cache des bras}
 
-Le cache des bras optimise les requêtes fréquentes. La fonction \texttt{get\_arms\_for\_zone()}
-effectue une requête complexe (JOIN entre \texttt{BanditArmUCB}, \texttt{ListingTag},
-\texttt{Stay}, \texttt{Activity}, \texttt{Restaurant} et autres tables) qui prend 5 à
-20~ms. Les résultats sont cachés pendant 30~secondes avec une clé composée de
-\texttt{location\_zone + sorted(listing\_types)}. Le cache stocke uniquement les données
-brutes des bras, pas les résultats classés.
+Le cache des bras optimise les requêtes fréquentes. Les données des bras sont récupérées par
+une jointure entre les tables d'annonces et cachées pendant 30~secondes par combinaison de
+zone géographique et de types d'annonces, réduisant les requêtes répétées à la base de
+données.
 
 Les résultats classés finaux ne sont jamais cachés car ils sont personnalisés (différents
 pour chaque utilisateur et session). Seules les données brutes des bras (qui changent
@@ -399,55 +370,21 @@ lentement --- les annonces ne sont pas ajoutées toutes les secondes) sont cach�
 
 \subsection{Architecture et initialisation}
 
-Le tracker est une classe \texttt{RecommendationTracker} instanciée avec \texttt{baseUrl},
-\texttt{sessionId} et un \texttt{userId} optionnel. Elle maintient une file d'événements
-interne (\texttt{\_queue}), l'état de session (\texttt{\_sessionState}), une carte de
-récompenses de session (\texttt{\_sessionRewards}), et un minuteur de flush
-(\texttt{setInterval} toutes les 15~secondes). L'architecture est sans dépendance externe
-(vanilla JavaScript), compatible ESM et CommonJS.
+Le tracker est une classe autonome instanciée avec l'adresse du serveur, l'identifiant de
+session et un identifiant utilisateur optionnel. Elle maintient une file d'événements interne,
+l'état de session, une carte de récompenses de session, et un minuteur de flush périodique
+(toutes les 15~secondes). L'architecture est sans dépendance externe (vanilla JavaScript).
 
-Le suivi de l'état de session capture en temps réel~: la profondeur de défilement (mise à
-jour sur les événements \texttt{scroll} avec un listener passif), la géolocalisation
-(demandée une fois à l'initialisation via \texttt{navigator.geolocation}), la gamme de prix
-consultée (mise à jour à chaque impression pour calculer le segment budgétaire), le type
-d'appareil (détecté depuis le \textit{user agent}~: mobile/tablet/desktop), et l'heure et
-le mois d'entrée (capturés à l'instanciation).
+Le suivi de l'état de session capture en temps réel~: la profondeur de défilement, la
+géolocalisation (demandée une fois à l'initialisation), la gamme de prix consultée (mise
+à jour à chaque impression pour calculer le segment budgétaire), le type d'appareil
+(mobile/tablet/desktop), et l'heure et le mois d'entrée.
 
-Les méthodes publiques de suivi couvrent l'ensemble du parcours utilisateur~:
-\texttt{trackImpression} (met à jour la gamme de prix, met l'événement en file),
-\texttt{trackClick} (enregistre le temps d'entrée, met à jour la séquence de clics),
-\texttt{trackPageExit} (calcule le temps de séjour depuis le temps d'entrée stocké, produit
-\texttt{quick\_exit} ou \texttt{dwell\_exit}), \texttt{trackGallerySwipe} (met en file si
-\texttt{swipeCount $\geq$ 3}), \texttt{trackScrollToReviews}, \texttt{trackWishlist}, et
-\texttt{trackReservation} (déclenche un flush immédiat pour les signaux de haute valeur).
+Le tracker expose une méthode publique pour chaque type d'interaction --- impression, clic,
+sortie de page avec temps de séjour, défilement de galerie, consultation des avis, ajout
+aux favoris, et réservation. Les signaux de haute valeur (favoris, réservation) déclenchent
+un flush immédiat plutôt que d'attendre le prochain cycle périodique.
 
-
-\subsection{Stratégie de flush et beacon}
-
-La fonction \texttt{\_flush()} est appelée toutes les 15~secondes ou lorsque la file atteint
-10~événements. Elle envoie un \texttt{POST /api/recommendations/events} avec la charge
-complète incluant l'état de session. En cas de succès, \texttt{\_sessionRewards} est mis à
-jour depuis la réponse du serveur (crucial pour le calcul de récompenses delta côté serveur).
-En cas d'échec réseau, les événements sont remis en file pour le prochain cycle de flush.
-
-La fonction \texttt{\_flushBeacon()} est utilisée \textbf{uniquement} pour les événements de
-fermeture de page (\texttt{beforeunload} et \texttt{visibilitychange} en mode
-\texttt{hidden}). Elle utilise \texttt{navigator.sendBeacon()} avec un payload
-\texttt{Blob}~: le navigateur garantit la livraison même si la page se ferme, contrairement à
-\texttt{fetch} qui serait annulé. Aucune réponse n'est reçue (acceptable puisque la session
-se termine).
-
-La protection contre la limite de taille du beacon est implémentée~: \texttt{sendBeacon} a
-une limite imposée par le navigateur d'environ 64~Ko. Si la file dépasse 20~événements, seuls
-les 20~derniers sont envoyés via beacon (\texttt{\_queue.slice(-20)}), les plus anciens étant
-abandonnés (acceptable car moins informatifs que les événements récents).
-
-Le flux de fusion d'identité \texttt{onLogin()} procède en trois étapes~: (1) flush de la file
-courante via beacon avant tout changement d'identité, (2) \texttt{POST
-/api/recommendations/merge-session} pour lier le \texttt{sessionId} anonyme au
-\texttt{userId} désormais connu (mise à jour de \texttt{RecommendationEvent.userId} pour les
-événements anonymes passés), (3) mise à jour de \texttt{\_userId} indépendamment du succès
-de la fusion.
 
 \begin{figure}[H]
     \centering
@@ -472,8 +409,12 @@ Pour chaque événement avec récompense positive, les tags de l'annonce sont r�
 Pour chaque tag dans cette annonce, l'affinité est mise à jour selon~:
 $\text{affinity}[\text{tag}] \mathrel{+}= r \times e^{-\lambda \cdot \Delta t}$ où
 $\lambda = \ln(2)/30$ (demi-vie de 30~jours~: un événement de 30~jours contribue à 50\%
-d'un événement frais). Après traitement de tous les événements, les valeurs d'affinité sont
-normalisées à $[0, 1]$ par division par la valeur maximale.
+d'un événement frais). Après traitement de tous les événements, la composante $x_7$ 
+est calculée par transformation exponentielle de l'affinité maximale brute~:
+$$x_7 = 1 - e^{-\text{raw\_max}}$$
+où $\text{raw\_max} = \max(\text{affinity.values()})$, ce qui reflète 
+l'intensité globale d'intérêt de l'utilisateur et reste naturellement 
+dans $[0, 1]$ sans normalisation explicite.
 
 Les métriques dérivées sont calculées à partir des événements de réservation uniquement~:
 \texttt{avg\_booking\_price} et \texttt{price\_std\_dev} sont extraites des événements de
@@ -490,49 +431,46 @@ de plage en été, activités culturelles intérieures en hiver), avec les évé
 et avec la croissance de la plateforme (nouvelles catégories d'annonces). Une matrice LinUCB
 entraînée purement sur des données historiques finira par sur-ajuster les anciens patrons.
 
-Le mécanisme de réinitialisation partielle est déclenché tous les 90~jours~:
+Le mécanisme de réinitialisation partielle est déclenché tous les 90~jours~ ou plus:
 $A_{new} = 0.7 \cdot A + 0.3 \cdot I$ et $b_{new} = 0.7 \cdot b$. Le facteur
 $\lambda_{\text{decay}} = 0.7$ oublie progressivement les anciennes données tout en
 conservant la structure apprise, et réintroduit de l'incertitude d'exploration en ajoutant
 30\% de la matrice identité. Cette approche est plus douce qu'une réinitialisation complète
 qui perdrait tout le savoir accumulé.
 
-La fonction \texttt{run\_concept\_drift\_check()} vérifie la condition
-$(\text{aujourd'hui} - \text{dernière réinitialisation}) \geq 90$ jours en lisant
-\texttt{n\_updates} et \texttt{updated\_at} de \texttt{LinUCBGlobal}. Si déclenchée, les
-matrices sont chargées, la réinitialisation partielle appliquée, et les matrices sauvegardées.
-Le job s'exécute le 1\textsuperscript{er} de chaque mois à 4h00 via APScheduler.
+La vérification de dérive lit l'horodatage de dernière réinitialisation
+depuis la table de configuration système, applique la réinitialisation
+partielle si 90~jours ou plus se sont écoulés, et sauvegarde les matrices mises à jour.
+Le job s'exécute le 1\textsuperscript{er} de chaque mois à 4h00.
 
 
 \subsection{Planificateur de tâches}
 
-Le planificateur utilise \texttt{BackgroundScheduler} d'APScheduler avec un
-\texttt{ThreadPoolExecutor(max\_workers=2)} et le fuseau horaire \texttt{Africa/Tunis}
-appliqué à tous les jobs cron. Quatre jobs sont enregistrés~: la mise à jour des profils
-(cron quotidien 3h00, \texttt{misfire\_grace\_time=3600s}), la vérification de dérive (cron
-mensuel le 1\textsuperscript{er} à 4h00), le rafraîchissement des tags (cron bimensuel le
-15 à 2h00), et la persistance des matrices (intervalle de 2~minutes).
+Le planificateur est configuré avec un fuseau horaire fixe, un pool de deux threads de
+travail, et une limite d'une instance par job pour empêcher les exécutions chevauchantes.
+Quatre jobs sont enregistrés~: la mise à jour des profils (cron quotidien 3h00), la
+vérification de dérive (cron mensuel le 1\textsuperscript{er} à 4h00), le rafraîchissement
+des tags (cron mensuel le 15 à 2h00), et la persistance des matrices (intervalle de
+2~minutes).
 
-Tous les jobs ont \texttt{max\_instances=1} pour empêcher les exécutions chevauchantes si un
-job dure plus longtemps que son intervalle. Le planificateur démarre dans le contexte
-\texttt{lifespan} de FastAPI et est arrêté gracieusement (\texttt{wait=False}) à l'arrêt
-de l'application. Chaque job est encapsulé dans une fonction \texttt{\_safe\_*} qui capture
-toutes les exceptions et les journalise, empêchant un job défaillant de bloquer les autres.
+Chaque job est encapsulé dans une logique de capture d'erreurs pour qu'une défaillance
+isolatrice ne bloque pas les autres jobs. Le planificateur démarre et s'arrête avec le
+cycle de vie de l'application.
 
 \begin{table}[H]
     \centering
-    \caption{Planning des jobs nocturnes APScheduler}
+    \caption{Planning global des tâches automatisées}
     \label{tab:scheduler_jobs}
     \small
-    \begin{tabular}{p{3cm} p{1.5cm} p{1.8cm} p{2cm} p{2cm} p{3cm}}
+    \begin{tabular}{p{3cm} p{1.5cm} p{1.8cm} p{2cm}  p{5cm}}
         \toprule
         \textbf{Job} & \textbf{Type} & \textbf{Heure} & \textbf{Fréquence} &
-        \textbf{Durée} & \textbf{Impact} \\
+         \textbf{Impact} \\
         \midrule
-        profile\_update & cron & 3:00 & Quotidien & 30s--5min & Maj UserProfile actifs \\[2pt]
-        concept\_drift & cron & 4:00 & 1\textsuperscript{er}/mois & $<5$s & Reset partiel A,b \\[2pt]
-        tag\_refresh & cron & 2:00 & 15/mois & 5--30min & Re-extraction tags \\[2pt]
-        matrix\_persist & interval & — & 2 min & $<1$s & Flush RAM$\rightarrow$DB \\
+        profile\_update & cron & 3:00 & Quotidien & Maj UserProfile actifs \\[2pt]
+        concept\_drift & cron & 4:00 & 1\textsuperscript{er}/mois& Reset partiel A,b \\[2pt]
+        tag\_refresh & cron & 2:00 & 15/mois & Re-extraction tags \\[2pt]
+        matrix\_persist & interval & — & 2 min & Flush RAM$\rightarrow$DB \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -546,13 +484,11 @@ Ce chapitre a présenté l'implémentation complète du moteur de recommandation
 système Guidni. L'ingénierie des caractéristiques produit un vecteur $\phi$ de 360~dimensions
 par produit de Kronecker entre 9~caractéristiques utilisateur et 40~tags binaires. Le moteur
 de scoring calcule le score UCB avec $\alpha = 0.3$ et un bonus de sous-exposition de $+0.15$.
-Le pipeline de classement en 10~étapes applique des filtres temporels, budgétaires, de
+Le pipeline de classement en 10~étapes applique des filtres saisonniers, budgétaires, de
 diversité, de garantie de nouvelles annonces, d'exploration de tags et de tri par marge. Le
 tracker JavaScript collecte les événements comportementaux avec un flush toutes les
 15~secondes et un beacon à la fermeture de page. Les jobs nocturnes assurent la mise à jour
 des profils (demi-vie de 30~jours), la gestion de la dérive conceptuelle (réinitialisation
-partielle $\lambda = 0.7$ tous les 90~jours), et le rafraîchissement des tags.
+partielle $\lambda = 0.7$ tous les 90~jours ou plus), et le rafraîchissement des tags.
 
-Le chapitre suivant présentera les résultats d'évaluation et de test des deux sous-systèmes,
-incluant les métriques de performance, les tests fonctionnels, et l'analyse de la qualité des
-recommandations.
+Le chapitre suivant présentera le déploiement du système et l'architecture de production de la plateforme Guidni, décrivant la topologie d'isolation des conteneurs, la configuration réseau, les spécifications du serveur hôte, l'orchestration Docker Compose et le pipeline de déploiement séquentiel sécurisé.

@@ -1,23 +1,17 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
-title Pipeline de génération rapide de plans (3 phases parallèles)
+title Pipeline de génération rapide de plans (3 phases )
 
-|Phase 1 : Collecte Parallèle|
+|Phase 1 : Collecte |
 start
 :RAG search\nrag_search_for_plan();
 :Weather forecast\nget_weather();
 :Distance calculations\nget_distance() × N paires;
 :Budget estimation\nestimate_trip_budget();
-note right
-  **asyncio.gather()**
-  Toutes les collectes
-  s'exécutent en parallèle
-  → gain de 60-70%
-  vs séquentiel
-end note
+
 
 |Phase 2 : Pré-traitement|
 :Filtre par budget\n(budget_estimate × 1.25);
@@ -28,14 +22,6 @@ end note
 :Single LLM call\navec toutes les données;
 :Génération plan JSON\nstructuré;
 :PlannerResponse\nretourné;
-note right
-  **Trade-off**
-  - Avantage : 5-10s vs 15-40s
-  - Inconvénient : pas de boucle
-    validation, pas de conversation
-  - Cible : power users avec
-    info complète dès le départ
-end note
 
 stop
 @enduml

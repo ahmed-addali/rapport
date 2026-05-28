@@ -1,6 +1,6 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
+
 skinparam defaultFontName "Arial"
 
 title Flux de sécurité et de validation dans l'endpoint /chat
@@ -25,12 +25,7 @@ else Utilisateur trouvé
   FastAPI -> Agent : run_agent(state)
 
   Agent -> LLM : System prompt + contexte + tool results
-  note right
-    Aucune PII brute transmise
-    aux LLMs externes :
-    seulement IDs, catégories,
-    features anonymisées
-  end note
+
 
   LLM --> Agent : Réponse AIMessage
   Agent --> FastAPI : PlannerResponse

@@ -7,11 +7,11 @@
 \addcontentsline{toc}{section}{Bilan des contributions}
 
 La première contribution majeure de ce projet est l'agent planificateur IA Guidni~: un agent
-conversationnel basé sur LangGraph avec 18~outils appelables par le LLM, un pipeline RAG
+conversationnel basé sur LangGraph avec des outils appelables par le LLM, un pipeline RAG
 multilingue utilisant les embeddings denses BAAI/bge-m3 (FR/EN/AR), une abstraction de
 fournisseur LLM supportant Ollama, Groq et Google Gemini, une boucle de validation garantissant
 la correction structurelle des plans, et un système de mémoire supportant les conversations
-longues par résumé automatique à 15~messages. Le cycle de raisonnement LangGraph en quatre
+longues par résumé automatique à 8~messages. Le cycle de raisonnement LangGraph en quatre
 nœuds (THINK → EXECUTE\_TOOL → VALIDATE → RESPOND) constitue une implémentation concrète du
 paradigme ReAct appliqué à la planification de voyage. Ce travail constitue le premier agent
 de planification de voyage conversationnel spécifiquement conçu pour le marché touristique de
@@ -22,7 +22,7 @@ multi-bras contextuel avec un vecteur de caractéristiques Kronecker de 360~dime
 ($\phi = x_{user}(9) \otimes x_{tags}(40)$), une unique matrice globale $A$ partagée entre
 toutes les annonces, un pipeline de classement post-traitement en 10~étapes, un mécanisme
 de récompenses delta par session empêchant l'inflation des signaux, et une réinitialisation
-partielle pour la dérive conceptuelle ($\lambda = 0.7$ tous les 90~jours). La vérification
+partielle pour la dérive conceptuelle ($\lambda = 0.7$ tous les 90~jours ou plus). La vérification
 d'intégrité par hachage SHA-256 du vocabulaire de tags garantit que la matrice apprise ne
 devient jamais incohérente après une mise à jour du vocabulaire. Combinés, ces éléments
 constituent un moteur de recommandation de qualité production adapté aux contraintes d'une
@@ -31,10 +31,10 @@ annonces, et préférences contextuelles fortes liées aux saisons et types de v
 
 La troisième contribution est l'intégration système~: les deux sous-systèmes partagent une
 base de données PostgreSQL sans conflit grâce à une partition claire entre tables en lecture
-seule (14~tables miroirs du frontend Prisma/Next.js) et tables gérées par l'IA
-(4~tables planificateur + 7~tables recommandation). La réindexation RAG incrémentale via
-les listeners d'événements SQLAlchemy maintient l'index vectoriel toujours à jour sans
-planification manuelle. Le tracker JavaScript vanilla relie le comportement client aux
+seule (les ~tables miroirs du frontend Prisma/Next.js) et tables gérées par l'IA
+(planificateur +  recommandation). La réindexation RAG incrémentale via des triggers SQL 
+maintient l'index vectoriel toujours à jour sans intervention manuelle. Le tracker JavaScript 
+vanilla relie le comportement client aux
 mises à jour matricielles côté serveur de manière transparente, avec un mécanisme beacon
 garantissant la capture des événements même à la fermeture de page. APScheduler exécute
 tous les jobs de maintenance avec une planification timezone-aware (\texttt{Africa/Tunis})

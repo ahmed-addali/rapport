@@ -1,6 +1,5 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-skinparam handwritten false
 skinparam defaultFontName "Arial"
 
 title Architecture du pipeline RAG avec réindexation automatique
@@ -8,31 +7,40 @@ title Architecture du pipeline RAG avec réindexation automatique
 !define RECTANGLE class
 
 package "Phase d'Indexation (Startup)" {
-  rectangle "PostgreSQL(Activity, Stay,Yummy, Attraction,Rental, Transfer)" as PG1 #LightBlue
-  rectangle "Document Builders(_activity_to_document,_stay_to_document, etc.)" as Builders #LightGreen
+  rectangle "PostgreSQL(Activity, Stay, Restaurant, Attraction, Rental, Transfer)" as PG1 #LightBlue
+  rectangle "Document Builders(_activity_to_document, _stay_to_document, etc.)" as Builders #LightGreen
   rectangle "BAAI/bge-m3 Embeddings " as Embed #LightYellow
   rectangle "VectorStoreIndex (LlamaIndex)" as Index #LightCoral
   rectangle "Qdrant Database" as Storage #LightGray
-  rectangle "SQLAlchemy Event Listeners" as Events #LightBlue
+  rectangle "Trigger Events" as Events #LightBlue
 }
 
 package "Phase de Requête (Runtime)" {
   rectangle "Requête utilisateur (rag_query())" as Query #LightGreen
   rectangle "Filtres métadonnées (entity_type, prix, région)" as Filters #LightYellow
   rectangle "Retriever retrieve(top_k×2)" as Retriever #LightCoral
+  
+  ' --- L'ajout du Reranker ici ---
+  rectangle "Reranker (bge-reranker-v2-m3)" as Rerank #Plum
+  
   rectangle "Post-filtrage (score ≥ 0.1, max_price, type)" as PostFilter #LightGray
   rectangle "Résultats top-k (entity_id, title, score, snippet)" as Results #LightBlue
 }
 
+' --- Flux de la Phase d'Indexation ---
 PG1 --> Builders : Ligne ORM
 Builders --> Embed : Texte + metadata
 Embed --> Index : Vecteurs 1024-d
 Index --> Storage : Persistance
 Events --> Index : upsert_entity() after_insert/update/delete
 
+' --- Flux de la Phase de Requête ---
 Query --> Filters : Requête + params
 Filters --> Retriever : Metadata + top_k×2
-Retriever --> PostFilter : Résultats bruts
+
+' --- Modification des flèches pour inclure le Reranker ---
+Retriever --> Rerank : Résultats bruts (Candidats)
+Rerank --> PostFilter : Scores affinés par Cross-Encoder
 PostFilter --> Results : top-k final
 
 note right of Events
@@ -45,8 +53,9 @@ note right of Events
 end note
 
 note right of PostFilter
-  **Stratégie over-fetching**
+  **Stratégie over-fetching & Reranking**
   - Récupère top_k × 2 résultats
+  - Reclassement sémantique précis avec le Reranker
   - Post-filtre par type, score, prix
   - Compense la logique AND stricte
     de LlamaIndex sur les métadonnées

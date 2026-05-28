@@ -1,0 +1,69 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam componentStyle rectangle
+skinparam roundcorner 8
+skinparam linetype ortho
+
+title Architecture de Déploiement et Topologie Réseau (Production)
+
+actor "Touriste / Voyageur" as User
+
+node "Serveur VPS (Ubuntu 24.04 LTS)" as VPS #F5F7F8 {
+
+    component "Proxy Inverse\n[Nginx]" as Nginx #E8F5E9-D0E9D4 {
+        portin "Port 80\n(HTTP)" as P80
+        portin "Port 443\n(HTTPS)" as P443
+    }
+
+    rectangle "Réseau Docker Privé (Bridge: guidni-network)" #E3F2FD {
+        
+        component "Couche Présentation\n[Next.js App]" as NextApp #FFF9C4-FFF59D {
+            portin "Port 3000" as P3000
+        }
+        
+        component "Agent Planificateur AI\n[FastAPI / LangGraph]" as Planner #E3F2FD-BBDEFB {
+            portin "Port 8000" as P8000
+        }
+        
+        component "Moteur de Recommandation\n[FastAPI / LinUCB / NumPy]" as Reco #ECEFF1-CFD8DC {
+            portin "Port 8001" as P8001
+        }
+        
+        database "Persistance Relationnelle\n[PostgreSQL 16]" as Postgres #FFE082-FFD54F {
+            portin "Port 5432\n(Isolé)" as P5432
+        }
+    }
+}
+
+cloud "Autorité de Certification" as CA #ECEFF1 {
+    component "Let's Encrypt\n(SSL/TLS Automatisé)" as LE
+}
+
+cloud "Inférence LLM & APIs Cloud" as CloudAPIs #ECEFF1 {
+    component "API Gateway Externe\n(Groq, Anthropic, Gemini)" as LLMs
+}
+
+' --- Flux utilisateur ---
+User --> P80 : "Accès HTTP"
+User --> P443 : "Requêtes HTTPS\nChiffrement SSL"
+
+' --- Certificats ACME ---
+Nginx <--> LE : "Renouvellement ACME"
+
+' --- Routage Nginx ---
+Nginx --> P3000 : "Proxy Pass (Routage trafic)"
+
+' --- Next.js app communication ---
+NextApp --> P8000 : "Planification conversationnelle"
+NextApp --> P8001 : "Requêtes de recommandation"
+NextApp --> P5432 : "Prisma ORM (CRUD)"
+
+' --- AI Planner & Recommender db connection ---
+Planner --> P5432 : "SQLAlchemy (Async)"
+Reco --> P5432 : "Connexions Synchrone"
+
+' --- External services connectivity ---
+Planner --> LLMs : "Appels API LLM (HTTPS Tunnel)"
+
+@enduml

@@ -1,0 +1,86 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam componentStyle rectangle
+
+title Architecture Globale du Système Guidni
+
+package "Client (Frontend Next.js)" {
+    component [Interface Utilisateur (Chat & Cartographie)] as UI
+    component [JS Tracker (Suivi Comportemental)] as Tracker
+}
+
+package "Backend IA (FastAPI)" {
+
+    package "Agent Planificateur" {
+        component [Orchestrateur LangGraph] as Agent
+        component [Système de Mémoire] as Memory
+        
+        package "Outils & Recherche" {
+            component [Gestionnaire d'Outils] as Tools
+            package "Pipeline RAG" {
+                component [Retriever (LlamaIndex)] as Retriever
+                component [Embeddings (BGE-M3)] as Embeddings
+                component [Modèle Cross-Encoder (Reranker)] as Reranker
+            }
+        }
+    }
+
+    package "Moteur de Recommandation" {
+        component [Routeur API] as RecoRouter
+        component [Moteur LinUCB] as LinUCB
+        component [Pipeline de Ranking] as Ranker
+        component [Calcul de Récompense (Events)] as RewardCalc
+    }
+    
+    component [Tâches d'Arrière-plan (APScheduler)] as Scheduler
+}
+
+database "Couche de Données" {
+    database "PostgreSQL 15" as PG {
+        [Tables Prisma (Frontend)]
+        [Tables Agent (Historique, Plans)]
+        [Tables Recommandation (Matrices, Events)]
+    }
+    database "Qdrant (Base de Données Vectorielle)" as Qdrant
+}
+
+cloud "Fournisseurs Externes" {
+    component [LLMs (Ollama, Groq, Gemini, Lightning AI)] as LLM
+    component [API Open-Meteo] as Meteo
+    component [API Nominatim] as Geo
+}
+
+' --- Interactions Frontend <-> Backend ---
+UI <--> Agent : "Requêtes Chat / Plan"
+UI <--> RecoRouter : "Demande de recommandations"
+Tracker --> RewardCalc : "Événements utilisateurs"
+
+' --- Interactions Agent ---
+Agent <--> Memory : "Lecture/Écriture Contexte"
+Agent --> Tools : "Exécution outils"
+Tools --> LLM : "Appel d'inférence"
+Tools --> Meteo : "Conditions météorologiques"
+Tools --> Geo : "Géocodage & distances"
+
+' --- Interactions RAG ---
+Tools --> Retriever : "Recherche sémantique"
+Retriever --> Embeddings : "Vectorisation requête"
+Embeddings --> Qdrant : "Recherche KNN"
+Qdrant --> Retriever : "Top K initial"
+Retriever --> Reranker : "Candidats à reclasser"
+Reranker --> Tools : "Top K affinés (Haute précision)"
+
+' --- Interactions Recommandation ---
+RecoRouter --> Ranker : "Requête de classement"
+Ranker --> LinUCB : "Scoring contextuel"
+LinUCB <--> PG : "Lecture/Écriture Matrices"
+RewardCalc --> LinUCB : "Mise à jour des poids"
+RewardCalc --> PG : "Journalisation des événements"
+
+' --- Interactions Base de données & Tâches ---
+Agent <--> PG : "Sauvegarde (Plans, Messages)"
+Scheduler --> PG : "Mise à jour de nuit (Profils)"
+Scheduler --> Retriever : "Réindexation incrémentale"
+
+@enduml

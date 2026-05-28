@@ -171,16 +171,17 @@ Do NOT confuse them.
 Le système Guidni utilise une architecture de base de données partagée où deux sous-systèmes
 coexistent dans la même instance PostgreSQL~: le sous-système planificateur (géré via
 SQLAlchemy par l'agent Python) et le sous-système de recommandation (géré via Prisma par le
-frontend Next.js). La partition est stricte~: les tables planner (\texttt{PlannerConversation},
+frontend Next.js). La partition est stricte~: les tables liées à la planification (\texttt{PlannerConversation},
 \texttt{PlannerMessage}, \texttt{GeneratedPlan}, \texttt{ActivityIntelligence}) sont en
-écriture exclusive par l'agent Python, tandis que les tables frontend (14~tables~: Activity,
-Stay, Restaurant, etc.) sont montées en lecture seule par le même agent via les modèles
-SQLAlchemy correspondants.
+écriture exclusive par l'agent Python, tandis que les tables du frontend (\texttt{Activity},
+\texttt{Stay}, \texttt{Restaurant}, etc.) sont montées en lecture seule pour l'agent via les modèles
+SQLAlchemy correspondants. C'est d'ailleurs sur ces tables partagées que sont déployés les \textbf{triggers SQL}, 
+écoutant les modifications effectuées par le frontend pour déclencher la réindexation asynchrone de l'agent.
 
 Les tables du moteur de recommandation (\texttt{BanditArmUCB}, \texttt{LinUCBGlobal},
 \texttt{SystemConfig}, \texttt{ListingTag}, \texttt{UserProfile}, \texttt{UserSession},
-\texttt{RecommendationEventUCB}) sont définies dans \texttt{prisma/schema.prisma} mais gérées
-principalement via les requêtes SQL directes dans \texttt{app/reco/db.py} utilisant
+\texttt{RecommendationEventUCB}) sont définies dans \texttt{prisma/schema.prisma} mais exploitées
+principalement via des requêtes SQL directes dans \texttt{app/reco/db.py} en utilisant
 \texttt{psycopg2}. Cette dualité d'accès (Prisma pour les migrations, psycopg2 pour le
 runtime) permet de centraliser la gestion des migrations tout en conservant des performances
 maximales pour les opérations matricielles critiques.

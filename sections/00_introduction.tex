@@ -14,7 +14,7 @@ touristique, un secteur intrinsèquement dépendant de la personnalisation et de
 contraintes multidimensionnelles.
 
 L'île de Djerba, inscrite au patrimoine mondial de l'UNESCO depuis 2023, constitue l'une des
-destinations touristiques les plus emblématiques de la Tunisie. Avec environ 2,5~millions de
+destinations touristiques les plus emblématiques de la Tunisie. Avec environ 1,12~millions de
 visiteurs annuels, cette île méditerranéenne offre un tissu touristique d'une richesse exceptionnelle~:
 stations balnéaires bordant des plages de sable fin, héritage culturel amazigh préservé dans les
 villages traditionnels, médinas historiques, et une gastronomie méditerranéenne authentique. 
@@ -45,7 +45,7 @@ compromis optimal entre exploration de nouveaux contenus et exploitation des pr�
 C'est dans ce contexte que s'inscrit le présent projet de fin d'études, qui propose \textbf{Guidni},
 une plateforme de planification de voyage intelligente articulée autour de deux sous-systèmes
 complémentaires. Le premier, l'\textbf{Agent Planificateur}, est un agent conversationnel construit
-sur une machine à états LangGraph à quatre nœuds, disposant de dix-huit outils appelables par le LLM
+sur une machine à états LangGraph à quatre nœuds, disposant des outils appelables par le LLM
 et d'un pipeline RAG multilingue pour la recherche sémantique. Le second, le \textbf{Moteur de
 Recommandation Hybride LinUCB}, exploite un bandit contextuel avec un vecteur de caractéristiques
 de dimension~360 pour recommander des contenus touristiques en temps réel, en apprenant continuellement
@@ -55,7 +55,7 @@ de données PostgreSQL et opèrent de manière indépendante et complémentaire.
 % --- Figure placeholder ---
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/screen_01_djerba_tourism.png}
+    \includegraphics[width=\textwidth]{images/carte-djerba.jpg}
     \caption{Djerba, destination touristique emblématique de la Tunisie}
     \label{fig:djerba_tourism}
 \end{figure}
@@ -138,42 +138,14 @@ Les objectifs suivants guident la conception et l'implémentation du système. C
 correspond à une contribution technique mesurable et vérifiable.
 
 \begin{enumerate}
-    \item \textbf{Concevoir l'agent planificateur LangGraph.} Construire une machine à états
-    comportant quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND) et dix-huit outils
-    appelables par le LLM, capables de raisonner sur le contenu réel de la base de données
-    pour produire des plans de voyage multi-journées validés.
+    \item \textbf{Planificateur de voyages.} Création d'un agent autonome capable de générer des 
+    itinéraires de voyage multi-journées personnalisés en puisant directement dans les données réelles 
+    de la plateforme (activités, restaurants, hôtels).
 
-    \item \textbf{Intégrer un pipeline RAG multilingue.} Indexer l'ensemble des activités,
-    hébergements, restaurants et attractions à l'aide des embeddings denses multilingues
-    BAAI/bge-m3, construire un index vectoriel persistant, et permettre la recherche sémantique
-    avec filtrage par métadonnées et ré-indexation incrémentale automatique lors des modifications
-    de la base de données via les événements SQLAlchemy.
+    \item \textbf{Système de recommandation.} Mise en œuvre d'un moteur de recommandation 
+    pour personnaliser les suggestions basées sur le comportement de l'utilisateur (clics, temps de consultation, 
+    réservations).
 
-    \item \textbf{Abstraire l'accès aux LLMs.} Implémenter une fabrique de fournisseurs
-    (\textit{provider factory}) qui route de manière transparente les requêtes vers Ollama
-    (modèle local), Groq, Google Gemini, ou Lightning AI selon la configuration ou le choix
-    de l'utilisateur par requête, sans modification de la logique agentique.
-
-    \item \textbf{Concevoir le moteur LinUCB.} Implémenter un bandit contextuel multi-bras
-    avec un vecteur de caractéristiques de dimension~360 obtenu par produit de Kronecker
-    ($\phi = x_{\text{user}} \otimes x_{\text{tags}}$, $d_{\text{user}}=9$, $d_{\text{tags}}=40$),
-    une matrice~$A$ globale partagée entre toutes les annonces, et un pipeline de classement
-    post-traitement en plusieurs étapes.
-
-    \item \textbf{Implémenter le tracker comportemental JavaScript.} Développer une classe
-    JavaScript sans dépendance externe qui capture les impressions, clics, temps de consultation,
-    balayages de galerie, ajouts aux favoris et réservations, en regroupant les événements par
-    lots avant envoi, avec une vidange par \textit{beacon} à la fermeture de la page.
-
-    \item \textbf{Mettre en place les pipelines nocturnes.} Planifier des tâches programmées
-    pour la mise à jour des profils utilisateurs avec une décroissance temporelle des affinités
-    par tags, la réinitialisation partielle des matrices pour la dérive conceptuelle tous les
-    90~jours, et le rafraîchissement des tags pour les annonces modifiées.
-
-    \item \textbf{Évaluer les deux systèmes.} Mesurer le taux de validité des plans générés,
-    le nombre d'itérations de l'agent, la précision de la récupération RAG (precision@5), la
-    récompense cumulée comparée à des lignes de base (aléatoire et popularité), et la latence
-    de scoring à différents volumes d'annonces.
 \end{enumerate}
 
 La section suivante délimite le périmètre fonctionnel du projet au sein de l'écosystème Guidni.
@@ -183,13 +155,14 @@ La section suivante délimite le périmètre fonctionnel du projet au sein de l'
 \section{Cadre et périmètre du projet}
 
 Guidni est une place de marché touristique complète dédiée à l'île de Djerba, construite avec
-Next.js et Prisma côté frontend et gestion des données. La plateforme propose quatre catégories
+Next.js et Prisma côté frontend et gestion des données. La plateforme propose six catégories
 principales d'annonces~: les \textbf{Activités} (expériences payantes~: sports nautiques,
 promenades à dos de chameau, circuits culturels, soins spa), les \textbf{Hébergements}
-(\textit{Stays}~: hôtels, riads, villas, maisons d'hôtes avec processus d'approbation), les
-\textbf{Restaurants} (module \textit{Yummy} de découverte gastronomique avec horaires d'ouverture,
+(\textit{Stays}~: hôtels, riads, villas, maisons d'hôtes avec processus d'approbation), les 
+\textbf{Restaurants} (module de découverte gastronomique avec horaires d'ouverture,
 support de réservation et menus), et les \textbf{Attractions} (sites gratuits~: mosquées, musées,
-la synagogue de la Ghriba, le marché de Houmt Souk, la lagune aux flamants roses).
+ le marché de Houmt Souk, la lagune aux flamants roses), les \textbf{Locations} (véhicules et équipements de mobilité), 
+ et les \textbf{Transferts} (services de transport personnalisés vers et depuis l'aéroport ou entre les zones de l'île)
 
 Le backend IA développé dans le cadre de ce projet se connecte à la même base de données
 PostgreSQL que le frontend Next.js et ajoute une couche d'intelligence au-dessus des données
@@ -211,18 +184,14 @@ de développement sur les contributions techniques principales.
         \toprule
         \textbf{Inclus} & \textbf{Exclu} \\
         \midrule
-        Génération de plans de 1 à 14~jours &
+        Génération de plusieurs jours &
         Paiement et exécution des réservations \\[4pt]
-        Modification conversationnelle des plans &
-         \\[4pt]
         Recherche sémantique RAG multilingue &
         Application mobile native \\[4pt]
         Intégration météo via Open-Meteo &
         Framework de tests A/B en temps réel \\[4pt]
-        Support trilingue FR/EN/AR &
-        LLM fine-tuné spécifique au domaine \\[4pt]
         Apprentissage en ligne LinUCB &
-         \\[4pt]
+        LLM fine-tuné spécifique au domaine \\[4pt]
         Tracker comportemental JavaScript &
          \\[4pt]
         Tâches nocturnes de maintenance &
@@ -289,18 +258,15 @@ La section suivante présente la planification temporelle du projet selon cette 
 % ────────────────────────────────────────────────────────────────
 \section{Planification du projet}
 
-Le projet Guidni s'étend sur une durée approximative de cinq mois, d'octobre~2024 à février~2025.
-Les deux sous-systèmes ont été développés partiellement en parallèle~: l'agent planificateur a
-démarré en premier, lors de la phase d'implémentation en novembre, tandis que le moteur de
-recommandation a été initié en décembre, avec un chevauchement significatif durant la période
-de décembre à janvier. Cette parallélisation a été rendue possible par l'indépendance architecturale
-des deux sous-systèmes, qui partagent la base de données mais n'ont aucune dépendance de code
-directe.
-
-La rédaction du rapport a été conduite en parallèle avec l'implémentation à partir de
-décembre~2024, permettant de documenter les choix de conception au moment où ils étaient les plus
-frais. Le diagramme de Gantt de la figure~\ref{fig:gantt} illustre la distribution temporelle
-des différentes tâches et leurs chevauchements.
+Le projet Guidni s'étend sur une durée approximative de quatre mois, de février 2026 à juin 2026. 
+Les deux sous-systèmes ont été développés partiellement en parallèle : l'agent planificateur a démarré en premier, 
+lors de la phase d'implémentation fin mars / début avril, tandis que le moteur de recommandation a été initié en avril également, 
+avec un chevauchement significatif durant la période d'avril à mai. Cette parallélisation a été rendue possible par 
+l'indépendance architecturale des deux sous-systèmes, qui partagent la base de données mais n'ont aucune dépendance de
+ code directe.
+La rédaction du rapport a été conduite en parallèle avec l'implémentation à partir de mi-avril 2026, permettant 
+de documenter les choix de conception au moment où ils étaient les plus frais. Le diagramme de Gantt de l
+a figure~\ref{fig:gantt} illustre la distribution temporelle des différentes tâches et leurs chevauchements.
 
 % --- PlantUML Gantt diagram placeholder ---
 \begin{figure}[H]
@@ -316,31 +282,29 @@ La section suivante décrit la structure générale de ce rapport.
 % ────────────────────────────────────────────────────────────────
 \section{Structure du rapport}
 
-Le \textbf{chapitre~2} est consacré à l'état de l'art et aux fondements théoriques. Il examine les
+Le \textbf{chapitre~1} est consacré à l'état de l'art et aux fondements théoriques. Il examine les
 architectures agentiques basées sur les LLM, les systèmes de génération augmentée par la
 récupération (RAG), et la théorie des bandits contextuels, en particulier l'algorithme LinUCB. Ce
 chapitre établit les bases conceptuelles nécessaires à la compréhension des choix de conception
 effectués dans les chapitres suivants.
 
-Le \textbf{chapitre~3} présente l'analyse des besoins et la conception du système. Il détaille les
+Le \textbf{chapitre~2} présente l'analyse des besoins et la conception du système. Il détaille les
 exigences fonctionnelles et non fonctionnelles à travers des diagrammes de cas d'utilisation UML,
 expose l'architecture globale du système incluant le diagramme entité-relation de la base de
 données, et spécifie les contrats d'API des deux sous-systèmes.
 
-Le \textbf{chapitre~4} détaille l'implémentation de l'agent planificateur IA. Il couvre les quatre
-nœuds de la machine à états LangGraph (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND), les dix-huit
+Le \textbf{chapitre~3} détaille l'implémentation de l'agent planificateur IA. Il couvre les quatre
+nœuds de la machine à états LangGraph (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND), les 
 outils mis à disposition du LLM, le pipeline RAG multilingue avec ré-ordonnancement par
 cross-encoder, et le système de mémoire conversationnelle avec résumé automatique.
 
-Le \textbf{chapitre~5} présente l'implémentation du moteur de recommandation LinUCB. Il aborde
+Le \textbf{chapitre~4} présente l'implémentation du moteur de recommandation LinUCB. Il aborde
 l'ingénierie des caractéristiques avec le produit de Kronecker, le moteur de scoring, le pipeline
 de classement post-traitement, l'extracteur de tags par LLM, le tracker JavaScript, et les tâches
 de maintenance nocturnes.
 
-Le \textbf{chapitre~6} expose les résultats des tests et de l'évaluation des deux sous-systèmes.
-Il présente la stratégie de test adoptée, les métriques d'évaluation du planificateur et du
-pipeline RAG, les performances du moteur de recommandation comparées à des lignes de base, et
-l'analyse de la latence système.
+Le \textbf{chapitre~5} détaille le déploiement du système et l'architecture de production de la plateforme.
+Il présente la topologie d'isolation des microservices sous forme de conteneurs Docker, les spécifications matérielles et logicielles de l'infrastructure de production, la configuration de l'orchestration via Docker Compose, ainsi que les étapes séquentielles du pipeline de déploiement opérationnel et du routage sécurisé.
 
 La \textbf{conclusion générale} synthétise les contributions du projet, discute les limitations
 identifiées, et propose des perspectives d'évolution future pour le système Guidni.
@@ -355,7 +319,7 @@ l'intelligence artificielle appliquée au tourisme, en décrivant la richesse et
 destination Djerba, et en identifiant les lacunes des outils de planification et de recommandation
 existants. La problématique a été formulée de manière précise autour de deux axes
 complémentaires~: la génération conversationnelle de plans de voyage et la recommandation
-personnalisée en temps réel par bandits contextuels. Les sept objectifs du projet ont été définis,
+personnalisée en temps réel par bandits contextuels. Les deux objectifs principaux du projet ont été définis,
 le périmètre fonctionnel a été délimité, et la méthodologie 2TUP ainsi que la planification
 temporelle ont été présentées.
 

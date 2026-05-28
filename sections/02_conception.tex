@@ -10,11 +10,12 @@ produire l'architecture globale et la conception de la base de données. L'objec
 une spécification complète et non ambiguë à partir de laquelle les chapitres suivants pourront
 implémenter les deux sous-systèmes sans interprétation subjective.
 
-La démarche adoptée progresse en six étapes~: l'identification des acteurs et la modélisation des
-cas d'utilisation (section~3.2), l'expression des besoins non fonctionnels (section~3.3),
-la conception de l'architecture globale en couches (section~3.4), la spécification du schéma de
-base de données (section~3.5), la définition des contrats API REST (section~3.6), et enfin les
-considérations de sécurité et de gestion des données (section~3.7).
+La démarche adoptée progresse en sept étapes~: l'identification des acteurs et la modélisation des
+cas d'utilisation (section~2.2), l'expression des besoins non fonctionnels (section~2.3),
+la conception de l'architecture globale en couches (section~2.4), la modélisation structurelle
+globale à travers le diagramme de classes (section~2.5), la spécification du schéma de base de
+données (section~2.6), la définition des contrats API REST (section~2.7), et enfin les
+considérations de sécurité et de gestion des données (section~2.8).
 
 
 % ────────────────────────────────────────────────────────────────
@@ -23,10 +24,9 @@ considérations de sécurité et de gestion des données (section~3.7).
 
 \subsection{Identification des acteurs}
 
-Le \textbf{Touriste} constitue l'acteur principal du système. Il peut être anonyme (session sans
-authentification) ou identifié (connecté via son compte utilisateur). Le touriste interagit avec
-l'interface de chat pour formuler des demandes de planification de voyage, recevoir des itinéraires
-structurés, les modifier par des messages de suivi, et consulter l'historique de ses conversations.
+Le \textbf{Touriste} constitue l'acteur principal du système. Le touriste interagit avec
+l'interface pour formuler des demandes de planification de voyage, recevoir des itinéraires
+structurés, les modifier, et consulter l'historique de ses conversations.
 Son comportement de navigation --- clics, temps de consultation, profondeur de défilement, ajouts
 aux favoris --- est automatiquement capté par le tracker JavaScript pour alimenter le moteur de
 recommandation LinUCB.
@@ -39,7 +39,7 @@ fournisseur LLM par défaut via la configuration du serveur. Il n'interagit pas 
 l'agent conversationnel mais supervise son bon fonctionnement.
 
 Le \textbf{Système} représente l'ensemble des processus automatisés qui s'exécutent sans
-intervention humaine. Il comprend les écouteurs d'événements SQLAlchemy qui déclenchent la
+intervention humaine. Il comprend les déclencheurs de base de données (triggers SQL) qui déclenchent la
 réindexation RAG incrémentale lors de modifications en base de données, le tracker JavaScript
 qui collecte et transmet les événements comportementaux vers un endpoint dédié, le planificateur
 de tâches qui exécute les trois jobs nocturnes (mise à jour des profils utilisateur, vérification
@@ -55,16 +55,13 @@ d'utilisation sont organisés en trois groupes~: les interactions conversationne
 avec l'agent planificateur, les opérations d'administration du système, et les processus
 automatisés du sous-système de recommandation.
 
-Deux types de relations structurelles enrichissent le diagramme~: la relation d'extension
-\texttt{<<extend>>} entre \og{}Modifier un plan existant\fg{} et \og{}Envoyer un message de
-planification\fg{} indique que la modification est un cas particulier de l'envoi de message~;
-la relation d'inclusion \texttt{<<include>>} entre \og{}Recevoir un plan de voyage\fg{} et
-\og{}Valider le plan\fg{} indique que la validation est systématiquement exécutée avant la
-présentation du plan au touriste.
+Les cas d'utilisation sont organisés en trois groupes : les interactions  du 
+touriste avec l'agent planificateur, les opérations d'administration du système, et les processus 
+automatisés du sous-système de recommandation.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/fig_03_use_case_global.png}
+    \includegraphics[width=\textwidth]{diagrams/uc general.drawio.png}
     \caption{Diagramme des cas d'utilisation global du système Guidni}
     \label{fig:use_case}
 \end{figure}
@@ -116,7 +113,7 @@ postconditions garanties.
         \toprule
         \textbf{Champ} & \textbf{Description} \\
         \midrule
-        Acteur & Touriste / Système \\[3pt]
+        Acteur & Touriste  \\[3pt]
         Précondition & Des annonces indexées existent pour la zone demandée \\[3pt]
         Déclencheur & Requête de recommandation avec paramètres de contexte \\[3pt]
         Flux principal &
@@ -125,7 +122,7 @@ postconditions garanties.
         (3) Construction du contexte utilisateur à partir des paramètres de requête ;
         (4) Chargement des matrices de recommandation depuis le cache mémoire ;
         (5) Calcul du vecteur de caractéristiques par produit de Kronecker pour chaque annonce ;
-        (6) Exécution du pipeline de classement en 9~étapes ;
+        (6) Exécution du pipeline de classement en 10~étapes ;
         (7) Retour de la liste classée au frontend. \\[3pt]
         Postcondition & Un événement d'impression est enregistré pour chaque annonce affichée \\
         \bottomrule
@@ -146,7 +143,7 @@ postconditions garanties.
         Déclencheur & L'utilisateur clique, consulte, ou réserve une annonce \\[3pt]
         Flux principal &
         (1) Le tracker met l'événement en file d'attente côté client ;
-        (2) Toutes les 15~secondes ou tous les 10~événements, le lot est transmis au serveur ;
+        (2) Toutes les 15~secondes ou tous les 20~événements, le lot est transmis au serveur ;
         (3) Envoi du lot d'événements vers l'endpoint dédié ;
         (4) Le serveur calcule la récompense différentielle pour chaque événement ;
         (5) Le vecteur de caractéristiques est calculé pour chaque annonce concernée ;
@@ -164,42 +161,37 @@ La section suivante complète l'analyse en spécifiant les besoins non fonctionn
 % ────────────────────────────────────────────────────────────────
 \section{Besoins non fonctionnels}
 % ────────────────────────────────────────────────────────────────
+Les besoins non fonctionnels définissent les critères de qualité que le système doit respecter, 
+indépendamment de ses fonctionnalités de base. En s'inspirant des catégories de la norme 
+ISO~25010, ces exigences couvrent des aspects essentiels tels que la performance, la disponibilité, 
+la scalabilité, la maintenabilité, la sécurité et la confidentialité des données.
 
-Les besoins non fonctionnels définissent les contraintes de qualité que le système doit respecter
-indépendamment de ses fonctionnalités. Ils sont classifiés selon les catégories de la norme
-ISO~25010, qui couvre la performance, la disponibilité, la scalabilité, la maintenabilité, la
-sécurité, le support multilingue et la confidentialité des données.
-
-Le tableau suivant synthétise ces besoins avec pour chaque catégorie une mesure cible vérifiable,
-permettant de valider le respect de ces exigences lors de la phase de tests présentée au
-chapitre~5.
+Le tableau suivant synthétise ces besoins avec des objectifs globaux. Le but est de garantir 
+une plateforme robuste et une expérience utilisateur fluide, tout en conservant une souplesse 
+d'implémentation.
 
 \begin{table}[H]
-    \centering
-    \caption{Besoins non fonctionnels classifiés selon la norme ISO~25010}
-    \label{tab:nfr}
-    \small
-    \begin{tabular}{p{2.5cm} p{5.5cm} p{5.5cm}}
-        \toprule
-        \textbf{Catégorie} & \textbf{Besoin} & \textbf{Mesure / Cible} \\
-        \midrule
-        Performance & Latence de l'endpoint \texttt{/chat} & $< 5$\,s (P95) \\
-         & Latence \texttt{/api/recommendations} & $< 100$\,ms (P95) \\
-         & Scoring LinUCB pour $N=1000$ bras & $< 50$\,ms \\[3pt]
-        Disponibilité & Uptime du service & 99,5\% \\
-         & Démarrage sans index RAG & Non fatal (mode dégradé) \\[3pt]
-        Scalabilité & Pool de connexions synchrone & Pool avec min et max configurables \\
-         & Pool de connexions asynchrone & Pool avec taille et débordement configurables \\[3pt]
-        Maintenabilité & Ajout d'un nouveau fournisseur LLM & 1 fichier client + config \\
-         & Journalisation rotative & 10\,MB info, 50\,MB debug \\[3pt]
-        Sécurité & Validation utilisateur & Chaque requête vérifie l'identifiant utilisateur \\
-         & Limitation de débit événements & 10/listing/session, 100/session \\[3pt]
-        Multilingue & Langues supportées & FR, EN, AR (auto-détection) \\
-         & Embeddings multilingues & Modèle d'embedding multilingue (100+ langues) \\[3pt]
-        Confidentialité & Données vers LLM externe & Pas de PII sans consentement \\
-         & Option locale & Ollama pour souveraineté complète \\
-        \bottomrule
-    \end{tabular}
+\centering
+\caption{Besoins non fonctionnels généraux (selon la norme ISO~25010)}
+\label{tab:nfr}
+\small
+\begin{tabular}{p{2.5cm} p{5.5cm} p{5.5cm}}
+\toprule
+\textbf{Catégorie} & \textbf{Besoin} & \textbf{Objectif cible} \\
+\midrule
+Performance & Temps de réponse du chat & Interaction fluide et réponses rapides \\
+& Calcul des recommandations & Traitement optimisé en arrière-plan \\ [3pt]
+Disponibilité & Continuité de service & Haute disponibilité globale du système \\
+Scalabilité & Gestion de la charge & Support des pics d'utilisation \\ [3pt]
+Maintenabilité & Évolutivité des modèles & Architecture modulaire facilitant l'ajout de LLM \\
+& Suivi et débogage & Système de journalisation (logs) paramétrable \\ [3pt]
+Sécurité & Contrôle d'accès & Validation sécurisée de chaque utilisateur \\
+& Protection contre les abus & Limitation du taux de requêtes (Rate limiting) \\ [3pt]
+Multilingue & Support linguistique & Adaptation à plusieurs langues (ex: FR, EN, AR) \\ [3pt]
+Confidentialité & Protection des utilisateurs & Aucune donnée personnelle (PII) partagée sans accord \\
+& Souveraineté des données & Architecture permettant un déploiement local \\
+\bottomrule
+\end{tabular}
 \end{table}
 
 La section suivante présente l'architecture globale conçue pour satisfaire ces besoins.
@@ -213,13 +205,13 @@ La section suivante présente l'architecture globale conçue pour satisfaire ces
 
 Le \textbf{frontend} du système Guidni est une application Next.js couplée à l'ORM Prisma, qui
 gère l'interface utilisateur, l'authentification, et les opérations CRUD sur les entités
-touristiques (activités, hébergements, restaurants, locations, transferts). Le frontend lit et
+touristiques (activités, hébergements, Attractions, restaurants, locations, transferts). Le frontend lit et
 écrit dans la base de données PostgreSQL partagée via Prisma, et communique avec le backend IA
 via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommendations}.
 
 Le \textbf{backend IA} est une application FastAPI qui héberge les deux sous-systèmes
-intelligents~: l'agent planificateur LangGraph (9~endpoints REST) et le moteur de recommandation
-LinUCB (3~endpoints REST). Il possède en écriture 4~tables planificateur et 7~tables
+intelligents~: l'agent planificateur LangGraph (8~endpoints REST) et le moteur de recommandation
+LinUCB (3~endpoints REST). Il possède en écriture les ~tables planificateur et 
 recommandation, et lit en lecture seule les tables Prisma du frontend. Le planificateur utilise
 un pilote de base de données asynchrone, tandis que le moteur de recommandation recourt à un pool
 de connexions synchrone threadé adapté à ses opérations matricielles en temps réel.
@@ -228,7 +220,7 @@ Les \textbf{services externes} comprennent l'API Open-Meteo pour les données m�
 en temps réel, le service Nominatim pour le géocodage et le calcul de distances par la formule
 de Haversine, le serveur Ollama local pour l'inférence LLM sans réseau, l'API cloud Groq pour
 l'inférence rapide, l'API Google Gemini pour les contextes longs, et l'API Lightning AI comme
-quatrième fournisseur. L'index vectoriel est persisté sur disque entre les redémarrages.
+quatrième fournisseur. L'index vectoriel est persisté sur Qdrant database entre les redémarrages.
 
 Le \textbf{tracker JavaScript} est un module vanilla JS sans dépendance externe, intégré dans
 les pages du frontend. Il collecte les événements comportementaux (clics, temps de consultation,
@@ -238,7 +230,7 @@ garantir la transmission des événements même lors de la fermeture de la page.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/fig_03_global_architecture.png}
+    \includegraphics[width=\textwidth]{diagrams/global_architecture.png}
     \caption{Architecture globale du système Guidni}
     \label{fig:global_arch}
 \end{figure}
@@ -258,23 +250,52 @@ Pydantic pour les requêtes et les réponses, le middleware CORS configuré pour
 frontend-backend, et la génération automatique de documentation OpenAPI.
 
 La \textbf{couche de logique métier} contient le cœur intelligent du système~: l'agent LangGraph
-avec sa machine à états à quatre nœuds et ses 18~outils appelables, le moteur de classement
-LinUCB avec son pipeline en 9~étapes, le moteur de requête RAG avec recherche sémantique et
+avec sa machine à états à quatre nœuds et ses outils appelables, le moteur de classement
+LinUCB avec son pipeline en 10~étapes, le moteur de requête RAG avec recherche sémantique et
 reranking par cross-encoder, et le système de mémoire conversationnelle (chargement des 8~derniers
-messages, résumé automatique au seuil de 15~messages, construction du profil utilisateur).
+messages, résumé automatique au seuil de 8~messages, construction du profil utilisateur).
 
 La \textbf{couche d'accès aux données} regroupe les modèles SQLAlchemy ORM et les requêtes
 asynchrones pour le sous-système planificateur, le constructeur d'index LlamaIndex avec
-persistance sur Qdrant Database et réindexation incrémentale par événements, et un pool de connexions
-synchrone threadé pour les opérations de recommandation en temps réel. La \textbf{couche
-d'infrastructure} fournit un pool de connexions asynchrone configurable, le planificateur de
-tâches configuré sur le fuseau horaire Africa/Tunis, la journalisation rotative à deux niveaux
-(10~MB info, 50~MB debug), et la gestion de la configuration par variables d'environnement.
+persistance sur la base de données Qdrant et réindexation incrémentale pilotée par des triggers SQL, 
+ainsi qu'un pool de connexions synchrone threadé pour les opérations de recommandation en temps réel. 
+La \textbf{couche d'infrastructure} fournit un pool de connexions asynchrone configurable, 
+le planificateur de tâches configuré sur le fuseau horaire Africa/Tunis, la journalisation rotative 
+à deux niveaux (10~MB info, 50~MB debug), et la gestion de la configuration par variables d'environnement.
 
-La section suivante détaille la conception du schéma de base de données partagé.
+La section suivante présente la modélisation structurelle globale des objets manipulés par ces couches.
+
 % ============================================================================
-% CHAPITRE 3 — Part 2: 3.5–3.7 + Conclusion
+% CHAPITRE 3 — Part 2: 3.5–3.8 + Conclusion
 % ============================================================================
+
+% ────────────────────────────────────────────────────────────────
+\section{Modélisation structurelle globale}
+% ────────────────────────────────────────────────────────────────
+
+Le diagramme de classes global offre une vue statique complète du système Guidni, intégrant
+les entités fondamentales du domaine touristique ainsi que les structures de données
+nécessaires aux deux sous-systèmes intelligents (l'agent planificateur et le moteur de 
+recommandation). Cette modélisation unifiée garantit la cohérence des données manipulées 
+à travers toute l'application.
+
+Le modèle est architecturé autour de trois grands blocs conceptuels~:
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Les entités du domaine métier}~: regroupent les annonces principales (\texttt{Activity}, \texttt{Stay}, \texttt{Restaurant}, \texttt{Rental}, \texttt{Transfer}, \texttt{Attraction}) liées aux destinations. Ces classes portent les données descriptives (images, profils business) et transactionnelles (réservations, disponibilités).
+    \item \textbf{L'agent planificateur et l'utilisateur}~: modélisent le profil utilisateur (\texttt{User}) et l'historique conversationnel (\texttt{PlannerConversation}, \texttt{PlannerMessage}). Le résultat du raisonnement de l'agent est matérialisé par la classe \texttt{GeneratedPlan}, tandis que \texttt{ActivityIntelligence} stocke l'enrichissement sémantique des activités.
+    \item \textbf{Le moteur de recommandation LinUCB}~: introduit des structures analytiques spécialisées. \texttt{BanditArmUCB} maintient les compteurs d'exploitation/exploration, \texttt{LinUCBGlobal} stocke les matrices d'apprentissage en mémoire, et \texttt{UserProfile} capture les affinités dynamiques de l'utilisateur. Les événements comportementaux sont enregistrés via \texttt{RecommendationEventUCB} en liaison avec la \texttt{UserSession}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/global_class_diagram.png}
+    \caption{Diagramme de classes global du système Guidni}
+    \label{fig:global_class_diagram}
+\end{figure}
+
+Ce modèle structurel conceptuel sert de fondation directe à la conception physique de la 
+base de données relationnelle présentée dans la section suivante.
+
 
 % ────────────────────────────────────────────────────────────────
 \section{Conception de la base de données}
@@ -284,18 +305,14 @@ La section suivante détaille la conception du schéma de base de données parta
 
 Le système Guidni adopte un patron de base de données partagée~: la même instance PostgreSQL~15
 est utilisée simultanément par le frontend Next.js/Prisma et par le backend IA FastAPI. Le
-backend IA lit les 14~tables d'entités gérées par l'ORM du frontend en mode lecture seule,
-et possède en écriture 4~tables planificateur et 7~tables recommandation. Cette architecture
+backend IA lit les ~tables d'entités gérées par l'ORM du frontend en mode lecture seule.
+et possède en écriture les ~tables planificateur et recommandation. Cette architecture
 évite la duplication des données tout en maintenant des frontières de propriété claires entre
 les deux systèmes.
 
-La convention de nommage reflète l'origine de chaque table~: les tables du frontend et du
-planificateur utilisent le PascalCase, tandis que le sous-système de recommandation adopte
-sa propre convention de nommage, distincte de celle des tables frontend. Cette distinction
-visuelle permet d'identifier immédiatement l'origine et le propriétaire de chaque table.
 
 La stratégie de versionnement des plans repose sur un mécanisme d'archivage. Lorsqu'un
-utilisateur modifie un plan existant via un message de suivi, la version précédente est
+utilisateur modifie un plan existant, la version précédente est
 archivée et une nouvelle version est créée avec un numéro de version incrémenté. Cette approche
 préserve l'historique complet des modifications et permet la récupération de versions
 antérieures si nécessaire.
@@ -317,7 +334,7 @@ antérieures si nécessaire.
 
 \subsection{Description des tables clés}
 
-Le tableau suivant récapitule les onze tables détenues par le backend IA, en précisant leur rôle
+Le tableau suivant récapitule les tables détenues par le backend IA, en précisant leur rôle
 fonctionnel, les composants qui y écrivent et ceux qui les lisent. Cette matrice de
 responsabilité permet de comprendre les flux de données entre les différents composants du
 système.
@@ -327,21 +344,20 @@ système.
     \caption{Description des tables AI-owned}
     \label{tab:ai_tables}
     \small
-    \begin{tabular}{p{3.2cm} p{4.5cm} p{2.8cm} p{3cm}}
+    \begin{tabular}{p{6.7cm} p{7.3cm}  }
         \toprule
-        \textbf{Table} & \textbf{Rôle} & \textbf{Écrit par} & \textbf{Lu par} \\
+        \textbf{Table} & \textbf{Rôle}  \\
         \midrule
-        PlannerConversation & Suivi des conversations agent & Agent (main.py) & Agent, Frontend \\[2pt]
-        PlannerMessage & Messages individuels & Agent (main.py) & Agent (contexte) \\[2pt]
-        GeneratedPlan & Plans versionnés & Agent (RESPOND) & Frontend, Agent \\[2pt]
-        ActivityIntelligence & Cache d'enrichissement IA & Agent (outils) & Agent (outils) \\[2pt]
-        BanditArm & Compteurs par annonce & Reco router, Nightly & Ranker \\[2pt]
-        LinUCBGlobal & Matrices A et b globales & Cache RAM (2~min) & Ranker (scoring) \\[2pt]
-        UserProfile & Affinités de tags utilisateur & Job nocturne & Ranker (contexte) \\[2pt]
-        UserSession & Données de session navigation & Reco router & Ranker (contexte) \\[2pt]
-        RecommendationEvent & Journal des interactions & Reco router & Job nocturne \\[2pt]
-        ListingTag & Tags extraits par LLM & Tag extractor & Ranker (phi) \\[2pt]
-        SystemConfig & Configuration système & Admin, Nightly & Startup checks \\
+        PlannerConversation & Suivi des conversations agent  \\[2pt]
+        PlannerMessage & Messages individuels \\[2pt]
+        GeneratedPlan & Plans versionnés  \\[2pt]
+        ActivityIntelligence & Cache d'enrichissement IA \\[2pt]
+        BanditArmUCB & Compteurs par annonce  \\[2pt]
+        LinUCBGlobal & Matrices A et b globales \\[2pt]
+        UserProfile & Affinités de tags utilisateur  \\[2pt]
+        UserSession & Données de session navigation  \\[2pt]
+        RecommendationEventUCB & Journal des interactions  \\[2pt]
+        ListingTag & Tags extraits par LLM  \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -369,19 +385,18 @@ contrats API pour chacun des deux sous-systèmes.
     \caption{Contrat API --- Sous-système Agent Planificateur}
     \label{tab:api_planner}
     \footnotesize
-    \begin{tabular}{p{1cm} p{3.5cm} p{3cm} p{3cm} p{3cm}}
+    \begin{tabular}{p{2cm} p{6.5cm} p{6cm} }
         \toprule
-        \textbf{Mét.} & \textbf{Endpoint} & \textbf{Description} & \textbf{Requête} & \textbf{Réponse} \\
+        \textbf{Mét.} & \textbf{Endpoint} & \textbf{Description} \\
         \midrule
-        POST & \texttt{/chat} & Chat principal & ChatRequest & PlannerResponse \\[2pt]
-        POST & \texttt{/plan} & Pipeline plan & UserPreferences & \{plan\_data\} \\[2pt]
-        GET & \texttt{/conversations/ \{user\_id\}} & Lister conversations & --- & \{conversations\} \\[2pt]
-        GET & \texttt{/conversations/ detail/\{conv\_id\}} & Détail conversation & --- & \{messages\} \\[2pt]
-        DELETE & \texttt{/conversations/ \{conv\_id\}} & Archiver & --- & \{archived\} \\[2pt]
-        GET & \texttt{/users} & Lister utilisateurs & --- & \{users\} \\[2pt]
-        GET & \texttt{/models} & Modèles LLM & --- & \{models\} \\[2pt]
-        POST & \texttt{/admin/ rebuild-index} & Reconstruire RAG & --- & \{documents\_indexed\} \\[2pt]
-        GET & \texttt{/health} & État de santé & --- & \{status, db, rag\} \\
+        POST & \texttt{/chat} & Chat principal \\[2pt]
+        POST & \texttt{/plan} & Pipeline plan \\[2pt]
+        GET & \texttt{/conversations/ \{user\_id\}} & Lister conversations \\[2pt]
+        GET & \texttt{/conversations/ detail/\{conv\_id\}} & Détail conversation \\[2pt]
+        DELETE & \texttt{/conversations/ \{conv\_id\}} & Archiver \\[2pt]
+        GET & \texttt{/models} & Modèles LLM \\[2pt]
+        POST & \texttt{/admin/ rebuild-index} & Reconstruire RAG \\[2pt]
+        GET & \texttt{/health} & État de santé \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -391,13 +406,13 @@ contrats API pour chacun des deux sous-systèmes.
     \caption{Contrat API --- Sous-système de Recommandation}
     \label{tab:api_reco}
     \footnotesize
-    \begin{tabular}{p{1cm} p{3.5cm} p{3cm} p{3cm} p{3cm}}
+    \begin{tabular}{p{2cm} p{6.5cm} p{5cm} }
         \toprule
-        \textbf{Mét.} & \textbf{Endpoint} & \textbf{Description} & \textbf{Requête} & \textbf{Réponse} \\
+        \textbf{Mét.} & \textbf{Endpoint} & \textbf{Description} \\
         \midrule
-        GET & \texttt{/api/ recommendations} & Recommandations & Query params (zone, types, session, hour, month, top\_k) & RecommendationResponse \\[2pt]
-        POST & \texttt{/api/ recommendations/ events} & Lot d'événements & BatchRequest (session\_id, events[]) & BatchResponse \\[2pt]
-        POST & \texttt{/api/ recommendations/ merge-session} & Fusionner session & \{session\_id, user\_id\} & \{merged\_events\} \\
+        GET & \texttt{/api/ recommendations} & Recommandations \\[3pt]
+        POST & \texttt{/api/ recommendations/ events} & Lot d'événements \\[3pt]
+        POST & \texttt{/api/ recommendations/ merge-session} & Fusionner session \\[3pt]
         \bottomrule
     \end{tabular}
 \end{table}
@@ -451,10 +466,10 @@ interactions modélisées par un diagramme de cas d'utilisation global. Les troi
 principaux ont été décrits en détail~: la génération de plan de voyage, l'obtention de
 recommandations personnalisées, et le suivi des événements comportementaux. Les besoins non
 fonctionnels ont été classifiés selon la norme ISO~25010, l'architecture globale a été conçue
-en couches avec une séparation claire des responsabilités, le schéma de base de données partagé
-a été spécifié avec ses 11~tables AI-owned, et les contrats API REST ont été formalisés pour
-les 12~endpoints (9~planificateur + 3~recommandation).
+en couches avec une séparation claire des responsabilités, la structure des entités a été 
+modélisée via un diagramme de classes global, le schéma de base de données partagé
+a été spécifié avec ses 11~tables AI-owned, et les contrats API REST ont été formalisés.
 
 Le chapitre suivant présentera l'implémentation détaillée de l'agent planificateur IA, en
-décrivant le graphe LangGraph, les 18~outils appelables, le pipeline RAG, et le système de
+décrivant le graphe LangGraph, les outils appelables, le pipeline RAG, et le système de
 mémoire conversationnelle.

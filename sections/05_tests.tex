@@ -22,32 +22,33 @@ métriques quantitatives (latence, précision, récompense cumulée) et des anal
 \section{Stratégie de test}
 % ────────────────────────────────────────────────────────────────
 
+L'évaluation d'un système d'intelligence artificielle requiert plus que la simple vérification
+de son exécution --- elle nécessite la validation de la correction mathématique au niveau des
+composants, la justesse fonctionnelle au niveau de l'intégration, et la qualité comportementale
+au niveau des scénarios. Chaque niveau capture une classe distincte de défauts qui échapperait
+aux autres. Cette stratégie à trois niveaux a été choisie car les deux sous-systèmes
+présentent des modes de défaillance fondamentalement différents (erreurs mathématiques
+pour le LinUCB contre erreurs de raisonnement pour l'agent LLM).
+
 La pyramide de tests adoptée comprend trois niveaux. Les tests unitaires vérifient la
-correction mathématique des composants individuels~: \texttt{context.py} (forme du vecteur
-$\phi$, résilience aux NaN/inf, encodage cyclique), \texttt{linucb.py} (scoring UCB,
-règle de mise à jour, calcul de récompenses, santé matricielle), et \texttt{ranker.py}
+correction mathématique des composants individuels~: le module d'ingénierie des caractéristiques (forme du vecteur
+$\phi$, résilience aux NaN/inf, encodage cyclique), le moteur de scoring LinUCB (scoring UCB,
+règle de mise à jour, calcul de récompenses, santé matricielle), et le pipeline de classement
 (chaque étape du pipeline de classement). Les tests d'intégration vérifient les cycles
-complets~: aller-retour \texttt{/chat} avec génération de plan, boucle de validation avec
+complets~: aller-retour via les endpoints de planification conversationnelle avec génération de plan, boucle de validation avec
 correction d'erreurs, traitement par lots d'événements avec mise à jour des matrices. Les
 évaluations manuelles de bout en bout simulent des scénarios utilisateur réalistes avec
 différents fournisseurs LLM et différentes langues.
 
 L'environnement de test utilise une base de données PostgreSQL alimentée avec les annonces
-réelles de Djerba (activités, hébergements, restaurants), Ollama exécutant \texttt{qwen2.5:7b}
-localement pour les tests hors ligne, et un index RAG LlamaIndex construit à partir des mêmes
+réelles de Djerba (activités, hébergements, restaurants), Ollama exécutant un modèle
+open-source local pour les tests hors ligne, et un index RAG LlamaIndex construit à partir des mêmes
 données de référence. Les fournisseurs cloud (Groq, Gemini) sont testés en complément pour
 valider la compatibilité multi-fournisseurs.
 
-Les blocs d'auto-test \texttt{\_\_main\_\_} intégrés dans \texttt{context.py} et
-\texttt{linucb.py} constituent la première ligne de défense. Le module \texttt{context.py}
-vérifie que $\phi$ a toujours la forme $(360,)$, que toutes les valeurs restent finies après
-injection de NaN, que les utilisateurs anonymes (sans profil) produisent les caractéristiques
-$[6], [7], [8] = 0.0$, et que les cas limites de \texttt{build\_price\_match} sont corrects
-(budget \texttt{None} retourne 0.0, dépassement de budget retourne $-1.0$, correspondance
-parfaite retourne jusqu'à 1.5 avec bonus de tags). Le module \texttt{linucb.py} vérifie le
-scoring de 2~bras, la déduplication de récompenses par session (click$=0.3$ puis
-wishlist$=0.55$ de delta, non $0.85$), les seuils de dwell\_exit, et la santé matricielle
-(identité saine, zéros malsaine).
+Ces blocs d'auto-test constituent la première ligne de défense, vérifiant la correction
+mathématique des calculs de vecteurs, de scoring et de récompenses sur des cas limites
+connus avant tout déploiement.
 
 \begin{table}[H]
     \centering
@@ -58,15 +59,15 @@ wishlist$=0.55$ de delta, non $0.85$), les seuils de dwell\_exit, et la santé m
         \toprule
         \textbf{Composant} & \textbf{Unitaire} & \textbf{Intégration} & \textbf{Manuel} \\
         \midrule
-        context.py / build\_user\_vector & \checkmark & — & — \\
-        context.py / build\_phi & \checkmark & — & — \\
-        context.py / build\_price\_match & \checkmark & — & — \\
-        linucb.py / score\_arms & \checkmark & — & — \\
-        linucb.py / update & \checkmark & — & — \\
-        linucb.py / compute\_reward & \checkmark & — & — \\
-        linucb.py / is\_matrix\_healthy & \checkmark & — & — \\
-        linucb.py / partial\_reset & \checkmark & — & — \\
-        ranker.py / 10 étapes & \checkmark & — & — \\
+        Construction du vecteur utilisateur & \checkmark & — & — \\
+        Construction du vecteur phi & \checkmark & — & — \\
+        Correspondance budgétaire & \checkmark & — & — \\
+        Calcul du score UCB & \checkmark & — & — \\
+        Mise à jour des matrices & \checkmark & — & — \\
+        Calcul de récompense delta & \checkmark & — & — \\
+        Santé matricielle & \checkmark & — & — \\
+        Réinitialisation partielle & \checkmark & — & — \\
+        Pipeline de classement (10 étapes) & \checkmark & — & — \\
         POST /chat & — & \checkmark & \checkmark \\
         POST /plan & — & \checkmark & \checkmark \\
         GET /api/recommendations & — & \checkmark & \checkmark \\
@@ -112,13 +113,13 @@ de répondre dans la même langue. Le scénario SC-06 teste le déclenchement de
         SC-02 & Plan couple long & 7 jours & Budget luxe, activités variées &
                 Groq & Plan diversifié valide \\[2pt]
         SC-03 & Modification plan & — & Ajouter journée spa &
-                Gemini & is\_modification=True \\[2pt]
+                Gemini & plan modifié détecté \\[2pt]
         SC-04 & Requête FR & 4 jours & \og{}Je cherche un plan détente à Djerba\fg{} &
                 Ollama & Réponse en français \\[2pt]
         SC-05 & Requête AR & 3 jours & Requête en arabe tunisien &
                 Gemini & Réponse en arabe \\[2pt]
         SC-06 & Requête vague & — & \og{}Je veux visiter Djerba\fg{} &
-                Tous & ask\_user déclenché \\
+                Tous & demande de clarification déclenchée \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -155,17 +156,17 @@ contenu des erreurs structurelles livrées à l'utilisateur final.
         \textbf{Scénario} & \textbf{Itér.} & \textbf{Outils appelés} &
         \textbf{Valide} & \textbf{Latence} & \textbf{Fournisseur} \\
         \midrule
-        SC-01 & 4 & profile, rag\_plan, weather, create\_plan, save &
+        SC-01 & 4 & profil, recherche RAG, météo, construction plan, sauvegarde &
                 Oui & 18\,s & Gemini \\[2pt]
-        SC-02 & 8 & profile, rag\_plan, weather, distance, budget, create\_plan, save &
+        SC-02 & 8 & profil, recherche RAG, météo, distances, budget, construction plan, sauvegarde &
                 Oui & 11\,s & Groq \\[2pt]
-        SC-03 & 3 & rag\_search, modify\_plan, save &
+        SC-03 & 3 & recherche sémantique, modification plan, sauvegarde &
                 Oui & 14\,s & Gemini \\[2pt]
-        SC-04 & 5 & profile, rag\_plan, weather, create\_plan, save &
+        SC-04 & 5 & profil, recherche RAG, météo, construction plan, sauvegarde &
                 Oui & 42\,s & Ollama \\[2pt]
-        SC-05 & 4 & profile, rag\_plan, weather, create\_plan &
+        SC-05 & 4 & profil, recherche RAG, météo, construction plan &
                 Oui & 16\,s & Gemini \\[2pt]
-        SC-06 & 2 & profile, ask\_user &
+        SC-06 & 2 & profil, demande de clarification &
                 — & 8\,s & Gemini \\
         \bottomrule
     \end{tabular}
@@ -232,7 +233,7 @@ La précision moyenne globale de 0.81 confirme que le pipeline RAG deux étapes
 (embeddings denses + reranking par cross-encoder) est efficace pour le domaine touristique
 multilingue. Les cas d'erreur identifiés concernent principalement la confusion entre
 activités nautiques et hébergements en bord de mer, un problème atténué par le garde-fou
-\texttt{WARNING} de l'outil \texttt{rag\_search\_for\_plan}.
+de désambiguïsation de type d'entité intégré dans l'outil de recherche RAG multi-type.
 
 
 \subsection{Performance de la réindexation automatique}
@@ -259,11 +260,11 @@ le coût de réindexation d'environ 60\% dans les scénarios de mise à jour par
 
 La méthodologie de simulation repose sur un jeu de données de 500~sessions utilisateur
 générées à partir de la base d'annonces de Djerba. Chaque session possède un
-\texttt{UserContext} tiré de distributions réalistes~: heure uniforme entre 9h et 21h,
-mois uniforme entre 1 et 12, \texttt{budget\_estimate} tiré d'une distribution log-normale
-centrée à 150~TND, et \texttt{trip\_type} échantillonné selon la distribution empirique
-famille:40\%/couple:35\%/solo:25\%. Les signaux de récompense sont simulés à partir du
-dictionnaire \texttt{REWARDS} en fonction de scores de qualité des bras.
+contexte utilisateur de la session tiré de distributions réalistes~: heure uniforme entre 9h et 21h,
+mois uniforme entre 1 et 12, l'estimation de budget tirée d'une distribution log-normale
+centrée à 150~TND, et le type de voyage échantillonné selon la distribution empirique
+famille:40\%/couple:35\%/solo:25\%. Les signaux de récompense sont simulés à partir de
+la table de récompenses en fonction de scores de qualité des bras.
 
 Trois algorithmes sont comparés~: la \textbf{baseline aléatoire} (sélection uniformément
 aléatoire des bras), la \textbf{baseline de popularité} (recommandation systématique des
@@ -301,7 +302,7 @@ candidats pour évaluer la scalabilité du système. Le scoring pur (opérations
 matricielles) et le pipeline complet (incluant les filtres pré et post-scoring) ont été
 mesurés séparément.
 
-Le cache des bras de 30~secondes garantit que \texttt{get\_arms\_for\_zone()} (la requête
+Le cache des bras de 30~secondes garantit que la requête de récupération des bras (la requête
 de base de données complexe avec JOIN multi-tables) s'exécute au maximum 2~fois par minute
 par zone, et non à chaque requête de recommandation. Cette séparation entre le coût de
 récupération des données et le coût de scoring est fondamentale pour la performance.
@@ -325,10 +326,9 @@ récupération des données et le coût de scoring est fondamentale pour la perf
     \end{tabular}
 \end{table}
 
-Le scoring lui-même scale linéairement avec $N$ bras car il consiste en des opérations
-pures numpy (produits scalaires $\hat{\theta}^\top \phi$ et résolutions
-\texttt{solve(A, phi)} pour chaque bras). Même à $N = 1000$ bras, le pipeline complet
-reste largement sous la cible de 100~ms. Pour le déploiement de Djerba avec environ
+Le scoring lui-même scale linéairement avec le nombre de bras car il consiste entièrement
+en des opérations matricielles en mémoire. Même à mille bras, le pipeline complet
+reste largement sous la cible des cent millisecondes. Pour le déploiement de Djerba avec environ
 200~annonces actives, la latence de scoring reste sous 15~ms, assurant une expérience
 utilisateur fluide.
 
@@ -386,6 +386,11 @@ une réponse réfléchie.
 \section{Discussion et limites}
 % ────────────────────────────────────────────────────────────────
 
+Toute évaluation honnête d'un système d'intelligence artificielle doit identifier non seulement ce qui
+fonctionne, mais aussi là où le système présente des limites structurelles. Les cinq points
+suivants définissent les frontières de l'implémentation actuelle et constituent les
+principales directions pour les travaux futurs.
+
 \textbf{Risque d'hallucination LLM.} Malgré le pipeline RAG et l'instruction explicite
 \og{}ne jamais inventer de données\fg{} dans le prompt système, des cas limites existent
 où le LLM produit des détails plausibles mais incorrects (prix, horaires d'ouverture).
@@ -397,17 +402,17 @@ comparant les prix et horaires mentionnés dans la réponse avec les données de
 \textbf{Hypothèse linéaire du LinUCB.} Le modèle de récompense linéaire
 $r = \theta^\top \phi$ ne peut pas capturer les interactions non linéaires. Par exemple,
 un spa est excellent pour les couples le week-end mais peu adapté aux familles le lundi~;
-cette interaction triple (type\_voyage $\times$ jour $\times$ catégorie) n'est pas
+cette interaction triple (le type de voyage, le jour de la semaine, et la catégorie d'annonce) n'est pas
 modélisable par le produit de Kronecker bilinéaire. Un bandit contextuel neuronal
 (\textit{deep contextual bandit}) pourrait modéliser ces effets, au prix d'une complexité
 significativement accrue et d'exigences en données d'entraînement beaucoup plus élevées.
 
 \textbf{Portée limitée à Djerba.} Le système est conçu pour une seule région~; l'extension
 à plusieurs régions nécessite des ensembles de bras spécifiques par zone (déjà supporté par
-le champ \texttt{locationZone} dans \texttt{BanditArmUCB}) mais impliquerait des comptes
+le champ de zone de localisation dans la table des bras de recommandation) mais impliquerait des comptes
 de bras plus élevés et potentiellement des matrices par zone. L'architecture actuelle
 supporte cette extension sans modification structurelle, mais les performances de scoring
-devraient être réévaluées avec des volumes de bras $> 1000$.
+devraient être réévaluées avec des volumes de bras de plus de 1000 bras.
 
 \textbf{Limites de l'évaluation.} L'évaluation du moteur de recommandation utilise des
 sessions simulées plutôt que des données utilisateur réelles (indisponibles pendant le
@@ -422,7 +427,7 @@ mais peut frustrer les utilisateurs dans les scénarios de requêtes rapides. Le
 rapide en trois phases adresse ce problème pour les requêtes structurées (5 à 10~secondes),
 mais un affichage de réponse en streaming token par token améliorerait davantage la
 réactivité perçue. L'architecture LangGraph supporte le streaming via les callbacks, mais
-son intégration avec le frontend Next.js nécessite un travail d'ingénierie supplémentaire.
+son intégration avec le frontend nécessite un travail d'ingénierie supplémentaire.
 
 
 % ────────────────────────────────────────────────────────────────

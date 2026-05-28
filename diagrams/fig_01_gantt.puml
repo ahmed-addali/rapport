@@ -6,20 +6,23 @@ printscale weekly
 
 [Analyse des besoins] starts 2026-02-01 and lasts 2 weeks
 [État de l'art] starts 2026-02-15 and lasts 3 weeks
-[Conception BD et architecture] starts 2026-03-08 and lasts 2 weeks
+[Conception BD et architecture] starts 2026-03-08 and lasts 3 weeks
 
-[Implémentation agent LangGraph] starts 2026-03-22 and lasts 4 weeks
-[Implémentation pipeline RAG] starts 2026-04-12 and lasts 2 weeks
-[Implémentation LinUCB et tracker] starts 2026-04-19 and lasts 3 weeks
+' Implémentation commence fin mars / début avril
+[Implémentation agent LangGraph] starts 2026-03-29 and lasts 5 weeks
+
+' RAG et LinUCB démarrent en avril, créant le chevauchement (parallélisation)
+[Implémentation pipeline RAG] starts 2026-04-12 and lasts 3 weeks
+[Implémentation LinUCB et tracker] starts 2026-04-19 and lasts 4 weeks
 
 [Tests et évaluation] starts 2026-05-10 and lasts 3 weeks
 [Rédaction du rapport] starts 2026-04-05 and lasts 10 weeks
 [Soutenance] starts 2026-05-31 and lasts 1 week
 
 -- Milestones --
-[M1 - Architecture validée] happens at 2026-03-22
-[M2 - Agent fonctionnel] happens at 2026-04-19
-[M3 - Recommandation temps réel] happens at 2026-05-10
+[M1 - Architecture validée] happens at 2026-03-29
+[M2 - Agent fonctionnel] happens at 2026-05-03
+[M3 - Recommandation temps réel] happens at 2026-05-17
 [M4 - Soutenance] happens at 2026-06-07
 
 @endgantt
