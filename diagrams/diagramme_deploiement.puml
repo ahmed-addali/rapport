@@ -26,7 +26,7 @@ node "Serveur VPS (Ubuntu 24.04 LTS)" as VPS #F5F7F8 {
             portin "Port 8000" as P8000
         }
         
-        component "Moteur de Recommandation\n[FastAPI / LinUCB / NumPy]" as Reco #ECEFF1-CFD8DC {
+        component "Moteur de Recommandation\n[FastAPI / TS MAB / NumPy]" as Reco #ECEFF1-CFD8DC {
             portin "Port 8001" as P8001
         }
         

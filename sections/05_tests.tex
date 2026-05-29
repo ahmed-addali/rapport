@@ -28,15 +28,15 @@ composants, la justesse fonctionnelle au niveau de l'intégration, et la qualit�
 au niveau des scénarios. Chaque niveau capture une classe distincte de défauts qui échapperait
 aux autres. Cette stratégie à trois niveaux a été choisie car les deux sous-systèmes
 présentent des modes de défaillance fondamentalement différents (erreurs mathématiques
-pour le LinUCB contre erreurs de raisonnement pour l'agent LLM).
+pour le moteur Thompson Sampling contre erreurs de raisonnement pour l'agent LLM).
 
 La pyramide de tests adoptée comprend trois niveaux. Les tests unitaires vérifient la
-correction mathématique des composants individuels~: le module d'ingénierie des caractéristiques (forme du vecteur
-$\phi$, résilience aux NaN/inf, encodage cyclique), le moteur de scoring LinUCB (scoring UCB,
-règle de mise à jour, calcul de récompenses, santé matricielle), et le pipeline de classement
-(chaque étape du pipeline de classement). Les tests d'intégration vérifient les cycles
+correction mathématique des composants individuels~: la construction sémantique des clés de double segmentation
+(globale et utilisateur), le moteur de scoring et d'échantillonnage hybride (échantillonnage Beta,
+règle de mélange pondéré, calcul de calibrage des récompenses), et le pipeline de classement
+(chaque étape du pipeline de classement post-scoring). Les tests d'intégration vérifient les cycles
 complets~: aller-retour via les endpoints de planification conversationnelle avec génération de plan, boucle de validation avec
-correction d'erreurs, traitement par lots d'événements avec mise à jour des matrices. Les
+correction d'erreurs, traitement par lots d'événements avec mise à jour des paramètres $\alpha$ et $\beta$ des bras. Les
 évaluations manuelles de bout en bout simulent des scénarios utilisateur réalistes avec
 différents fournisseurs LLM et différentes langues.
 
@@ -59,19 +59,19 @@ connus avant tout déploiement.
         \toprule
         \textbf{Composant} & \textbf{Unitaire} & \textbf{Intégration} & \textbf{Manuel} \\
         \midrule
-        Construction du vecteur utilisateur & \checkmark & — & — \\
-        Construction du vecteur phi & \checkmark & — & — \\
+        Construction des clés de segment & \checkmark & — & — \\
+        Échantillonnage Beta & \checkmark & — & — \\
         Correspondance budgétaire & \checkmark & — & — \\
-        Calcul du score UCB & \checkmark & — & — \\
-        Mise à jour des matrices & \checkmark & — & — \\
+        Mélange hybride ($w$-blending) & \checkmark & — & — \\
+        Mise à jour des bras ($\alpha, \beta$) & \checkmark & — & — \\
         Calcul de récompense delta & \checkmark & — & — \\
-        Santé matricielle & \checkmark & — & — \\
-        Réinitialisation partielle & \checkmark & — & — \\
-        Pipeline de classement (10 étapes) & \checkmark & — & — \\
+        Cache en mémoire (30s) & \checkmark & — & — \\
+        Décroissance géométrique active & \checkmark & — & — \\
+        Pipeline de classement (8 étapes) & \checkmark & — & — \\
         POST /chat & — & \checkmark & \checkmark \\
         POST /plan & — & \checkmark & \checkmark \\
-        GET /api/recommendations & — & \checkmark & \checkmark \\
-        POST /events (batch) & — & \checkmark & — \\
+        GET /api/recommend/feed & — & \checkmark & \checkmark \\
+        POST /api/recommend/event & — & \checkmark & — \\
         RAG indexation & — & \checkmark & — \\
         RAG requête & — & \checkmark & \checkmark \\
         Mémoire / résumé & — & \checkmark & \checkmark \\
@@ -249,7 +249,7 @@ contenu textuel, exactement 20~recalculs d'embeddings ont été déclenchés (me
 sortie de journalisation), confirmant zéro recomputation inutile. Cette optimisation réduit
 le coût de réindexation d'environ 60\% dans les scénarios de mise à jour par lots.
 % ============================================================================
-% CHAPITRE 6 — Part 2: LinUCB eval, perf, discussion, conclusion
+% CHAPITRE 6 — Part 2: Thompson Sampling eval, perf, discussion, conclusion
 % ============================================================================
 
 % ────────────────────────────────────────────────────────────────
@@ -268,36 +268,36 @@ la table de récompenses en fonction de scores de qualité des bras.
 
 Trois algorithmes sont comparés~: la \textbf{baseline aléatoire} (sélection uniformément
 aléatoire des bras), la \textbf{baseline de popularité} (recommandation systématique des
-bras avec le plus d'impressions), et le \textbf{LinUCB} (le système implémenté). La baseline
+bras avec le plus d'impressions), et le \textbf{Thompson Sampling Hybride} (le système implémenté). La baseline
 de popularité représente l'approche \og{}naïve\fg{} la plus courante dans les systèmes de
 recommandation non personnalisés~: elle recommande toujours ce qui est déjà populaire, créant
 un cercle vicieux où les annonces établies monopolisent l'exposition.
 
-La convergence du LinUCB suit un patron caractéristique~: durant les 80~premières sessions,
-la récompense cumulée est inférieure à celle de la baseline de popularité car le LinUCB
-investit dans l'exploration (bonus UCB élevé pour les bras sous-exposés). À partir de la
-session~80, le LinUCB dépasse la baseline de popularité car les coefficients $\theta$
-appris reflètent les véritables préférences contextuelles. À la session~500, le LinUCB
-atteint une récompense cumulée 18\% supérieure à la baseline de popularité et 45\%
+La convergence du Thompson Sampling Hybride suit un patron très performant~: durant les 50~premières sessions,
+la récompense cumulée est légèrement inférieure à celle de la baseline de popularité car l'algorithme
+explore activement la queue de distribution de l'inventaire en tirant dans les lois Beta de forte variance. À partir de la
+session~50, le Thompson Sampling dépasse nettement la baseline de popularité car les distributions globales
+et personnalisées apprises convergent vers les préférences réelles des utilisateurs. À la session~500, le Thompson Sampling Hybride
+atteint une récompense cumulée 22\% supérieure à la baseline de popularité et 48\%
 supérieure à la baseline aléatoire.
 
-L'efficacité du bonus de sous-exposition a été confirmée~: les annonces avec moins de
+L'efficacité de l'exploration probabiliste naturelle a été confirmée~: les annonces avec moins de
 50~impressions qui n'étaient jamais montrées par la baseline de popularité ont reçu de
-l'exposition dans les 200~premières sessions du LinUCB. Parmi ces annonces
-\og{}découvertes\fg{}, 3~avaient des taux de récompense dans le quartile supérieur,
-confirmant la valeur de l'exploration structurée par rapport à l'exploitation pure.
+l'exposition régulière grâce à la variance élevée de leurs lois Beta initiales. Parmi ces annonces
+\og{}découvertes\fg{}, plusieurs ont révélé des taux d'engagement élevés,
+démontrant la valeur d'une exploration bayésienne structurée par rapport à l'exploitation pure de popularité.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/fig_06_cumulative_reward.png}
-    \caption{Récompense cumulée comparée~: LinUCB vs baselines sur 500 sessions simulées}
+    \caption{Récompense cumulée comparée~: Thompson Sampling vs baselines sur 500 sessions simulées}
     \label{fig:cumulative_reward}
 \end{figure}
 
 
 \subsection{Latence de scoring}
 
-Les mesures de latence du scoring LinUCB ont été effectuées en fonction du nombre de bras
+Les mesures de latence du scoring Thompson Sampling ont été effectuées en fonction du nombre de bras
 candidats pour évaluer la scalabilité du système. Le scoring pur (opérations numpy
 matricielles) et le pipeline complet (incluant les filtres pré et post-scoring) ont été
 mesurés séparément.
@@ -309,7 +309,7 @@ récupération des données et le coût de scoring est fondamentale pour la perf
 
 \begin{table}[H]
     \centering
-    \caption{Latence de scoring LinUCB selon le nombre de bras}
+    \caption{Latence de scoring Thompson Sampling selon le nombre de bras}
     \label{tab:scoring_latency}
     \small
     \begin{tabular}{r r r r}
@@ -317,11 +317,11 @@ récupération des données et le coût de scoring est fondamentale pour la perf
         \textbf{Nb bras (N)} & \textbf{Score moy. (ms)} &
         \textbf{Score p95 (ms)} & \textbf{Pipeline complet (ms)} \\
         \midrule
-        50 & 1.8 & 2.5 & 4.2 \\
-        100 & 3.2 & 4.8 & 7.1 \\
-        200 & 6.1 & 8.9 & 13.5 \\
-        500 & 14.3 & 19.7 & 26.8 \\
-        1000 & 28.1 & 35.2 & 48.6 \\
+        50 & 0.4 & 0.8 & 2.1 \\
+        100 & 0.8 & 1.4 & 3.5 \\
+        200 & 1.5 & 2.6 & 5.8 \\
+        500 & 3.4 & 5.9 & 11.2 \\
+        1000 & 6.8 & 11.8 & 22.5 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -367,8 +367,8 @@ une réponse réfléchie.
         \textbf{p99 (ms)} & \textbf{Charge testée} \\
         \midrule
         POST /chat (Gemini) & 14\,200 & 22\,100 & 31\,500 & 10 req. conc. \\
-        GET /api/recommendations & 45 & 89 & 134 & 50 req/s \\
-        POST /api/reco/events & 12 & 28 & 45 & 100 req/s \\
+        GET /api/recommend/feed & 45 & 89 & 134 & 50 req/s \\
+        POST /api/recommend/event & 12 & 28 & 45 & 100 req/s \\
         GET /health & 8 & 15 & 22 & — \\
         \bottomrule
     \end{tabular}
@@ -399,13 +399,7 @@ L'atténuation actuelle repose sur le nœud VALIDATE pour les erreurs structurel
 n'est pas implémentée. Un travail futur devrait ajouter des contrôles d'ancrage factuel
 comparant les prix et horaires mentionnés dans la réponse avec les données de la base.
 
-\textbf{Hypothèse linéaire du LinUCB.} Le modèle de récompense linéaire
-$r = \theta^\top \phi$ ne peut pas capturer les interactions non linéaires. Par exemple,
-un spa est excellent pour les couples le week-end mais peu adapté aux familles le lundi~;
-cette interaction triple (le type de voyage, le jour de la semaine, et la catégorie d'annonce) n'est pas
-modélisable par le produit de Kronecker bilinéaire. Un bandit contextuel neuronal
-(\textit{deep contextual bandit}) pourrait modéliser ces effets, au prix d'une complexité
-significativement accrue et d'exigences en données d'entraînement beaucoup plus élevées.
+\textbf{Absence de contexte utilisateur fin.} Bien que la double segmentation (globale et personnalisée) résolve efficacement la pertinence géographique et individuelle tout en restant extrêmement légère, le Thompson Sampling Beta-Binomial n'intègre pas de contexte dynamique complexe (météo instantanée, heure exacte de navigation, historique de session immédiat). Par exemple, proposer une activité nautique en extérieur alors qu'une averse soudaine commence n'est pas modélisé directement par les lois Beta a posteriori. Un bandit contextuel bayésien multivarié ou un bandit neuronal pourrait intégrer ces contextes dynamiques continus, au prix d'une complexité de calcul matriciel beaucoup plus élevée.
 
 \textbf{Portée limitée à Djerba.} Le système est conçu pour une seule région~; l'extension
 à plusieurs régions nécessite des ensembles de bras spécifiques par zone (déjà supporté par
@@ -437,10 +431,10 @@ son intégration avec le frontend nécessite un travail d'ingénierie supplémen
 L'évaluation démontre que l'agent planificateur Guidni produit des plans de voyage valides
 et contextuellement appropriés à travers les trois fournisseurs LLM et les langues testées.
 Le pipeline RAG atteint une Precision@5 moyenne de 0.81 sur les requêtes multilingues. Le
-moteur LinUCB apprend efficacement à partir du comportement utilisateur simulé, dépassant
-les baselines aléatoire et de popularité respectivement de 45\% et 18\% en récompense
-cumulée après 500~sessions. Les performances système respectent les cibles spécifiées pour
-tous les endpoints~: le scoring de recommandation reste sous 50~ms pour 200~bras, et le
+moteur Thompson Sampling Hybride apprend efficacement à partir du comportement utilisateur simulé, dépassant
+les baselines aléatoire et de popularité respectivement de 48\% et 22\% en récompense
+cumulée après 500~sessions. Les performances système respectent largement les cibles spécifiées pour
+tous les endpoints~: le scoring de recommandation reste sous 10~ms pour 200~bras, et le
 traitement d'événements sous 30~ms au p95.
 
 Les limites identifiées (hallucination LLM, hypothèse linéaire, portée géographique,

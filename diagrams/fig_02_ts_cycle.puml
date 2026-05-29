@@ -1,0 +1,70 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Arial"
+
+title Cycle complet du bandit Thompson Sampling Hybride (MAB) dans le système Guidni
+
+start
+:Réception de la requête de recommandation
+POST /api/recommend/feed;
+
+:Identification des segments contextuels;
+note right
+  - Segment Global : destination_id
+  - Segment Utilisateur : destination_id_u:user_id
+end note
+
+:Chargement des bras (BanditArm)
+get_arms_for_segment_multi();
+note right
+  Cache de 30s en RAM pour
+  éviter les JOIN répétitifs en base
+end note
+
+:Échantillonnage bayésien
+np.random.beta(α, β);
+note right
+  Pour chaque annonce candidate :
+  - θ_global ~ Beta(α_global, β_global)
+  - θ_user ~ Beta(α_user, β_user)
+end note
+
+:Mélange Hybride (Blending)
+θ_final = (1 - w)·θ_global + w·θ_user;
+note right
+  w = min(0.8, user_event_count / 40.0)
+  (Résolution élégante du démarrage à froid)
+end note
+
+:Pipeline de classement post-scoring
+(Filtres métier et Troncature);
+note right
+  Filtre saisonnier, budget, diversité,
+  re-classement et sélection des Top-K
+end note
+
+:Retour des recommandations (Top-K)
+items avec scores θ_final;
+
+:Interaction utilisateur sur le client
+(impression, clic, dwell_time, wishlist, réservation);
+
+:Tracker JS (batching) → POST /api/recommend/event;
+
+:Calibrage des récompenses
+compute_reward() → (alpha_delta, beta_delta);
+note right
+  Calibrage précis (ex. click : +0.2 α,
+  dwell_time : +0.3 α, reservation : +1.0 α + price·0.002)
+end note
+
+:Mise à jour bayésienne dans la base de données
+α ← α + alpha_delta
+β ← β + beta_delta;
+note right
+  Mise à jour incrémentale directe
+  sur les segments Global et Utilisateur
+end note
+
+stop
+@enduml

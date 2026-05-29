@@ -139,30 +139,18 @@ class ActivityIntelligence {
 ' RECOMMENDATION SYSTEM (NEW TABLES)
 ' ============================================================
 
-class BanditArmUCB {
+class BanditArm {
     +UUID id
-    +String listingId
-    +String listingType
-    +String locationZone
-    +Json tags
-    +Float commissionRate
+    +String armId
+    +String segmentKey
+    +Float alpha
+    +Float beta
     +Int impressions
     +Int clicks
     +Int wishlists
     +Int conversions
     +Float totalRevenue
-    +Int nUpdates
-    +Boolean isUnderexposed
     +DateTime updatedAt
-}
-
-class LinUCBGlobal {
-    +UUID id
-    +Json aMatrix
-    +Json bVector
-    +Int d
-    +String vocabHash
-    +Int nUpdates
 }
 
 class SystemConfig {
@@ -204,7 +192,7 @@ class UserSession {
     +DateTime createdAt
 }
 
-class RecommendationEventUCB {
+class RecommendationEvent {
     +UUID id
     +String eventType
     +UUID listingId
@@ -244,10 +232,10 @@ PlannerConversation "1" -- "*" GeneratedPlan
 ActivityIntelligence "1" -- "1" Activity 
 
 ' Recommendation system relationships
-BanditArmUCB "*" -- "1" ListingTag 
-BanditArmUCB "*" -- "1" UserProfile 
-RecommendationEventUCB "*" -- "1" UserSession 
-RecommendationEventUCB "*" -- "1" BanditArmUCB 
+BanditArm "*" -- "1" ListingTag 
+BanditArm "*" -- "1" UserProfile 
+RecommendationEvent "*" -- "1" UserSession 
+RecommendationEvent "*" -- "1" BanditArm  
 UserSession "*" -- "0..1" User 
 UserProfile "1" -- "1" User 
 ListingTag "*" -- "1" Activity 

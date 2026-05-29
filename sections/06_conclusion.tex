@@ -17,17 +17,15 @@ paradigme ReAct appliqué à la planification de voyage. Ce travail constitue le
 de planification de voyage conversationnel spécifiquement conçu pour le marché touristique de
 Djerba avec un support multilingue complet français, anglais et arabe.
 
-La deuxième contribution est le moteur de recommandation Hybrid LinUCB~: un bandit
-multi-bras contextuel avec un vecteur de caractéristiques Kronecker de 360~dimensions
-($\phi = x_{user}(9) \otimes x_{tags}(40)$), une unique matrice globale $A$ partagée entre
-toutes les annonces, un pipeline de classement post-traitement en 10~étapes, un mécanisme
-de récompenses delta par session empêchant l'inflation des signaux, et une réinitialisation
-partielle pour la dérive conceptuelle ($\lambda = 0.7$ tous les 90~jours ou plus). La vérification
-d'intégrité par hachage SHA-256 du vocabulaire de tags garantit que la matrice apprise ne
-devient jamais incohérente après une mise à jour du vocabulaire. Combinés, ces éléments
-constituent un moteur de recommandation de qualité production adapté aux contraintes d'une
-place de marché touristique~: apprentissage en ligne, données rares pour les nouvelles
-annonces, et préférences contextuelles fortes liées aux saisons et types de voyage.
+La deuxième contribution est le moteur de recommandation Hybrid Thompson Sampling~: un bandit
+multi-bras bayésien exploitant la conjugaison Beta-Binomiale, une double segmentation sémantique
+(clé globale de destination et clé utilisateur personnalisée), un mélange hybride pondéré par
+un poids de personnalisation dynamique ($w = \min(0.8, N/40)$) résolvant élégamment le démarrage à froid,
+un barème de calibrage comportemental des récompenses incluant un bonus financier de réservation, et un pipeline
+de classement post-scoring en 10~étapes. L'efficacité du cache de 30~secondes en mémoire vive garantit des
+lectures sous la milliseconde sans engorger la base de données. Combinés, ces éléments constituent un moteur
+de recommandation hautement scalable, interprétable et adapté aux contraintes d'une place de marché
+touristique~: apprentissage en ligne immédiat, exploration bayésienne naturelle et temps de calcul minimaux en $O(1)$.
 
 La troisième contribution est l'intégration système~: les deux sous-systèmes partagent une
 base de données PostgreSQL sans conflit grâce à une partition claire entre tables en lecture
@@ -65,15 +63,13 @@ la culture tunisienne (Eid, été, hivernage), et les niveaux de prix réalistes
 sans nécessiter d'appels API externes. Ce modèle local réduirait à la fois la latence
 (pas de round-trip réseau) et le coût opérationnel (pas de facture API par requête).
 
-La deuxième perspective est le remplacement du LinUCB linéaire par un bandit contextuel
-neuronal. Le modèle de récompense linéaire $r = \theta^\top \phi$ ne peut pas capturer les
-interactions non linéaires complexes (par exemple~: un spa est excellent pour les couples
-en soirée en hiver, mais peu adapté aux familles en après-midi en été). Des architectures
-comme Neural UCB ou les Generative Recommendations modélisent ces effets par un réseau de
-neurones dont la dernière couche linéaire conserve la propriété UCB. Le coût est une
-complexité accrue et des besoins en données d'entraînement plus élevés, mais le gain en
-précision de recommandation justifie cet investissement une fois que la plateforme dispose
-d'un historique d'interactions suffisant (typiquement $> 10\,000$ sessions).
+La deuxième perspective est l'introduction d'un bandit contextuel bayésien multivarié ou de bandits neuronaux.
+Bien que notre Thompson Sampling Hybride Beta-Binomial soit très robuste et performant, il n'intègre pas
+directement de signaux continus dynamiques comme les données météorologiques instantanées ou l'heure de navigation.
+Des architectures plus avancées (comme les bandits contextuels linéaires basés sur le Thompson Sampling gaussien
+ou les Deep Contextual Bandits) modéliseraient ces effets fins par régression linéaire bayésienne ou réseaux de
+neurones profonds. Bien que plus coûteuses en ressources de calcul et en volume de données, ces architectures
+pourraient enrichir la personnalisation fine à mesure que le volume d'interactions de la plateforme grandit.
 
 La troisième perspective est la construction d'une infrastructure d'expérimentation A/B.
 L'architecture actuelle ne permet pas de mesurer l'impact causal de changements
@@ -85,15 +81,14 @@ améliorations significatives. Ce framework permettrait de valider empiriquement
 hypothèses d'amélioration (nouvel algorithme, nouveau prompt, nouveaux tags) avant tout
 déploiement en production.
 
-La quatrième perspective est l'extension multi-régions. Le champ \texttt{locationZone}
-dans la table \texttt{BanditArmUCB} est déjà conçu pour supporter plusieurs zones
-géographiques~; l'extension du système à Hammamet, Sousse, Tunis et d'autres destinations
+La quatrième perspective est l'extension multi-régions. Le champ \texttt{segment}
+dans la table \texttt{BanditArm} est nativement conçu pour supporter plusieurs zones
+géographiques via la clé globale (par exemple, l'identifiant de destination)~; l'extension du système à Hammamet, Sousse, Tunis et d'autres destinations
 tunisiennes ne nécessite que l'ajout de nouvelles données d'annonces et l'initialisation
-des bras correspondants. Le même algorithme d'apprentissage s'applique à chaque zone. La
-question ouverte est le choix entre des matrices $A$ et $b$ partagées globalement (transfert
-de connaissances entre destinations, mais risque de confusion) ou par zone (isolation
-complète, mais démarrage à froid pour les nouvelles destinations). Une approche hybride avec
-matrices par zone et régularisation croisée est envisageable.
+des bras correspondants pour chaque nouveau segment géographique. Le même algorithme d'apprentissage s'applique à chaque destination. La
+question ouverte est le choix entre des hyperparamètres $\alpha$ et $\beta$ initialisés de manière générique (partage de connaissances a priori
+entre destinations) ou de manière totalement isolée par zone (démarrage à froid pour les nouvelles destinations). Une approche hybride avec
+un a priori Beta basé sur la performance historique globale tunisienne est tout à fait envisageable.
 
 La cinquième perspective est l'interface vocale et multimodale. L'intégration de la
 reconnaissance vocale arabe permettrait aux utilisateurs tunisiens préférant l'expression
@@ -114,10 +109,10 @@ l'apprentissage en ligne (bandits contextuels) ouvre une nouvelle génération d
 touristiques intelligentes~: simultanément personnalisées, adaptatives, et ancrées dans des
 données réelles. L'agent planificateur Guidni montre qu'un LLM équipé d'outils bien conçus
 et guidé par un prompt système rigoureux peut produire des plans de voyage cohérents,
-multilingues et culturellement appropriés pour un marché spécifique. Le moteur LinUCB montre
-qu'un algorithme relativement simple --- quelques centaines de lignes de Python NumPy ---
-peut apprendre des préférences contextuelles en temps réel et dépasser des baselines naïves
-avec seulement quelques centaines de sessions d'apprentissage. Le système Guidni est une
+multilingues et culturellement appropriés pour un marché spécifique. Le moteur Thompson Sampling Hybride montre
+qu'un algorithme relativement simple --- basé sur des tirages de lois Beta probabilistes et un mélange
+hybride élégant --- peut apprendre des préférences contextuelles et individuelles en temps réel, résolvant
+le démarrage à froid et dépassant les baselines naïves avec seulement quelques centaines de sessions d'apprentissage. Le système Guidni est une
 preuve de concept opérationnelle démontrant que cette combinaison est non seulement
 techniquement réalisable, mais pratiquement déployable sur une infrastructure modeste~:
 un serveur unique avec Ollama local, une base de données PostgreSQL standard, et un tracker

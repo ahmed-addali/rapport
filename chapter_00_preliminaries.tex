@@ -114,12 +114,7 @@ du profil utilisateur, la recherche d'activités, les données météorologiques
 via Open-Meteo, la géolocalisation par Nominatim et Haversine, ainsi qu'un
 pipeline RAG multilingue (français, anglais, arabe) reposant sur les
 embeddings denses BAAI/bge-m3 et un ré-ordonnancement par cross-encoder
-BAAI/bge-reranker-v2-m3. Le second sous-système est un \textbf{moteur de
-recommandation hybride LinUCB} exploitant un vecteur de caractéristiques
-construit par produit de Kronecker ($\phi = x_{\text{user}} \otimes
-x_{\text{tags}}$, dimension~360), un pipeline de classement en dix étapes
-intégrant des filtres de diversité et d'exploration, et un apprentissage en
-ligne à partir de huit signaux comportementaux collectés en temps réel.
+BAAI/bge-reranker-v2-m3. Le second sous-système est un \textbf{moteur de recommandation Hybrid Thompson Sampling} exploitant une double segmentation sémantique (clé globale de destination et clé utilisateur personnalisée), un mélange hybride pondéré par un poids de personnalisation dynamique ($w = \min(0.8, N/40)$) résolvant le démarrage à froid, un pipeline de classement post-scoring en dix étapes, et un apprentissage bayésien en ligne instantané à partir de signaux comportementaux calibrés.
 
 Les résultats obtenus attestent d'un planificateur conversationnel de bout en
 bout opérant en trois langues, d'une latence de scoring inférieure à 100\,ms
@@ -130,8 +125,7 @@ l'apprentissage en ligne à partir de signaux comportementaux pour le marché
 touristique de Djerba.
 
 \vspace{0.8cm}
-\noindent\textbf{Mots-clés~:} Agent LLM, LangGraph, RAG multilingue, Bandit
-contextuel LinUCB, Recommandation personnalisée.
+\noindent\textbf{Mots-clés~:} Agent LLM, LangGraph, RAG multilingue, Hybrid Thompson Sampling, MAB bayésien, Recommandation personnalisée.
 
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -157,11 +151,8 @@ spanning user profile management, activity search, weather data retrieval via
 Open-Meteo, geolocation through Nominatim and Haversine distance
 computation, and a multilingual RAG pipeline (French, English, Arabic)
 powered by BAAI/bge-m3 dense embeddings and BAAI/bge-reranker-v2-m3
-cross-encoder reranking. The second sub-system is a \textbf{Hybrid LinUCB
-contextual bandit recommender} that leverages a Kronecker-product feature
-vector ($\phi = x_{\text{user}} \otimes x_{\text{tags}}$, dimension~360), a
-ten-step ranker pipeline incorporating diversity and exploration filters, and
-online learning from eight real-time behavioural reward signals.
+cross-encoder reranking. The second sub-system is a \textbf{Hybrid Thompson Sampling
+recommender} leveraging a dual semantic segmentation (global destination key and personalized user key), a hybrid blending weighted by a dynamic personalization weight ($w = \min(0.8, N/40)$) that elegantly solves the cold start problem, a ten-step post-scoring ranker pipeline, and instant online bayesian learning from calibrated behavioral feedback.
 
 The experimental results demonstrate an end-to-end conversational planner
 supporting three languages, sub-100\,ms recommendation scoring latency
@@ -171,8 +162,7 @@ AI-assisted trip planning and online learning from real-time behavioural
 signals for the Djerba tourism market.
 
 \vspace{0.8cm}
-\noindent\textbf{Keywords:} LLM Agent, LangGraph, Multilingual RAG, LinUCB
-Contextual Bandit, Personalised Recommendation.
+\noindent\textbf{Keywords:} LLM Agent, LangGraph, Multilingual RAG, Hybrid Thompson Sampling, Bayesian MAB, Personalised Recommendation.
 
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -200,7 +190,7 @@ Contextual Bandit, Personalised Recommendation.
 %   2.2 Agents LLM et architectures agentiques ............................ pp
 %   2.3 Retrieval-Augmented Generation (RAG) ............................... pp
 %   2.4 Systèmes de recommandation ........................................ pp
-%   2.5 Théorie des bandits contextuels et LinUCB .......................... pp
+%   2.5 Bandits multi-bras et algorithme Thompson Sampling Hybride .......... pp
 %   2.6 Travaux connexes .................................................. pp
 %
 % Chapitre 3 — Analyse et conception
@@ -222,10 +212,10 @@ Contextual Bandit, Personalised Recommendation.
 %   4.8 Système de mémoire conversationnelle ............................... pp
 %   4.9 Pipeline rapide et abstraction LLM ................................. pp
 %
-% Chapitre 5 — Moteur de recommandation LinUCB
+% Chapitre 5 — Implémentation du moteur de recommandation Hybrid Thompson Sampling
 %   5.1 Introduction ...................................................... pp
-%   5.2 Ingénierie des caractéristiques ................................... pp
-%   5.3 Moteur de scoring LinUCB .......................................... pp
+%   5.2 Modélisation mathématique et conjugaison Beta-Binomiale ........... pp
+%   5.3 Mélange hybride et échantillonnage ................................ pp
 %   5.4 Pipeline de classement (Ranker) ................................... pp
 %   5.5 Extracteur de tags par LLM ........................................ pp
 %   5.6 Couche d'accès base de données .................................... pp

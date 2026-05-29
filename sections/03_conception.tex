@@ -424,7 +424,7 @@ Ce profil influence directement la qualité des recommandations de l'agent~: le 
 de générer un plan que cet utilisateur a réservé des sports nautiques 5~fois, dépense en
 moyenne 80~TND par jour, possède 3~activités spa dans sa liste de souhaits, et attribue des
 notes de 5~étoiles aux tours culturels. Cette connaissance du profil permet des recommandations
-véritablement personnalisées sans recours au moteur LinUCB --- l'agent adapte son raisonnement
+véritablement personnalisées de manière directe --- l'agent adapte son raisonnement
 à l'historique comportemental de chaque utilisateur.
 
 
@@ -480,5 +480,5 @@ désambiguïsation des types d'entités. Le pipeline RAG, le système de mémoir
 rapide de génération de plans en trois phases ont complété la présentation.
 
 Le chapitre suivant présente l'implémentation du second sous-système~: le moteur de
-recommandation Hybrid LinUCB, avec son ingénierie des caractéristiques, son cycle
-d'apprentissage en ligne, et son pipeline de classement en dix étapes.
+recommandation Hybrid Thompson Sampling, avec son modèle probabiliste Beta-Binomial, son cycle
+d'apprentissage en ligne par échantillonnage bayésien, et son pipeline de classement en huit étapes.

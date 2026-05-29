@@ -6,28 +6,28 @@ skinparam activityFontSize 11
 
 |Pipeline de Classement|
 start
-:1. apply_popularity_correction()
-—— Marque underexposed si impressions < 50;
-note right: N bras initiaux
-:2. apply_seasonal_filter(month)
+:1. Identification du segment
+—— global (destination) & user (destination_u:userId);
+note right: Requête API /feed
+:2. Récupération des candidats
+—— Extraction depuis le cache RAM (30s);
+:3. apply_seasonal_filter()
 —— masquer annonces d'été en hiver;
-:3. apply_budget_filter(budget×1.25)
+:4. apply_budget_filter()
 —— Supprime annonces hors budget;
-:4. build_phi() par bras survivant
-—— Kronecker x_user ⊗ x_tags → 360 dims;
-:5. score_arms(A, b, phi)
-—— Scoring LinUCB + UCB bonus;
-note right: Triés par score ↓
-:6. apply_diversity_filter(max=top_k/type)
-——  Garentir diversité par type d'entité;
-:7. apply_new_listing_guarantee()
-—— Au moins 1 sous-exposé garanti;
-:8. apply_tag_exploration(10% slots)
-—— Injection de tags non explorés;
-:9. apply_margin_sort(gap < 0.05)
+:5. Échantillonnage global
+—— θ_global ~ Beta(α_global, β_global);
+:6. Échantillonnage utilisateur
+—— θ_user ~ Beta(α_user, β_user);
+:7. Mélange hybride (w-blending)
+—— θ_final = (1-w)·θ_global + w·θ_user;
+note right: w = min(0.8, interactions/40.0)
+:8. apply_diversity_filter()
+—— Garantir diversité par type d'entité;
+:9. apply_margin_sort()
 —— Tri commission dans les tiers égaux;
 :10. Troncature top_k;
-note right: top-10 final
+note right: top-8 final
 stop
 
 @enduml

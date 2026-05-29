@@ -29,7 +29,7 @@ l'interface pour formuler des demandes de planification de voyage, recevoir des 
 structurés, les modifier, et consulter l'historique de ses conversations.
 Son comportement de navigation --- clics, temps de consultation, profondeur de défilement, ajouts
 aux favoris --- est automatiquement capté par le tracker JavaScript pour alimenter le moteur de
-recommandation LinUCB.
+recommandation Hybrid Thompson Sampling.
 
 L'\textbf{Administrateur de la plateforme} est responsable de la supervision technique du système.
 Il peut déclencher une reconstruction complète de l'index RAG et surveiller l'état de santé du
@@ -115,11 +115,11 @@ postconditions garanties.
         Déclencheur & Requête de recommandation avec paramètres de contexte \\[3pt]
         Flux principal &
         (1) Récupération des annonces candidates depuis le cache mémoire ou la base de données ;
-        (2) Chargement du profil utilisateur si un identifiant est fourni ;
-        (3) Construction du contexte utilisateur à partir des paramètres de requête ;
-        (4) Chargement des matrices de recommandation depuis le cache mémoire ;
-        (5) Calcul du vecteur de caractéristiques par produit de Kronecker pour chaque annonce ;
-        (6) Exécution du pipeline de classement en 10~étapes ;
+        (2) Chargement du nombre d'événements utilisateur si un identifiant est fourni ;
+        (3) Construction du contexte (identifiant de destination et utilisateur) ;
+        (4) Chargement des distributions de recommandation (paramètres $\alpha$ et $\beta$) pour les segments concernés ;
+        (5) Échantillonnage bayésien des taux d'attraction attendus $\theta$ sur les segments globaux et personnalisés ;
+        (6) Calcul du score mixte $\theta_{\text{final}}$ et exécution du pipeline de classement et de filtrage en 8~étapes ;
         (7) Retour de la liste classée au frontend. \\[3pt]
         Postcondition & Un événement d'impression est enregistré pour chaque annonce affichée \\
         \bottomrule
@@ -142,12 +142,12 @@ postconditions garanties.
         (1) Le tracker met l'événement en file d'attente côté client ;
         (2) Toutes les 15~secondes ou tous les 20~événements, le lot est transmis au serveur ;
         (3) Envoi du lot d'événements vers l'endpoint dédié ;
-        (4) Le serveur calcule la récompense différentielle pour chaque événement ;
-        (5) Le vecteur de caractéristiques est calculé pour chaque annonce concernée ;
-        (6) Les matrices de recommandation sont mises à jour en mémoire ;
+        (4) Le serveur calcule la récompense calibrée (incréments $\alpha_{\Delta}$ et $\beta_{\Delta}$) pour chaque événement ;
+        (5) Les hyperparamètres de forme des distributions conjuguées (Beta) sont mis à jour analytiquement ;
+        (6) Les compteurs et états de recommandation (bras de bandit) sont persistés en base de données ;
         (7) Les compteurs et le journal des événements sont enregistrés en base ;
-        (8) Réponse avec les récompenses de session cumulées. \\[3pt]
-        Postcondition & Les compteurs des annonces sont mis à jour et un événement de recommandation est créé \\
+        (8) Réponse avec confirmation de mise à jour des bras. \\[3pt]
+        Postcondition & Les compteurs des annonces et les paramètres $\alpha$/$\beta$ des bras sont mis à jour et un événement de recommandation est créé \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -204,14 +204,14 @@ Le \textbf{frontend} du système Guidni est une application Next.js couplée à 
 gère l'interface utilisateur, l'authentification, et les opérations CRUD sur les entités
 touristiques (activités, hébergements, attractions, restaurants, locations, transferts). Le frontend lit et
 écrit dans la base de données PostgreSQL partagée via Prisma, et communique avec le backend IA
-via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommendations}.
+via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommend/feed}.
 
 Le \textbf{backend IA} est une application FastAPI qui héberge les deux sous-systèmes
 intelligents~: l'agent planificateur LangGraph (8~endpoints REST) et le moteur de recommandation
-LinUCB (3~endpoints REST). Il possède en écriture les ~tables planificateur et 
+Hybrid Thompson Sampling (2~endpoints REST). Il possède en écriture les ~tables planificateur et 
 recommandation, et lit en lecture seule les tables Prisma du frontend. Le planificateur utilise
 un pilote de base de données asynchrone, tandis que le moteur de recommandation recourt à un pool
-de connexions synchrone threadé adapté à ses opérations matricielles en temps réel.
+de connexions synchrone threadé adapté à ses opérations d'échantillonnage bayésien probabiliste en temps réel.
 
 Les \textbf{services externes} comprennent l'API Open-Meteo pour les données météorologiques
 en temps réel, le service Nominatim pour le géocodage et le calcul de distances par la formule
@@ -222,7 +222,7 @@ quatrième fournisseur. L'index vectoriel est persisté sur Qdrant database entr
 Le \textbf{tracker JavaScript} est un module JavaScript natif sans dépendance externe, intégré dans
 les pages du frontend. Il collecte les événements comportementaux (clics, temps de consultation,
 défilement, ajout aux favoris, réservations) et les transmet par lots vers l'endpoint
-\texttt{POST /api/recommendations/events}. Il utilise l'API \texttt{navigator.sendBeacon()} pour
+\texttt{POST /api/recommend/event}. Il utilise l'API \texttt{navigator.sendBeacon()} pour
 garantir la transmission des événements même lors de la fermeture de la page.
 
 \begin{figure}[H]
@@ -239,7 +239,7 @@ Le choix d'une architecture en couches est directement motivé par la nature dua
 Les deux sous-systèmes --- l'agent planificateur et le moteur de recommandation --- présentent
 des caractéristiques d'exécution fondamentalement différentes~: le premier repose sur des appels
 asynchrones vers des fournisseurs LLM et des APIs externes, tandis que le second effectue des
-opérations matricielles synchrones en temps réel. La séparation en couches permet à chacun
+opérations d'échantillonnage bayésien probabiliste et de mise à jour directes en base de données. La séparation en couches permet à chacun
 d'évoluer indépendamment, sans que les modifications apportées à l'un n'affectent l'autre.
 
 La \textbf{couche de présentation} comprend les endpoints FastAPI, les schémas de validation
@@ -248,14 +248,14 @@ frontend-backend, et la génération automatique de documentation OpenAPI.
 
 La \textbf{couche de logique métier} contient le cœur intelligent du système~: l'agent LangGraph
 avec sa machine à états à quatre nœuds et ses outils appelables, le moteur de classement
-LinUCB avec son pipeline en 10~étapes, le moteur de requête RAG avec recherche sémantique et
+Hybrid Thompson Sampling avec son pipeline de classement et de filtrage en 8~étapes, le moteur de requête RAG avec recherche sémantique et
 reranking par cross-encoder, et le système de mémoire conversationnelle (chargement des 8~derniers
 messages, résumé automatique au seuil de 8~messages, construction du profil utilisateur).
 
 La \textbf{couche d'accès aux données} regroupe les modèles SQLAlchemy ORM et les requêtes
 asynchrones pour le sous-système planificateur, le constructeur d'index LlamaIndex avec
 persistance sur la base de données Qdrant et réindexation incrémentale pilotée par des triggers SQL, 
-ainsi qu'un pool de connexions synchrone threadé pour les opérations de recommandation en temps réel. 
+ainsqu'un pool de connexions synchrone threadé pour les opérations de recommandation en temps réel. 
 La \textbf{couche d'infrastructure} fournit un pool de connexions asynchrone configurable, 
 le planificateur de tâches configuré sur le fuseau horaire Africa/Tunis, la journalisation rotative 
 à deux niveaux (10~MB info, 50~MB debug), et la gestion de la configuration par variables d'environnement.
@@ -268,19 +268,7 @@ La section suivante présente la modélisation structurelle globale des objets m
 
 % ────────────────────────────────────────────────────────────────
 \section{Modélisation structurelle globale}
-% ────────────────────────────────────────────────────────────────
-
-Le diagramme de classes global offre une vue statique complète du système Guidni, intégrant
-les entités fondamentales du domaine touristique ainsi que les structures de données
-nécessaires aux deux sous-systèmes intelligents (l'agent planificateur et le moteur de 
-recommandation). Cette modélisation unifiée garantit la cohérence des données manipulées 
-à travers toute l'application.
-
-Le modèle est architecturé autour de trois grands blocs conceptuels~:
-\begin{itemize}[label=\textbullet]
-    \item \textbf{Les entités du domaine métier}~: regroupent les annonces principales (\texttt{Activity}, \texttt{Stay}, \texttt{Restaurant}, \texttt{Rental}, \texttt{Transfer}, \texttt{Attraction}) liées aux destinations. Ces classes portent les données descriptives (images, profils business) et transactionnelles (réservations, disponibilités).
-    \item \textbf{L'agent planificateur et l'utilisateur}~: modélisent le profil utilisateur (\texttt{User}) et l'historique conversationnel (\texttt{PlannerConversation}, \texttt{PlannerMessage}). Le résultat du raisonnement de l'agent est matérialisé par la classe \texttt{GeneratedPlan}, tandis que \texttt{ActivityIntelligence} stocke l'enrichissement sémantique des activités.
-    \item \textbf{Le moteur de recommandation LinUCB}~: introduit des structures analytiques spécialisées. \texttt{BanditArmUCB} maintient les compteurs d'exploitation/exploration, \texttt{LinUCBGlobal} stocke les matrices d'apprentissage en mémoire, et \texttt{UserProfile} capture les affinités dynamiques de l'utilisateur. Les événements comportementaux sont enregistrés via \texttt{RecommendationEventUCB} en liaison avec la \texttt{UserSession}.
+% ───────────    \item \textbf{Le moteur de recommandation Hybrid Thompson Sampling}~: introduit des structures analytiques probabilistes hautement optimisées. \texttt{BanditArm} modélise l'incertitude sur chaque annonce via ses hyperparamètres de forme $\alpha$ (pseudo-succès) et $\beta$ (pseudo-échecs) mis à jour en ligne, tandis que \texttt{RecommendationEvent} enregistre le journal brut des interactions comportementales (clics, temps d'arrêt, réservations) liées à la session de navigation.
 \end{itemize}
 
 \begin{figure}[H]
@@ -302,7 +290,7 @@ base de données relationnelle présentée dans la section suivante.
 
 Le système Guidni adopte un patron de base de données partagée~: la même instance PostgreSQL~15
 est utilisée simultanément par le frontend Next.js/Prisma et par le backend IA FastAPI. Le
-backend IA lit les ~tables d'entités gérées par l'ORM du frontend en mode lecture seule.
+backend IA lit les ~tables d'entités gérées par l'ORM du frontend en mode lecture seule,
 et possède en écriture les ~tables planificateur et recommandation. Cette architecture
 évite la duplication des données tout en maintenant des frontières de propriété claires entre
 les deux systèmes.
@@ -324,7 +312,7 @@ antérieures si nécessaire.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/fig_03_er_diagram_recommender.png}
-    \caption{Schéma ER du sous-système de recommandation LinUCB}
+    \caption{Schéma ER du sous-système de recommandation Hybrid Thompson Sampling}
     \label{fig:er_recommender}
 \end{figure}
 
@@ -349,12 +337,8 @@ système.
         PlannerMessage & Messages individuels \\[2pt]
         GeneratedPlan & Plans versionnés  \\[2pt]
         ActivityIntelligence & Cache d'enrichissement IA \\[2pt]
-        BanditArmUCB & Compteurs par annonce  \\[2pt]
-        LinUCBGlobal & Matrices A et b globales \\[2pt]
-        UserProfile & Affinités de tags utilisateur  \\[2pt]
-        UserSession & Données de session navigation  \\[2pt]
-        RecommendationEventUCB & Journal des interactions  \\[2pt]
-        ListingTag & Tags extraits par LLM  \\
+        BanditArm & États d'échantillonnage bayésien par bras (alpha, beta, compteurs)  \\[2pt]
+        RecommendationEvent & Journal des interactions comportementales (impressions, clics, etc.)  \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -407,8 +391,8 @@ contrats API pour chacun des deux sous-systèmes.
         \toprule
         \textbf{Mét.} & \textbf{Endpoint} & \textbf{Description} \\
         \midrule
-        GET & \texttt{/api/ recommendations} & Recommandations \\[3pt]
-        POST & \texttt{/api/ recommendations/ events} & Lot d'événements \\[3pt]
+        GET & \texttt{/api/ recommend/feed} & Flux de recommandations hybridisées \\[3pt]
+        POST & \texttt{/api/ recommend/event} & Lot d'événements comportementaux \\[3pt]
         \bottomrule
     \end{tabular}
 \end{table}
@@ -440,8 +424,8 @@ La confidentialité des données est assurée par plusieurs mécanismes~: les r�
 transmis au LLM externe ne contiennent aucune donnée personnelle identifiable (PII) --- seuls
 les identifiants, catégories et caractéristiques anonymisées sont envoyés. Le fournisseur Ollama
 local offre une option de souveraineté complète pour les déploiements sensibles, car aucune
-donnée ne quitte le serveur. Les vecteurs de caractéristiques du moteur LinUCB sont construits
-à partir de signaux comportementaux agrégés (profondeur de défilement, temps de consultation)
+donnée ne quitte le serveur. Les distributions probabilistes de l'algorithme Thompson Sampling sont mises à jour
+à partir de signaux comportementaux agrégés (expositions, clics, dwell_time, réservations)
 et non à partir de données personnelles brutes.
 
 \begin{figure}[H]

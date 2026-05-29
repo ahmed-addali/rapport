@@ -1,122 +1,59 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-
 skinparam defaultFontName "Arial"
 
-title Schéma ER du sous-système de recommandation LinUCB
+title Schéma ER du sous-système de recommandation Hybrid Thompson Sampling
 
 !define table entity
 
-entity "BanditArmUCB" as BA {
-  * id : UUID <<PK>>
+entity "User" as U {
+  * id : VARCHAR <<PK>>
   --
-  * listingId : UUID
+  * email : VARCHAR
+  * name : VARCHAR
+}
+
+entity "BanditArm" as BA {
+  * id : VARCHAR <<PK>>
+  --
+  * listingId : VARCHAR
   * listingType : VARCHAR
-  * locationZone : VARCHAR
-  * tags : JSON
-  * commissionRate : DECIMAL
+  * segment : VARCHAR
+  * alpha : FLOAT
+  * beta : FLOAT
   * impressions : INT
   * clicks : INT
   * wishlists : INT
   * conversions : INT
-  * totalRevenue : DECIMAL
-  * nUpdates : INT
-  * isUnderexposed : BOOLEAN
+  * totalRevenue : FLOAT
   * updatedAt : TIMESTAMP
   --
-  <<UQ>> (listingId, listingType, locationZone)
+  <<UQ>> (listingId, listingType, segment)
 }
 
-entity "LinUCBGlobal" as LG {
-  * id : UUID <<PK>>
-  --
-  * aMatrix : JSON [360×360]
-  * bVector : JSON [360]
-  * d : INT
-  * vocabHash : VARCHAR
-  * nUpdates : INT
-  * updatedAt : TIMESTAMP
-}
-
-entity "UserProfile" as UP {
-  * userId : UUID <<PK>>
-  --
-  * tagAffinity : JSON
-  * avgBookingPrice : DECIMAL
-  * priceStdDev : DECIMAL
-  * dominantTripType : VARCHAR
-  * totalBookings : INT
-  * updatedAt : TIMESTAMP
-}
-
-entity "UserSession" as US {
-  * id : UUID <<PK>>
-  --
-  * sessionId : VARCHAR <<UQ>>
-  * userId : UUID <<FK>> (nullable)
-  * locationLat : DECIMAL
-  * locationLon : DECIMAL
-  * deviceType : VARCHAR
-  * entryHour : INT
-  * entryMonth : INT
-  * scrollDepthMax : DECIMAL
-  * dwellSeconds : DECIMAL
-  * clickSequence : JSON
-  * priceRangeViewed : JSON
-  * budgetSegment : VARCHAR
-  * createdAt : TIMESTAMP
-}
-
-entity "RecommendationEventUCB" as RE {
-  * id : UUID <<PK>>
+entity "RecommendationEvent" as RE {
+  * id : VARCHAR <<PK>>
   --
   * eventType : VARCHAR
-  * listingId : UUID
+  * listingId : VARCHAR
   * listingType : VARCHAR
-  * userId : UUID <<FK>> (nullable)
+  * userId : VARCHAR <<FK>> (nullable)
   * sessionId : VARCHAR
-  * locationZone : VARCHAR
-  * reward : DECIMAL
-  * rankShown : INT (nullable)
-  * price : DECIMAL (nullable)
+  * segment : VARCHAR
+  * reward : FLOAT
+  * price : FLOAT (nullable)
   * metadata : JSON
   * createdAt : TIMESTAMP
 }
 
-entity "ListingTag" as LT {
-  * id : UUID <<PK>>
-  --
-  * listingId : UUID
-  * listingType : VARCHAR
-  * tags : JSON
-  * confidence : Float
-  --
-  <<UQ>> (listingId, listingType)
-}
-
-entity "SystemConfig" as SC {
-  * key : VARCHAR <<PK>>
-  --
-  * value : TEXT
-  * updatedAt : TIMESTAMP
-}
-
-
-
 ' ============================================================
-' RELATIONS (VISUELLES)
+' RELATIONS
 ' ============================================================
 
-' Un UserProfile peut avoir plusieurs UserSessions (1 à N)
-UP ||--o{ US : "possède"
+' Un User peut générer plusieurs RecommendationEvents (1 à N)
+U ||--o{ RE : "génère"
 
-' Une UserSession génère plusieurs RecommendationEvents (1 à N)
-US ||--o{ RE : "génère"
-
-' Un BanditArm est lié à plusieurs RecommendationEvents (1 à N)
-BA ||--o{ RE : "est recommandé dans"
-
-' Un ListingTag est utilisé par plusieurs BanditArms (1 à N)
-LT ||--o{ BA : "catégorise"
+' Un BanditArm est mis à jour suite à des RecommendationEvents
+BA ||--o{ RE : "enregistre"
 
 @enduml

@@ -8,22 +8,10 @@
 % ─────────────────────────────────────────────────────────────────────────────
 
 Le vocabulaire de tags \texttt{TAG\_VOCAB} est une liste fixe de \textbf{40~tags} en ordre
-alphabétique strict, définie dans \texttt{app/reco/context.py}. La position de chaque tag
-dans cette liste est critique~: elle détermine son index dans le vecteur binaire $x_{tags}$
-et, par produit de Kronecker, ses lignes correspondantes dans la matrice $A$ ($360 \times 360$).
-Toute modification de ce vocabulaire après le premier déploiement (ajout, suppression, ou
-simple réordonnancement) invalide l'intégralité de la matrice $A$ apprise, car les
-coefficients $\theta$ encodent des associations (caractéristique\_utilisateur, position\_tag)
-qui n'auraient plus de correspondance sémantique avec le nouveau vocabulaire.
-
-La protection contre cette invalidation est assurée à deux niveaux~: (1) une assertion
-\texttt{assert D\_TAGS == 40} à l'importation du module empêche tout démarrage de
-l'application si le nombre de tags a changé, et (2) un hachage SHA-256 du vocabulaire
-trié (\texttt{compute\_vocab\_hash()}) est stocké dans \texttt{LinUCBGlobal.vocabHash} lors
-du premier entraînement et vérifié à chaque chargement de matrices, déclenchant une
-\texttt{RuntimeError} en cas de divergence. Tout ajout de nouveau tag nécessite une
-réinitialisation complète de la matrice ($A = I$, $b = 0$) et une période de chauffe
-d'apprentissage d'au moins quelques centaines de sessions.
+alphabétique strict, définie dans \texttt{app/reco/context.py}. Il sert à structurer les thématiques des annonces pour la recherche sémantique RAG et l'indexation IA.
+Dans l'ancienne implémentation LinUCB, la position de chaque tag était hautement critique car elle déterminait
+son index dans le vecteur binaire $x_{tags}$ et son entrée dans les dimensions de la matrice d'apprentissage ($360 \times 360$) via un produit de Kronecker.
+Avec la migration vers le système de recommandation \textbf{Hybrid Thompson Sampling}, cette dépendance complexe a été entièrement éliminée. Le moteur de recommandation actuel s'affranchit de cette contrainte dimensionnelle rigide en modélisant directement les bras par double segmentation contextuelle (globale via la destination et personnalisée via l'identifiant de l'utilisateur) sans nécessiter de produit de Kronecker ni de matrices multidimensionnelles globales, rendant le système extrêmement plus léger, performant en temps de calcul, et insensible aux évolutions futures du vocabulaire de tags.
 
 \begin{center}
 \captionof{table}{Vocabulaire complet des 40~tags (TAG\_VOCAB)}
@@ -178,13 +166,7 @@ frontend Next.js). La partition est stricte~: les tables liées à la planificat
 SQLAlchemy correspondants. C'est d'ailleurs sur ces tables partagées que sont déployés les \textbf{triggers SQL}, 
 écoutant les modifications effectuées par le frontend pour déclencher la réindexation asynchrone de l'agent.
 
-Les tables du moteur de recommandation (\texttt{BanditArmUCB}, \texttt{LinUCBGlobal},
-\texttt{SystemConfig}, \texttt{ListingTag}, \texttt{UserProfile}, \texttt{UserSession},
-\texttt{RecommendationEventUCB}) sont définies dans \texttt{prisma/schema.prisma} mais exploitées
-principalement via des requêtes SQL directes dans \texttt{app/reco/db.py} en utilisant
-\texttt{psycopg2}. Cette dualité d'accès (Prisma pour les migrations, psycopg2 pour le
-runtime) permet de centraliser la gestion des migrations tout en conservant des performances
-maximales pour les opérations matricielles critiques.
+Les tables du moteur de recommandation (\texttt{BanditArm}, \texttt{RecommendationEvent}) sont définies dans \texttt{prisma/schema.prisma} mais exploitées principalement via des requêtes SQL directes dans \texttt{app/reco/db.py} en utilisant un pool synchrone threadé. Cette approche évite l'utilisation d'anciennes structures complexes et lourdes comme les profils d'affinités de tags matriciels ou le stockage de matrices d'apprentissage global, ce qui simplifie radicalement la persistance de l'apprentissage en ligne de la recommandation.
 
 \textbf{Modèles planificateur (SQLAlchemy — tables propriétaires de l'agent)~:}
 
@@ -231,59 +213,43 @@ class ActivityIntelligence(Base):
 
 \textbf{Modèles de recommandation (Prisma — extraits de \texttt{prisma/schema.prisma})~:}
 
-\begin{lstlisting}[language={},caption={Modèles Prisma du moteur LinUCB (prisma/schema.prisma)}]
-model BanditArmUCB {
-  id             String   @id @default(cuid())
-  listingId      String   @map("listing_id")
-  listingType    String   @map("listing_type")  // "STAY"|"ACTIVITY"|"RESTAURANT"
-  locationZone   String   @map("location_zone") // city or region name
-  tags           Json     @default("[]")         // list[str] from TAG_VOCAB
-  tagSource      String   @default("llm")        // "llm"|"manual"|"default"
-  commissionRate Float    @default(0.10)
-  impressions    Int      @default(0)
-  clicks         Int      @default(0)
-  wishlists      Int      @default(0)
-  conversions    Int      @default(0)
-  totalRevenue   Float    @default(0.0)
-  nUpdates       Int      @default(0)
-  isUnderexposed Boolean  @default(true)         // true if impressions < 50
-  updatedAt      DateTime @updatedAt
-  @@unique([listingId, listingType, locationZone])
+\begin{lstlisting}[language={},caption={Modèles Prisma du moteur Thompson Sampling (prisma/schema.prisma)}]
+model RecommendationEvent {
+  id          String   @id @default(cuid())
+  eventType   String   // "impression" | "click" | "dwell_time" | "gallery_swipe" | "wishlist" | "reservation"
+  listingId   String
+  listingType String   // "ACTIVITY" | "STAY" | "RESTAURANT" | "RENTAL" | "TRANSFER"
+  userId      String?  // null for anonymous
+  sessionId   String   // browser sessionStorage ID
+  segment     String   // context segment key
+  reward      Float    // computed alpha delta
+  price       Float?   // for reservation events
+  metadata    Json?    // { position, page, dwellMs, swipeCount }
+  createdAt   DateTime @default(now())
+
+  @@index([listingId, listingType])
+  @@index([segment])
+  @@index([eventType])
+  @@index([createdAt])
 }
 
-model LinUCBGlobal {
-  id        String   @id @default("global")     // only ONE row ever
-  aMatrix   Json     @map("a_matrix")            // float[][] shape 360x360
-  bVector   Json     @map("b_vector")            // float[] shape 360
-  d         Int                                  // always 360
-  vocabHash String   @map("vocab_hash")          // SHA-256 of sorted TAG_VOCAB
-  nUpdates  Int      @default(0)
-  updatedAt DateTime @updatedAt
-}
-
-model SystemConfig {
-  key       String   @id
-  value     String
-  updatedAt DateTime @updatedAt
-  // Seed rows: vocab_hash, d="360", schema_version="1"
-}
-
-model RecommendationEventUCB {
+model BanditArm {
   id           String   @id @default(cuid())
-  eventType    String   @map("event_type")
-  listingId    String   @map("listing_id")
-  listingType  String   @map("listing_type")
-  userId       String?  @map("user_id")          // null for anonymous
-  sessionId    String   @map("session_id")
-  locationZone String   @map("location_zone")
-  reward       Float
-  rankShown    Int?     @map("rank_shown")        // 1-based (for IPS correction)
-  price        Float?
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  @@index([sessionId])
-  @@index([userId])
-  @@index([listingId])
+  listingId    String
+  listingType  String
+  segment      String   // context segment key
+  alpha        Float    @default(1.0)  // successes (prior=1)
+  beta         Float    @default(1.0)  // failures (prior=1)
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  wishlists    Int      @default(0)
+  conversions  Int      @default(0)
+  totalRevenue Float    @default(0.0)
+  updatedAt    DateTime @updatedAt
+
+  @@unique([listingId, listingType, segment])
+  @@index([segment])
+  @@index([listingType, segment])
 }
 \end{lstlisting}
 
@@ -338,6 +304,6 @@ et le débogage en production.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/screen_A4_recommendations_response.png}
-    \caption{Exemple de réponse de l'API /api/recommendations avec scores exposés (\texttt{EXPOSE\_SCORES=true})}
+    \caption{Exemple de réponse de l'API /api/recommend/feed avec paramètres $\alpha$ et $\beta$ exposés pour le diagnostic}
     \label{fig:A6_scores}
 \end{figure}

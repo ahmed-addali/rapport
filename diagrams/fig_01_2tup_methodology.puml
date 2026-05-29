@@ -15,7 +15,7 @@ start
 |#LightGreen|Branche Technique|
 :Contraintes techniques;
 :Architecture logicielle;
-:Prototypes (LangGraph, LinUCB);
+:Prototypes (LangGraph, MAB/TS);
 :Infrastructure BD;
 
 |#LightYellow|Convergence|

@@ -6,13 +6,13 @@ skinparam sequenceFontSize 11
 
 actor "Utilisateur" as U
 participant "JS Tracker" as T
-participant "FastAPI\n/api/recommendations/events" as API
-database "RAM\n(_GLOBAL_A, _GLOBAL_B)" as RAM
-database "PostgreSQL\nRecommendationEventUCB" as DB
+participant "FastAPI\n/api/recommend/event" as API
+database "RAM Cache\n(30s TTL)" as RAM
+database "PostgreSQL\nRecommendationEvent" as DB
 
 == Flush normal (toutes les 15s ou 20 events) ==
 
-U -> T : click / scroll / wishlist
+U -> T : click / scroll / wishlist / reservation
 T -> T : _queue.push(event)
 T -> T : _queue.length >= 20 ?
 
@@ -21,15 +21,13 @@ activate API
 
 loop pour chaque event
     API -> API : compute_reward(delta)
-    API -> RAM : A += outer(phi,phi)\nb += r × phi
-    API -> DB : INSERT RecommendationEventUCB
-    API -> DB : UPDATE BanditArmUCB counters
+    API -> DB : INSERT RecommendationEvent
+    API -> DB : UPDATE BanditArm (alpha, beta)
+    API -> RAM : Invalider le cache
 end
 
 API --> T : {processed: N, session_rewards: {...}}
 deactivate API
 T -> T : _sessionRewards = response.session_rewards
-
-
 
 @enduml

@@ -27,7 +27,7 @@ rectangle "Système Guidni" {
   Admin --> (Choisir le fournisseur LLM)
 
   System --> (Tracker les événements comportementaux)
-  System --> (Mettre à jour les matrices LinUCB)
+  System --> (Mettre à jour les bras de recommandation)
   System --> (Exécuter les jobs nocturnes)
   System --> (Réindexer automatiquement)
 }

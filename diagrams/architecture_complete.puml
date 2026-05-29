@@ -28,7 +28,7 @@ package "Backend IA (FastAPI)" {
 
     package "Moteur de Recommandation" {
         component [Routeur API] as RecoRouter
-        component [Moteur LinUCB] as LinUCB
+        component [Moteur Thompson Sampling] as MAB_Engine
         component [Pipeline de Ranking] as Ranker
         component [Calcul de Récompense (Events)] as RewardCalc
     }
@@ -40,7 +40,7 @@ database "Couche de Données" {
     database "PostgreSQL 15" as PG {
         [Tables Prisma (Frontend)]
         [Tables Agent (Historique, Plans)]
-        [Tables Recommandation (Matrices, Events)]
+        [Tables Recommandation (Bras, Events)]
     }
     database "Qdrant (Base de Données Vectorielle)" as Qdrant
 }
@@ -73,9 +73,9 @@ Reranker --> Tools : "Top K affinés (Haute précision)"
 
 ' --- Interactions Recommandation ---
 RecoRouter --> Ranker : "Requête de classement"
-Ranker --> LinUCB : "Scoring contextuel"
-LinUCB <--> PG : "Lecture/Écriture Matrices"
-RewardCalc --> LinUCB : "Mise à jour des poids"
+Ranker --> MAB_Engine : "Échantillonnage Beta Hybride"
+MAB_Engine <--> PG : "Lecture/Écriture Paramètres Bras"
+RewardCalc --> MAB_Engine : "Mise à jour des paramètres (alpha, beta)"
 RewardCalc --> PG : "Journalisation des événements"
 
 ' --- Interactions Base de données & Tâches ---

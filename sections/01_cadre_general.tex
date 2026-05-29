@@ -8,7 +8,7 @@ Ce chapitre établit les fondements théoriques et bibliographiques sur lesquels
 conception du système Guidni. Il couvre cinq domaines majeurs~: les agents conversationnels
 basés sur les grands modèles de langage (LLM), la génération augmentée par récupération (RAG),
 les systèmes de recommandation classiques, les bandits multi-bras contextuels et en particulier
-l'algorithme LinUCB, ainsi qu'une revue comparative des travaux connexes. Pour chaque domaine,
+l'algorithme Thompson Sampling Hybride, ainsi qu'une revue comparative des travaux connexes. Pour chaque domaine,
 la présentation progresse des concepts généraux vers les choix spécifiques retenus pour le
 projet Guidni.
 
@@ -323,37 +323,11 @@ plus tard. De plus, la dérive conceptuelle (\textit{concept drift}) --- l'évol
 préférences au fil des saisons --- dégrade les performances entre deux cycles.
 
 L'\textbf{apprentissage en ligne par bandits contextuels} apprend en temps réel à partir de
-chaque interaction. À chaque requête, le système observe un vecteur de contexte (heure, saison,
-appareil, comportement de session) et sélectionne les items qui maximisent la récompense attendue
-tout en explorant des alternatives moins connues. Cette approche équilibre naturellement
-l'exploration de nouveaux items avec l'exploitation des items connus, s'adapte automatiquement
-aux tendances saisonnières, et ne nécessite aucun réentraînement par lots. C'est cette approche
-qui a été retenue pour le moteur de recommandation Guidni.
-
-\begin{table}[H]
-    \centering
-    \caption{Comparaison des approches de recommandation}
-    \label{tab:reco_approaches}
-    \small
-    \begin{tabular}{p{2.8cm} p{2.2cm} p{2cm} p{2.2cm} p{2.0cm} p{2.0cm}}
-        \toprule
-        \textbf{Approche} & \textbf{Cold Start} & \textbf{Dérive temp.} &
-        \textbf{Données} & \textbf{Complexité} & \textbf{Guidni~?} \\
-        \midrule
-        Filtrage collaboratif & Problématique & Mauvaise & Grand historique & Moyenne & Non \\[7pt]
-        Basé contenu & Acceptable & Mauvaise & Attributs items & Faible & Partiel \\[7pt]
-        Hybride offline & Partiel & Mauvaise & Les deux & Élevée & Non \\[7pt]
-        LinUCB contextuel & Bonus exploration & Reset $\lambda$-decay & Contexte temps réel & Faible--Moy. & \textbf{Oui} \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-
-% ────────────────────────────────────────────────────────────────
-\section{Bandits multi-bras contextuels et algorithme LinUCB}
+chaque inte% ────────────────────────────────────────────────────────────────
+\section{Bandits multi-bras et algorithme Thompson Sampling Hybride}
 % ────────────────────────────────────────────────────────────────
 
-\subsection{Formulation du problème MAB}
+\subsection{Formulation du problème MAB et Thompson Sampling}
 
 Le problème des bandits multi-bras (\textit{Multi-Armed Bandit}, MAB) tire son nom de la métaphore
 d'un joueur face à une rangée de machines à sous~: chaque machine (appelée \og{}bras\fg{}) offre
@@ -363,101 +337,66 @@ fil du temps. Le défi fondamental réside dans le dilemme exploration-exploitat
 actionner les bras dont on sait qu'ils rapportent (exploitation) ou essayer des bras inconnus
 qui pourraient rapporter davantage (exploration)~?
 
-Formellement, à chaque pas de temps $t$, un agent choisit un bras $a_t$ parmi $K$ bras
-disponibles et reçoit une récompense $r_t$ tirée d'une distribution inconnue. L'objectif est de
-minimiser le regret cumulé, défini comme la différence entre la récompense totale obtenue et la
-récompense maximale qu'aurait obtenue un oracle ayant toujours choisi le meilleur bras~:
-$R_T = \sum_{t=1}^{T} r^* - r_t$, où $r^*$ est la récompense espérée du bras optimal.
+L'algorithme de \textbf{Thompson Sampling} (aussi appelé échantillonnage postérieur) résout ce
+dilemme de manière probabiliste et bayésienne. Contrairement aux approches déterministes basées sur des bornes supérieures de confiance rigides,
+le Thompson Sampling maintient une distribution de probabilité sur les paramètres réels de chaque bras
+et échantillonne à chaque requête un score de performance attendu. La probabilité de choisir un bras
+donné correspond ainsi exactement à la probabilité postérieure que ce bras soit optimal.
 
-Dans la variante \textbf{contextuelle} du problème, l'agent observe un vecteur de contexte
-$\phi_t$ avant de choisir un bras. La récompense espérée dépend à la fois du bras choisi et
-du contexte observé. Cette extension est cruciale pour la recommandation touristique~: la
-meilleure recommandation dépend du contexte --- une famille à 10h en été (tags~: \texttt{beach\_access},
-\texttt{pool}, \texttt{family}) n'a pas les mêmes attentes qu'un voyageur solo à 20h en hiver
-(tags~: \texttt{romantic}, \texttt{bar}, \texttt{activity\_indoor}).
-
-Dans le système Guidni, dix types d'événements sont suivis avec des valeurs de récompense
-allant de $-0.2$ (\texttt{quick\_exit}~: l'utilisateur a quitté la page en moins de 5~secondes)
-à $1.0$ (\texttt{reservation}~: signal de valeur maximale), en passant par $0.3$ (\texttt{click}),
-$0.5$ / $0.7$ (\texttt{dwell\_30s} / \texttt{dwell\_60s}), $0.4$ / $0.6$
-(\texttt{gallery\_swipe} / \texttt{scroll\_reviews}), et $0.85$ (\texttt{wishlist}). Un mécanisme
-de delta par session empêche la même annonce d'accumuler des récompenses multiples lors d'une
-même visite~: seule la différence entre la récompense courante et le maximum précédemment émis
-pour cette annonce est comptabilisée.
-
-% --- LinUCB cycle diagram ---
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/fig_02_linucb_cycle.drawio.png}
-    \caption{Cycle complet du bandit LinUCB dans le système Guidni}
-    \label{fig:linucb_cycle}
+    \includegraphics[width=0.85\textwidth]{diagrams/fig_02_ts_cycle.png}
+    \caption{Cycle complet du bandit Thompson Sampling Hybride dans le système Guidni}
+    \label{fig:ts_cycle}
 \end{figure}
 
+\subsection{Le modèle probabiliste Beta-Binomial}
 
-\subsection{L'algorithme LinUCB et la formule de score}
+Dans le cas d'interactions de type succès/échec (Bernoulli), la loi conjuguée naturelle est la distribution Beta. Pour chaque annonce (ou bras) $a$, le système modélise le taux d'engagement attendu $\theta(a) \in [0, 1]$ à l'aide d'une distribution Beta de paramètres de forme $\alpha$ et $\beta$~:
 
-L'algorithme LinUCB repose sur l'hypothèse que la récompense espérée est une fonction linéaire
-du vecteur de contexte~: $\mathbb{E}[r|\phi] = \theta^\top \phi$, où $\theta$ est un vecteur
-de paramètres inconnu que le système doit estimer à partir des récompenses observées. Cette
-hypothèse de linéarité est raisonnable pour un espace de caractéristiques bien conçu, car le
-produit de Kronecker utilisé pour construire $\phi$ capture déjà les interactions non linéaires
-entre caractéristiques utilisateur et tags d'annonces.
-
-La règle de mise à jour LinUCB est la suivante~: après avoir observé une récompense $r$ pour un
-contexte $\phi$, le système met à jour les matrices globales selon $A \leftarrow A + \phi\phi^\top$
-et $b \leftarrow b + r \cdot \phi$. L'estimateur du paramètre $\theta$ est alors
-$\hat{\theta} = A^{-1}b$, obtenu en pratique par résolution directe du système linéaire
-plutôt que par inversion matricielle explicite, pour des raisons de stabilité numérique.
-En cas de matrice singulière, un mécanisme de repli par moindres carrés est prévu.
-
-La formule de score UCB combine exploitation et exploration~:
 \begin{equation}
-    \text{score} = \underbrace{\hat{\theta}^\top \phi}_{\text{exploitation}} +
-    \underbrace{\alpha \sqrt{\phi^\top A^{-1} \phi}}_{\text{bonus UCB (exploration)}}
-    \label{eq:ucb_score}
+    f(\theta; \alpha, \beta) = \frac{\theta^{\alpha - 1} (1 - \theta)^{\beta - 1}}{\mathrm{B}(\alpha, \beta)}
 \end{equation}
-Le premier terme est la récompense prédite (exploitation)~; le second est le bonus d'exploration,
-proportionnel à l'incertitude --- élevé lorsque la matrice $A$ a peu d'observations dans la
-direction de $\phi$. Le paramètre $\alpha = 0.3$ contrôle l'équilibre exploration-exploitation~;
-une valeur plus élevée favorise l'exploration de bras moins connus.
 
-Les annonces ayant moins de 50~impressions reçoivent un bonus supplémentaire de $+0.15$ ajouté
-au score UCB, assurant que les nouvelles annonces sont présentées à un nombre minimum
-d'utilisateurs avant que le système puisse correctement estimer leur valeur. Ce bonus
-d'exposition (\texttt{UNDEREXPOSED\_BONUS}) est contrôlé par le drapeau
-\texttt{is\_underexposed} défini par la fonction \texttt{apply\_popularity\_correction()}.
+Les paramètres de la distribution sont mis à jour analytiquement après observation de l'engagement de l'utilisateur~:
+\begin{itemize}
+    \item \textbf{Succès} (clic, réservation) : $\alpha \leftarrow \alpha + \alpha_{\Delta}$
+    \item \textbf{Échec / Pénalité} (impression sans clic, sortie rapide) : $\beta \leftarrow \beta + \beta_{\Delta}$
+\end{itemize}
 
-La santé numérique de la matrice $A$ est surveillée par la fonction \texttt{is\_matrix\_healthy()},
-qui vérifie que $A$ est définie positive (toutes les valeurs propres sont strictement positives)
-et que toutes les valeurs sont finies. Tous les 90~jours ou plus, une réinitialisation partielle est
-appliquée~: $A_{\text{new}} = 0.7 \times A + 0.3 \times I$ et $b_{\text{new}} = 0.7 \times b$,
-avec $\lambda_{\text{decay}} = 0.7$. Cette opération oublie progressivement les données anciennes
-tout en conservant la structure apprise, adressant la dérive conceptuelle lorsque les préférences
-touristiques évoluent au fil des saisons.
+Cette approche bayésienne permet une gestion particulièrement robuste de l'incertitude : les nouvelles annonces
+ayant peu d'expositions ont de très faibles valeurs d'hyperparamètres $\alpha$ et $\beta$ (par exemple, la valeur a priori par défaut $\alpha=1, \beta=1$). La variance de leur distribution est élevée, ce qui aplatit la courbe de probabilité et autorise temporairement des tirages de scores élevés (exploration). Dès que les données s'accumulent, la somme $(\alpha + \beta)$ augmente, la variance converge vers zéro, et la distribution se concentre étroitement autour de la vraie espérance bayésienne (exploitation pure).
 
+\subsection{Segmentation de contexte et Calibrage des Récompenses}
 
-\subsection{Ingénierie des caractéristiques}
+Dans notre système Guidni, pour adapter les recommandations au contexte géographique et individuel de manière asynchrone et performante, le moteur Thompson Sampling introduit une double segmentation sémantique :
 
-Le vecteur utilisateur $x_{\text{user}}$ est de dimension~9. L'heure et le mois sont encodés
-avec des fonctions sinus et cosinus pour préserver leur nature cyclique~: minuit et 23h doivent
-être proches, décembre et janvier doivent être voisins. La profondeur de défilement
-(\texttt{scroll\_depth}) est écrêtée à $[0, 1]$. Le temps de consultation est normalisé par une
-transformation logarithmique~: $\texttt{log1p(dwell)} / \texttt{log1p(300)}$, écrêté à $[0, 1]$.
-L'affinité de prix est le prix moyen de réservation de l'utilisateur divisé par le maximum de la
-plateforme (2000~TND par exemple). Le score d'affinité de tag maximal provient du profil utilisateur. Le
-type de voyage est encodé numériquement~: famille$=1.0$, couple$=0.67$, solo$=0.33$,
-inconnu$=0.0$.
+\begin{itemize}
+    \item \textbf{Segment Global} : Représente la destination choisie par le visiteur (par exemple, \texttt{"djerba"}). Les statistiques collectives de performance de chaque annonce y sont stockées.
+    \item \textbf{Segment Utilisateur} : Associe la destination et l'identifiant unique du voyageur (par exemple, \texttt{"djerba\_u:userId"}). Cela permet de modéliser des affinités individuelles uniques de façon isolée.
+\end{itemize}
 
-Le vocabulaire de tags comprend \textbf{40~tags} en ordre alphabétique fixe. L'ordre ne doit
-jamais changer après le déploiement car toute modification invaliderait la matrice~$A$. Ce
-vocabulaire couvre six catégories sémantiques~: les équipements, les types d'activité, les
-caractéristiques de l'annonce, le style de restauration, le type d'hébergement et la
-saisonnalité. Le détail exhaustif du vocabulaire est présenté en Annexe~A.1.
+Les signaux comportementaux du tracker client sont traduits à travers un barème de calibrage précis, allant de la légère pénalisation passive d'impression ($\beta + 0.1$) au succès absolu de la réservation ($\alpha + 1.0$). De plus, pour favoriser la viabilité commerciale de la plateforme, le succès de réservation intègre un bonus financier direct proportionnel au prix de l'annonce~:
+\begin{equation}
+    \alpha_{\Delta}^{\text{reservation}} = 1.0 + 0.002 \times \text{prix}
+\end{equation}
+Cette formulation permet d'aligner l'optimisation mathématique du bandit avec le rendement économique de la place de marché Guidni.
 
-Le produit de Kronecker $\phi = \texttt{np.kron}(x_{\text{user}}, x_{\text{tags}})$ combine
-le vecteur utilisateur de dimension~9 avec un vecteur binaire de tags de longueur~40 (1 si
-l'annonce possède le tag, 0 sinon). Ce produit crée toutes les combinaisons par paires entre
-caractéristiques utilisateur et tags d'annonces, produisant un vecteur $\phi$ de longueur
+\subsection{Résolution du Démarrage à Froid par Mélange Hybride}
+
+Le problème de démarrage à froid (\textit{cold-start}) est résolu élégamment en combinant de façon linéaire les distributions globales et personnalisées lors de l'échantillonnage. Le score de pertinence final $\theta_{\text{final}}(a)$ est calculé par la formule de mélange hybride suivante~:
+
+\begin{equation}
+    \theta_{\text{final}}(a) = (1 - w) \times \theta_{\text{global}}(a) + w \times \theta_{\text{user}}(a)
+\end{equation}
+
+où $\theta_{\text{global}}(a) \sim \text{Beta}(\alpha_{\text{global}}, \beta_{\text{global}})$ et $\theta_{\text{user}}(a) \sim \text{Beta}(\alpha_{\text{user}}, \beta_{\text{user}})$, et $w$ représente le poids de personnalisation défini en fonction du nombre d'interactions historiques $N$ de l'utilisateur :
+
+\begin{equation}
+    w = \min\left(0.8, \frac{N}{40}\right)
+\end{equation}
+
+Ce mécanisme garantit une transition fluide de la recommandation de groupe (lorsque $w=0$) vers une affinité hautement personnalisée (lorsque $w$ grandit), tout en conservant une fraction de 20\% de poids collectif pour introduire de la nouveauté et éviter les phénomènes d'auto-enfermement.cteur $\phi$ de longueur
 $9 \times 40 = 360$ qui capture les effets d'interaction --- par exemple, \og{}utilisateur
 famille + tag pool\fg{} constitue une dimension unique du vecteur.
 
@@ -497,50 +436,23 @@ corruption silencieuse de la matrice~$A$.
 \end{table}
 
 
-\subsection{Pipeline de classement post-LinUCB}
+\subsection{Pipeline de classement post-scoring}
 
-Le score brut LinUCB ne suffit pas pour produire une liste de recommandations optimale. Plusieurs
-contraintes métier doivent être appliquées en post-traitement~: diversité des types d'annonces,
-garantie d'exposition pour les nouvelles annonces, exploration de catégories inconnues de
-l'utilisateur, et optimisation des revenus de la plateforme. Le module de classement applique
-une chaîne de dix filtres et ajustements dans un ordre précis après le scoring LinUCB initial.
+Le score brut échantillonné ne suffit pas seul à garantir une expérience utilisateur idéale. Plusieurs contraintes métier doivent être appliquées en post-traitement~: diversité des types d'annonces, adéquation budgétaire et géographique, et cohérence saisonnière. Le module de classement de Guidni applique un pipeline séquentiel d'étapes de filtrage et d'ajustement dans un ordre rigoureux autour de l'échantillonnage de Thompson Sampling.
 
-Les trois premiers filtres sont des filtres d'éligibilité qui réduisent l'ensemble des candidats
-avant le scoring~: la correction de popularité marque les annonces sous-exposées, le filtre
-saisonnier élimine les annonces inadaptées à la saison, et le filtre budgétaire supprime les annonces
-hors budget. Les étapes suivantes construisent les vecteurs de caractéristiques et appliquent
-le scoring LinUCB. Les dernières étapes sont des ajustements post-scoring qui optimisent
-la diversité, l'équité, les revenus, avant de finaliser la liste.
-
-Les dix étapes du pipeline sont les suivantes~:
+Les étapes du pipeline sont les suivantes~:
 
 \begin{enumerate}[leftmargin=2cm]
-    \item \textbf{Correction de popularité}~: marquer comme sous-exposées les annonces ayant
-    moins de 50~impressions, déclenchant le bonus d'exploration lors du scoring.
-
-    \item \textbf{Filtre saisonnier}~: retirer les annonces inadaptées à la saison courante 
-    (par exemple, afficher des articles de plage en plein hiver, ou des équipements de ski en été).
-
-    \item \textbf{Filtre budgétaire}~: retirer les annonces dont le prix dépasse le budget
-    estimé de l'utilisateur, avec une marge de tolérance.
-
-    \item \textbf{Construction des vecteurs $\phi$}~: calculer le produit de Kronecker pour chaque
-    annonce restante à partir du contexte utilisateur courant.
-
-    \item \textbf{Scoring LinUCB}~: calculer le score UCB pour toutes les annonces restantes.
-
-    \item \textbf{Filtre de diversité}~: parcourir la liste classée de haut en bas, limiter le
-    nombre d'annonces par type afin de garantir une représentation équilibrée des catégories.
-
-    \item \textbf{Garantie nouvelles annonces}~: si aucune annonce du résultat top-$k$ n'a moins
-    de 50~impressions, remplacer le dernier créneau par l'annonce sous-exposée la mieux classée.
-
-    \item \textbf{Exploration de tags}~: remplacer une fraction des créneaux par les annonces les
-    mieux classées parmi les catégories de tags que l'utilisateur n'a pas encore explorées.
-
-    \item \textbf{Tri par marge}~: dans les paliers de score dont l'écart est négligeable,
-    trier par taux de commission décroissant pour maximiser les revenus de la plateforme.
-    \item \textbf{Troncature}~: limiter le résultat final à \texttt{top\_k} éléments (par défaut~10) avant d'être retourné au routeur de recommandation.
+    \item \textbf{Identification du segment} : Détermination de la destination géographique courante et de l'identifiant utilisateur pour cibler les clés globales et utilisateur en base de données.
+    \item \textbf{Récupération des candidats} : Extraction des bras éligibles depuis le cache en mémoire RAM (séparation des lectures pour garantir des temps de réponse sous 5\,ms).
+    \item \textbf{Filtre saisonnier} : Retrait des annonces inadaptées à la saison touristique courante.
+    \item \textbf{Filtre budgétaire} : Retrait des annonces dont le prix dépasse largement les contraintes ou le profil budgétaire estimé du voyageur.
+    \item \textbf{Échantillonnage global} : Tirage probabiliste $\theta_{\text{global}}$ à partir de la loi $\text{Beta}(\alpha_{\text{global}}, \beta_{\text{global}})$.
+    \item \textbf{Échantillonnage utilisateur} : Tirage probabiliste $\theta_{\text{user}}$ à partir de la loi $\text{Beta}(\alpha_{\text{user}}, \beta_{\text{user}})$ si l'historique utilisateur existe.
+    \item \textbf{Mélange hybride} : Application de la formule de pondération $\theta_{\text{final}} = (1 - w)\theta_{\text{global}} + w\theta_{\text{user}}$ pour résoudre le démarrage à froid.
+    \item \textbf{Filtre de diversité} : Limiter la redondance d'une même catégorie (par exemple, éviter d'afficher 8 hébergements consécutifs, garantissant un flux diversifié d'activités, de restaurants et d'attractions).
+    \item \textbf{Tri par marge commerciale} : En cas d'écart de score négligeable, ordonnancement par taux de commission pour maximiser le rendement financier de la plateforme.
+    \item \textbf{Troncature} : Sélection des \texttt{top\_k} meilleurs éléments (par défaut 8) avant envoi de la réponse JSON au client.
 \end{enumerate}
 
 
@@ -549,15 +461,13 @@ Les dix étapes du pipeline sont les suivantes~:
 \section{Travaux connexes et comparaison}
 % ────────────────────────────────────────────────────────────────
 
-Li et al.~\cite{li2010linucb} ont introduit l'algorithme LinUCB dans le contexte de la
-recommandation d'articles de presse sur le portail Yahoo! Today. Leur travail a démontré que
-les bandits contextuels linéaires surpassent les méthodes de recommandation classiques lorsque
-le contenu évolue rapidement et que les préférences utilisateur dépendent du contexte temporel.
-Bouneffouf et al.~\cite{bouneffouf2014context} ont étendu cette approche aux recommandations
-mobiles avec des bandits hybrides intégrant des signaux contextuels similaires aux nôtres
-(localisation, heure). Le \textit{Thompson Sampling} contextuel constitue une alternative
-bayésienne, mais LinUCB a été préféré pour sa nature déterministe, sa facilité de débogage
-(pas d'échantillonnage postérieur), et son caractère éprouvé en production à grande échelle.
+Les approches classiques de bandits contextuels linéaires ont été introduites dans le contexte de la
+recommandation d'articles de presse sur le portail Yahoo! Today~\cite{li2010linucb}. Ces travaux ont démontré que
+les bandits linéaires surpassent les méthodes classiques lorsque
+le contenu évolue rapidement.
+Bouneffouf et al.~\cite{bouneffouf2014context} ont étendu ces approches aux recommandations
+mobiles avec des bandits hybrides intégrant des signaux contextuels. Le \textit{Thompson Sampling} constitue une alternative
+bayésienne particulièrement robuste. C'est cette approche qui a été retenue et optimisée dans ce projet de fin d'études sous sa forme Hybride (Beta-Binomiale), pour sa scalabilité exceptionnelle en $O(1)$, sa haute interprétabilité et sa capacité naturelle à équilibrer exploration et exploitation sans hyperparamètres arbitraires à calibrer.
 
 
 Booking.com a développé un système de classement hybride sophistiqué, intégrant des signaux
@@ -627,10 +537,7 @@ gratuit, s'exécute localement (aucune donnée transmise à des tiers), supporte
 français, l'anglais et l'arabe, et n'introduit aucune dépendance réseau pour la recherche
 sémantique.
 
-\textbf{LinUCB} a été préféré au Thompson Sampling et aux bandits neuronaux pour sa mathématique
-plus simple, sa nature déterministe (pas d'échantillonnage MCMC), sa facilité de débogage
-(le score est une formule explicite), et son efficacité prouvée en production à grande échelle
-chez Yahoo!~\cite{li2010linucb} et dans les systèmes de recommandation d'actualités.
+\textbf{Thompson Sampling Hybride} a été préféré aux approches déterministes classiques et aux bandits neuronaux pour quatre raisons fondamentales : (1) sa complexité algorithmique unitaire stricte en $O(1)$ par bras contre le coût quadratique ou cubique des calculs matriciels des modèles de bandits linéaires déterministes, (2) sa lisibilité théorique optimale où les paramètres $\alpha$ (succès) et $\beta$ (échecs) sont directement exploitables en base de données, (3) sa gestion naturelle du dilemme exploration-exploitation via l'échantillonnage probabiliste bayésien, et (4) son élégante formule de mélange hybride qui résout nativement le problème de démarrage à froid pour les nouveaux utilisateurs.
 
 \textbf{SQLAlchemy} a été retenu comme ORM principal pour gérer les interactions standards 
 avec la base de données relationnelle en raison de sa robustesse. Toutefois, la capture 
@@ -655,9 +562,9 @@ boucles de validation, et l'abstraction multi-fournisseurs LLM a été exposée 
 Le pipeline RAG avec le modèle d'embedding multilingue BAAI/bge-m3 et la réindexation automatique
 pilotée par des \textbf{triggers} de base de données ont été décrits comme mécanisme de grounding 
 factuel. Les systèmes de recommandation ont été comparés selon quatre axes, établissant la supériorité 
-de l'apprentissage en ligne par bandits contextuels pour le cas d'usage touristique. L'algorithme 
-LinUCB a été formalisé mathématiquement, l'ingénierie des caractéristiques par produit de 
-Kronecker a été détaillée avec ses 40~tags et son vecteur $\phi$ de dimension~360, et le pipeline 
+de l'apprentissage en ligne par bandits bayésiens pour le cas d'usage touristique. L'algorithme 
+Thompson Sampling Hybride a été formalisé mathématiquement, la modélisation conjuguée Beta-Binomiale
+a été détaillée avec son barème de calibrage comportemental et son mélange d'échantillonnage global-personnalisé, et le pipeline 
 de classement post-scoring en \textbf{dix} étapes a été décrit.
 
 Le chapitre suivant traduira ces fondements théoriques en exigences concrètes, modèles UML et

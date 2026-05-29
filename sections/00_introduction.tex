@@ -47,8 +47,8 @@ une plateforme de planification de voyage intelligente articulée autour de deux
 complémentaires. Le premier, l'\textbf{Agent Planificateur}, est un agent conversationnel construit
 sur une machine à états LangGraph à quatre nœuds, disposant des outils appelables par le LLM
 et d'un pipeline RAG multilingue pour la recherche sémantique. Le second, le \textbf{Moteur de
-Recommandation Hybride LinUCB}, exploite un bandit contextuel avec un vecteur de caractéristiques
-de dimension~360 pour recommander des contenus touristiques en temps réel, en apprenant continuellement
+Recommandation Hybride Thompson Sampling}, exploite un bandit multi-bras probabiliste avec une modélisation
+Beta-Binomiale et un mélange hybride pour recommander des contenus touristiques en temps réel, en apprenant continuellement
 à partir des signaux comportementaux des utilisateurs. Ces deux sous-systèmes partagent la même base
 de données PostgreSQL et opèrent de manière indépendante et complémentaire.
 
@@ -169,8 +169,8 @@ PostgreSQL que le frontend Next.js et ajoute une couche d'intelligence au-dessus
 existantes, sans modifier le modèle de données du frontend. L'agent planificateur lit les tables
 gérées par Prisma en mode lecture seule et possède ses propres tables pour les conversations,
 messages, plans générés et métadonnées d'intelligence. Le moteur de recommandation dispose
-également de ses tables dédiées pour les bras du bandit, les matrices globales LinUCB, les profils
-utilisateurs, les sessions, les événements de recommandation, et les tags des annonces.
+également de ses tables dédiées pour les bras du bandit, les distributions globales et personnalisées de Thompson Sampling,
+les profils utilisateurs, les sessions, les événements de recommandation, et les tags des annonces.
 
 Le tableau~\ref{tab:scope} délimite précisément les fonctionnalités incluses dans le périmètre de
 ce projet et celles qui en sont exclues, afin de cadrer les attentes et de focaliser les efforts
@@ -190,7 +190,7 @@ de développement sur les contributions techniques principales.
         Application mobile native \\[4pt]
         Intégration météo via Open-Meteo &
         Framework de tests A/B en temps réel \\[4pt]
-        Apprentissage en ligne LinUCB &
+        Apprentissage en ligne Thompson Sampling \par \text{et mélange hybride} &
         LLM fine-tuné spécifique au domaine \\[4pt]
         Tracker comportemental JavaScript &
          \\[4pt]
@@ -221,9 +221,8 @@ Process) a été retenue en raison de sa capacité à séparer la complexité fo
 construit} --- en deux branches parallèles qui convergent lors de la phase de conception détaillée
 et d'implémentation. Cette séparation est particulièrement pertinente pour ce projet, car la branche
 fonctionnelle (planification conversationnelle, logique de recommandation, cas d'utilisation
-touristiques) et la branche technique (machines à états LangGraph, algèbre matricielle LinUCB,
-indexation vectorielle, gestion de mémoire conversationnelle) présentent des courbes d'apprentissage
-et des chronologies très différentes.
+touristiques) et la branche technique (machines à états LangGraph, échantillonnage de Thompson Sampling Hybride,
+indexation vectorielle, gestion de mémoire conversationnelle) présentent des chronologies très différentes.
 
 La \textbf{branche fonctionnelle} débute par la capture des besoins utilisateurs sous forme de
 \textit{user stories} et du modèle de domaine, identifiant les entités clés~: touriste, annonce,
@@ -234,7 +233,7 @@ aux besoins réels des utilisateurs avant toute considération technologique.
 
 La \textbf{branche technique} commence par des expérimentations ciblées (\textit{technology spikes})~:
 validation du routage LangGraph entre les nœuds, mesure de la latence des différents fournisseurs
-LLM, vérification de la stabilité numérique de l'algèbre matricielle LinUCB, et test de
+LLM, modélisation bayésienne et échantillonnage de Thompson Sampling, et test de
 l'indexation vectorielle avec les embeddings BAAI/bge-m3. Cette branche produit l'architecture
 d'infrastructure, les contrats d'API, et les schémas de données, en s'appuyant sur des prototypes
 fonctionnels validés.
@@ -284,7 +283,7 @@ La section suivante décrit la structure générale de ce rapport.
 
 Le \textbf{chapitre~1} est consacré à l'état de l'art et aux fondements théoriques. Il examine les
 architectures agentiques basées sur les LLM, les systèmes de génération augmentée par la
-récupération (RAG), et la théorie des bandits contextuels, en particulier l'algorithme LinUCB. Ce
+récupération (RAG), et la théorie des bandits multi-bras, en particulier l'algorithme Thompson Sampling Hybride. Ce
 chapitre établit les bases conceptuelles nécessaires à la compréhension des choix de conception
 effectués dans les chapitres suivants.
 
@@ -298,9 +297,9 @@ nœuds de la machine à états LangGraph (THINK, EXECUTE\_TOOL, VALIDATE, RESPON
 outils mis à disposition du LLM, le pipeline RAG multilingue avec ré-ordonnancement par
 cross-encoder, et le système de mémoire conversationnelle avec résumé automatique.
 
-Le \textbf{chapitre~4} présente l'implémentation du moteur de recommandation LinUCB. Il aborde
-l'ingénierie des caractéristiques avec le produit de Kronecker, le moteur de scoring, le pipeline
-de classement post-traitement, l'extracteur de tags par LLM, le tracker JavaScript, et les tâches
+Le \textbf{chapitre~4} présente l'implémentation du moteur de recommandation Hybrid Thompson Sampling. Il aborde
+la modélisation probabiliste par distributions Beta, le calibrage des récompenses comportementales,
+le mécanisme de mélange hybride pour le démarrage à froid, l'extracteur de tags par LLM, le tracker JavaScript, et les tâches
 de maintenance nocturnes.
 
 Le \textbf{chapitre~5} détaille le déploiement du système et l'architecture de production de la plateforme.
@@ -325,4 +324,4 @@ temporelle ont été présentées.
 
 Le chapitre suivant fournira les fondements théoriques nécessaires à la compréhension des choix
 techniques du projet, en examinant l'état de l'art sur les agents LLM, la génération augmentée
-par la récupération (RAG), et les bandits contextuels LinUCB.
+par la récupération (RAG), et les bandits multi-bras par Thompson Sampling.

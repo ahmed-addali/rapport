@@ -11,9 +11,9 @@ printscale weekly
 ' Implémentation commence fin mars / début avril
 [Implémentation agent LangGraph] starts 2026-03-29 and lasts 5 weeks
 
-' RAG et LinUCB démarrent en avril, créant le chevauchement (parallélisation)
+' RAG et recommandation démarrent en avril, créant le chevauchement (parallélisation)
 [Implémentation pipeline RAG] starts 2026-04-12 and lasts 3 weeks
-[Implémentation LinUCB et tracker] starts 2026-04-19 and lasts 4 weeks
+[Implémentation recommandation MAB et tracker] starts 2026-04-19 and lasts 4 weeks
 
 [Tests et évaluation] starts 2026-05-10 and lasts 3 weeks
 [Rédaction du rapport] starts 2026-04-05 and lasts 10 weeks

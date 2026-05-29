@@ -15,7 +15,7 @@ package "Frontend" {
 package "Backend FastAPI" {
   rectangle "LangGraph Agent" as Agent #LightYellow
   rectangle "RAG Pipeline (LlamaIndex + bge-m3)" as RAG #LightCoral
-  rectangle "LinUCB Engine (scoring + ranker)" as LinUCB #LightBlue
+  rectangle "Thompson Sampling Engine\n(scoring + ranker)" as TS_Engine #LightBlue
   rectangle "Nightly Scheduler (APScheduler)" as Scheduler #LightGreen
 }
 
@@ -36,8 +36,8 @@ package "APIs Externes" {
 }
 
 NextJS --> Agent : POST /chat, /plan
-NextJS --> LinUCB : GET /api/recommendations
-Tracker --> LinUCB : POST /api/recommendations/events
+NextJS --> TS_Engine : GET /api/recommend/feed
+Tracker --> TS_Engine : POST /api/recommend/event
 
 Agent --> PG : asyncpg / SQLAlchemy (lecture/écriture)
 Agent --> RAG : Requêtes vectorielles
@@ -50,11 +50,11 @@ Agent --> Gemini : HTTPS
 RAG --> VecStorage : Lecture/écriture index
 RAG --> PG : SQLAlchemy events (réindexation)
 
-LinUCB --> PG : psycopg2 (lecture bras, écriture events)
-LinUCB --> Scheduler : Jobs nocturnes
+TS_Engine --> PG : psycopg2 (lecture bras, écriture events)
+TS_Engine --> Scheduler : Jobs nocturnes
 
 Scheduler --> PG : Mise à jour profils, tags
-Scheduler --> LinUCB : Persist matrices, reset drift
+Scheduler --> TS_Engine : Décroissance géométrique active
 
 note right of NextJS
   Prisma ORM gère les tables
@@ -70,11 +70,10 @@ note right of Agent
   ActivityIntelligence
 end note
 
-note right of LinUCB
-  7 tables reco :
-  BanditArm, LinUCBGlobal,
-  UserProfile, UserSession,
-  RecommendationEvent,
+note right of TS_Engine
+  6 tables reco :
+  BanditArm, UserProfile,
+  UserSession, RecommendationEvent,
   ListingTag, SystemConfig
 end note
 
