@@ -9,8 +9,8 @@ start
 :1. apply_popularity_correction()
 —— Marque underexposed si impressions < 50;
 note right: N bras initiaux
-:2. apply_time_filter(hour)
-—— Supprime evening/bar le matin, morning le soir;
+:2. apply_seasonal_filter(month)
+—— masquer annonces d'été en hiver;
 :3. apply_budget_filter(budget×1.25)
 —— Supprime annonces hors budget;
 :4. build_phi() par bras survivant
@@ -19,7 +19,7 @@ note right: N bras initiaux
 —— Scoring LinUCB + UCB bonus;
 note right: Triés par score ↓
 :6. apply_diversity_filter(max=top_k/type)
-——  Garentire diversité par type d'entité;
+——  Garentir diversité par type d'entité;
 :7. apply_new_listing_guarantee()
 —— Au moins 1 sous-exposé garanti;
 :8. apply_tag_exploration(10% slots)

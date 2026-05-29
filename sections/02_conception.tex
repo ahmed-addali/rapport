@@ -55,9 +55,6 @@ d'utilisation sont organisés en trois groupes~: les interactions conversationne
 avec l'agent planificateur, les opérations d'administration du système, et les processus
 automatisés du sous-système de recommandation.
 
-Les cas d'utilisation sont organisés en trois groupes : les interactions  du 
-touriste avec l'agent planificateur, les opérations d'administration du système, et les processus 
-automatisés du sous-système de recommandation.
 
 \begin{figure}[H]
     \centering
@@ -205,7 +202,7 @@ La section suivante présente l'architecture globale conçue pour satisfaire ces
 
 Le \textbf{frontend} du système Guidni est une application Next.js couplée à l'ORM Prisma, qui
 gère l'interface utilisateur, l'authentification, et les opérations CRUD sur les entités
-touristiques (activités, hébergements, Attractions, restaurants, locations, transferts). Le frontend lit et
+touristiques (activités, hébergements, attractions, restaurants, locations, transferts). Le frontend lit et
 écrit dans la base de données PostgreSQL partagée via Prisma, et communique avec le backend IA
 via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommendations}.
 
@@ -222,7 +219,7 @@ de Haversine, le serveur Ollama local pour l'inférence LLM sans réseau, l'API 
 l'inférence rapide, l'API Google Gemini pour les contextes longs, et l'API Lightning AI comme
 quatrième fournisseur. L'index vectoriel est persisté sur Qdrant database entre les redémarrages.
 
-Le \textbf{tracker JavaScript} est un module vanilla JS sans dépendance externe, intégré dans
+Le \textbf{tracker JavaScript} est un module JavaScript natif sans dépendance externe, intégré dans
 les pages du frontend. Il collecte les événements comportementaux (clics, temps de consultation,
 défilement, ajout aux favoris, réservations) et les transmet par lots vers l'endpoint
 \texttt{POST /api/recommendations/events}. Il utilise l'API \texttt{navigator.sendBeacon()} pour
@@ -412,7 +409,6 @@ contrats API pour chacun des deux sous-systèmes.
         \midrule
         GET & \texttt{/api/ recommendations} & Recommandations \\[3pt]
         POST & \texttt{/api/ recommendations/ events} & Lot d'événements \\[3pt]
-        POST & \texttt{/api/ recommendations/ merge-session} & Fusionner session \\[3pt]
         \bottomrule
     \end{tabular}
 \end{table}

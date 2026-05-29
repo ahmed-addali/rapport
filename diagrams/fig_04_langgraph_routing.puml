@@ -59,6 +59,7 @@ end note
 note right of EXECUTE_TOOL
   **_after_tool_execution(state)**
   - needs_more_info → "respond"
+  - iteration_count >= 15 -> "respond
   - [défaut] → "think"
 end note
 

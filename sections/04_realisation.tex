@@ -56,7 +56,7 @@ La dimension 8 encode le type de voyage~: \texttt{family}$=1.0$, \texttt{couple}
 groupe social et les patrons de consommation associés (les familles dépensent plus en activités
 de groupe, les solos en expériences individuelles). Une étape finale de nettoyage remplace
 toute valeur non finie par zéro avant le retour du vecteur, garantissant qu'aucune valeur
-aberrant ne corrompe les calculs matriciels.
+aberrante ne corrompe les calculs matriciels.
 
 
 \subsection{Le vocabulaire de tags et le vecteur $x_{tags}$}
@@ -245,7 +245,7 @@ l'utilisateur voit une variété de types d'annonces.
 \textbf{Étape~7 --- Garantie de nouvelle annonce}.
 Si le résultat final ne contient aucun bras
 sous-exposé, le bras sous-exposé avec le score le plus élevé de la liste
-complète est inséré en dernière position. Cette garantie assure que chaque session de
+complète est inséré en (index $top\_k - 1$),. Cette garantie assure que chaque session de
 recommandation introduit au moins une nouvelle annonce, maintenant l'exploration même lorsque
 le classeur exploiterait uniquement les annonces connues.
 
@@ -373,7 +373,7 @@ lentement --- les annonces ne sont pas ajoutées toutes les secondes) sont cach�
 Le tracker est une classe autonome instanciée avec l'adresse du serveur, l'identifiant de
 session et un identifiant utilisateur optionnel. Elle maintient une file d'événements interne,
 l'état de session, une carte de récompenses de session, et un minuteur de flush périodique
-(toutes les 15~secondes). L'architecture est sans dépendance externe (vanilla JavaScript).
+(toutes les 15~secondes). L'architecture est sans dépendance externe (JavaScript natif).
 
 Le suivi de l'état de session capture en temps réel~: la profondeur de défilement, la
 géolocalisation (demandée une fois à l'initialisation), la gamme de prix consultée (mise
@@ -401,7 +401,7 @@ un flush immédiat plutôt que d'attendre le prochain cycle périodique.
 \subsection{Mise à jour des profils utilisateurs}
 
 Le job \texttt{run\_profile\_update\_job()} s'exécute chaque nuit à 3h00 (fuseau
-Africa/Tunis). Il traite uniquement les utilisateurs ayant généré des événements de
+Africa/Tunis). Il traite uniquement les utilisateurs authentifiés ayant généré des événements de
 recommandation dans les dernières 24~heures, rendant le traitement efficace et ciblé. Les
 utilisateurs inactifs ne sont pas retraités inutilement.
 

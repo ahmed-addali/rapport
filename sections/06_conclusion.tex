@@ -33,8 +33,7 @@ La troisième contribution est l'intégration système~: les deux sous-systèmes
 base de données PostgreSQL sans conflit grâce à une partition claire entre tables en lecture
 seule (les ~tables miroirs du frontend Prisma/Next.js) et tables gérées par l'IA
 (planificateur +  recommandation). La réindexation RAG incrémentale via des triggers SQL 
-maintient l'index vectoriel toujours à jour sans intervention manuelle. Le tracker JavaScript 
-vanilla relie le comportement client aux
+maintient l'index vectoriel toujours à jour sans intervention manuelle. Le tracker JavaScript relie le comportement client aux
 mises à jour matricielles côté serveur de manière transparente, avec un mécanisme beacon
 garantissant la capture des événements même à la fermeture de page. APScheduler exécute
 tous les jobs de maintenance avec une planification timezone-aware (\texttt{Africa/Tunis})

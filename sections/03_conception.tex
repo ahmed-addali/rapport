@@ -155,7 +155,7 @@ courant. Si \texttt{user\_profile} existe, un résumé du profil est ajouté. Si
 comme un \texttt{SystemMessage} distinct du prompt de
 personnalité, permettant au LLM de voir clairement les données déjà collectées.
 
-L'heuristique d'arrêt forcé constitue un mécanisme de sécurité critique~: si
+L'heuristique d'arrêt de recherche forcé constitue un mécanisme de sécurité critique~: si
 \texttt{iteration\_count >= 2} et que \texttt{rag\_context} est non vide, un
 \texttt{SystemMessage} final est injecté avec l'instruction~: \og{}IMPORTANT~: Vous avez déjà
 suffisamment de données. Générez votre réponse FINALE maintenant. N'appelez PLUS d'outils de
@@ -433,7 +433,7 @@ véritablement personnalisées sans recours au moteur LinUCB --- l'agent adapte 
 % ────────────────────────────────────────────────────────────────
 
 Le pipeline rapide existe en complément de la boucle agentique complète pour répondre à un
-besoin spécifique~: la boucle complète de l'agent nécessite moins de temps (appels LLM
+besoin spécifique~: la boucle complète de l'agent nécessite plus de temps (appels LLM
 multiples, exécutions d'outils, boucle de validation), ce qui est acceptable pour une
 conversation exploratoire mais excessif lorsque l'utilisateur fournit toutes les informations
 nécessaires en un seul message structuré (dates, taille du groupe, budget, préférences).
@@ -475,11 +475,10 @@ La machine à états LangGraph avec ses quatre nœuds (THINK, EXECUTE\_TOOL, VAL
 et ses trois fonctions de routage conditionnel a été détaillée, incluant les mécanismes de
 sécurité . Les outils ont été catalogués et les plus complexes décrits en profondeur~:
 l'outil de recherche RAG multi-types avec ses quatre recherches parallèles et son garde-fou de
-désambiguïsation des types d'entités, et l'outil d'enrichissement d'activités par IA avec son
-cache d'intelligence. Le pipeline RAG, le système de mémoire conversationnelle (fenêtre de
+désambiguïsation des types d'entités. Le pipeline RAG, le système de mémoire conversationnelle (fenêtre de
 8~messages, résumé automatique au seuil de 8~messages, profil utilisateur), et le pipeline
 rapide de génération de plans en trois phases ont complété la présentation.
 
 Le chapitre suivant présente l'implémentation du second sous-système~: le moteur de
 recommandation Hybrid LinUCB, avec son ingénierie des caractéristiques, son cycle
-d'apprentissage en ligne, et son pipeline de classement en neuf étapes.
+d'apprentissage en ligne, et son pipeline de classement en dix étapes.

@@ -148,9 +148,12 @@ class BanditArmUCB {
     +Float commissionRate
     +Int impressions
     +Int clicks
+    +Int wishlists
     +Int conversions
     +Float totalRevenue
+    +Int nUpdates
     +Boolean isUnderexposed
+    +DateTime updatedAt
 }
 
 class LinUCBGlobal {
@@ -190,8 +193,15 @@ class UserSession {
     +UUID userid
     +Float locationLat
     +Float locationLon
-    +String budgetSegment
+    +String deviceType
+    +Int entryHour
+    +Int entryMonth
+    +Float scrollDepthMax
+    +Float dwellSeconds
     +Json clickSequence
+    +Json priceRangeViewed
+    +String budgetSegment
+    +DateTime createdAt
 }
 
 class RecommendationEventUCB {
@@ -201,9 +211,12 @@ class RecommendationEventUCB {
     +String listingType
     +UUID userid
     +UUID sessionId
+    +String locationZone
     +Float reward
-    +Float price
     +Int rankShown
+    +Float price
+    +Json metadata
+    +DateTime createdAt
 }
 
 ' ============================================================
