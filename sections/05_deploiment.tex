@@ -3,14 +3,14 @@
 % ============================================================================
 \label{chp:deploiement}
 
-% Définition des couleurs pour les blocs de code de ce chapitre
+% Définition des couleurs pour les blocs de code
 \definecolor{codegray}{rgb}{0.97,0.97,0.97}
 \definecolor{codeblue}{rgb}{0.0,0.2,0.6}
 \definecolor{codegreen}{rgb}{0.0,0.5,0.0}
 \definecolor{codepurple}{rgb}{0.5,0.0,0.5}
 
-% Configuration de style listings local pour l'orchestration Docker
-\lstdefinestyle{dockercompose}{
+% Configuration de listings pour éviter les débordements de texte
+\lstset{
     backgroundcolor=\color{codegray},
     basicstyle=\ttfamily\small,
     breaklines=true,
@@ -28,20 +28,17 @@
 }
 
 \section{Introduction}
-Le passage de la plateforme \textit{Guidni} d'un environnement de développement local à un environnement de production exige une infrastructure robuste, hautement disponible et évolutive. Dans un premier temps, afin de minimiser l'empreinte matérielle et réduire les coûts initiaux d'hébergement sur le Serveur Privé Virtuel (VPS), le système s'appuie sur des API d'inférence cloud externes (telles que Groq, Anthropic ou Google GenAI). Néanmoins, l'architecture a été rigoureusement conçue pour permettre, à court ou moyen terme, une transition fluide vers un modèle de langage (LLM) open-source hébergé localement (ex. Qwen, Llama) sur un serveur VPS dédié équipé de GPU, garantissant ainsi une totale souveraineté des données. Ce chapitre détaille la topologie de déploiement des microservices, la stratégie d'orchestration par conteneurs et les mécanismes de routage sécurisés mis en œuvre.
+Le passage de la plateforme \textit{Guidni} d'un environnement de développement local à un environnement de production exige une infrastructure robuste, hautement disponible et évolutive. Dans un premier temps, afin de minimiser l'empreinte matérielle et réduire les coûts initiaux d'hébergement sur le Serveur Privé Virtuel (VPS), le système s'appuie sur des API d'inférence cloud externes (telles que Groq, Anthropic ou Google GenAI). Néanmoins, l'architecture a été rigoureusement conçue pour permettre, à court ou moyen terme, une transition fluide vers un modèle de langage (LLM) open-source hébergé localement (ex. Qwen, Llama) sur un serveur VPS dédié équipé de GPU, garantissant ainsi une totale souveraineté des données. Ce chapitre détaille la topologie de déploiement des microservices, la stratégie d'orchestration par conteneurs et les mécanismes de routage sécurisés mis en oeuvre.
 
-\section{Architecture de l'Infrastructure de Production}
-Le déploiement en production repose sur un framework multi-tiers isolé et conteneurisé, orchestré via Docker Compose et sécurisé en amont par un proxy inverse gérant le protocole TLS/SSL.
 
-\subsection{Topologie d'Isolation des Microservices}
+\section{Topologie d'Isolation des Microservices}
 Afin de garantir la tolérance aux pannes et une segmentation réseau stricte, chaque composant applicatif est isolé dans son propre conteneur Docker indépendant. Ces conteneurs communiquent dynamiquement au sein d'un réseau virtuel privé de type \textit{bridge}, empêchant ainsi l'exposition directe des ports de la base de données ou des API internes sur l'internet public.
 
-La répartition physique des composants applicatifs ainsi que l'isolation des différents segments réseau de la plateforme sont illustrées en détail dans le diagramme de déploiement de la Figure~\ref{fig:diagramme_deploiement}. Comme on peut le constater, la base de données possède une étanchéité totale vis-à-vis de l'extérieur.
+La répartition physique des composants applicatifs ainsi que l'isolation des différents segments réseau de la plateforme sont illustrées en détail dans le diagramme de déploiement de la Figure~\ref{fig:diagramme_deploiement}. Comme on peut le constater, les bases de données relationnelles et vectorielles possèdent une étanchéité totale vis-à-vis de l'extérieur.
 
 \begin{figure}[htbp]
     \centering
-    % width=0.95\textwidth permet de maximiser la visibilité du diagramme sur la page
-    \includegraphics[width=0.95\textwidth]{diagrams/diagramme_deploiement.png} 
+    \includegraphics[width=0.95\textwidth]{diagrams/Guidni_Deployment_Diagram.png} 
     \caption{Diagramme de déploiement physique de la plateforme Guidni}
     \label{fig:diagramme_deploiement}
 \end{figure}
@@ -49,96 +46,15 @@ La répartition physique des composants applicatifs ainsi que l'isolation des di
 \begin{itemize}
     \item \textbf{Couche Proxy Inverse (Nginx) :} Connectée directement aux interfaces réseau de l'hôte sur les ports 80 (HTTP) et 443 (HTTPS). Elle gère la terminaison SSL via des certificats automatisés Let's Encrypt et redirige le trafic utilisateur vers la couche de présentation.
     \item \textbf{Couche Présentation (Next.js) :} S'exécute dans un conteneur configuré sur le port interne 3000. Elle prend en charge le rendu côté serveur (SSR), les interactions CRUD standards et l'authentification via Better-Auth.
-    \item \textbf{Agent Planificateur AI (FastAPI) :} Fonctionne de manière asynchrone sur le port 8000. Il coordonne les workflows multi-agents avec LangGraph et transmet actuellement les requêtes vers les services d'API externes via des tunnels HTTPS sortants sécurisés.
+    \item \textbf{Agent Planificateur AI (FastAPI) :} Fonctionne de manière asynchrone sur le port 8000. Il coordonne les workflows multi-agents avec LangGraph et effectue des recherches vectorielles rapides sur le serveur Qdrant local pour enrichir le contexte du RAG avant de transmettre les requêtes vers les services d'API externes.
     \item \textbf{Moteur de Recommandation (FastAPI) :} Opère sur le port 8001 pour traiter les calculs algorithmiques synchrones et vectoriels à l'aide de NumPy.
-    \item \textbf{Couche de Persistance (PostgreSQL 16) :} Isolée rigoureusement au sein du réseau Docker interne sur le port 5432, sans aucun mappage de port vers l'extérieur de la machine hôte.
+    \item \textbf{Base de Données Vectorielle (Qdrant) :} Isolé dans son propre conteneur, ce moteur gère le stockage et la recherche de similarité des plongements sémantiques (\textit{embeddings}) nécessaires au fonctionnement de l'agent intelligent.
+    \item \textbf{Couche de Persistance Relationnelle (PostgreSQL) :} Isolée rigoureusement au sein du réseau Docker interne sur le port 5432, sans aucun mappage de port vers l'extérieur de la machine hôte.
 \end{itemize}
 
-\subsection{Spécifications de l'Environnement de Déploiement}
-L'externalisation temporaire des calculs lourds de l'IA vers des fournisseurs cloud permet d'alléger considérablement la charge sur la machine hôte. Le Tableau~\ref{tab:vps_specs} présente les spécifications matérielles et logicielles retenues pour l'hébergement initial de la plateforme.
-
-\begin{table}[htbp]
-\centering
-\caption{Spécifications du VPS de Production}
-\label{tab:vps_specs}
-\begin{tabular}{ll}
-\toprule
-\textbf{Métrique d'Infrastructure} & \textbf{Spécification de Production} \\
-\midrule
-Système d'Exploitation & Ubuntu 24.04 LTS (64-bit Enterprise Linux Kernel) \\
-Processeur Virtuel (vCPU) & 8 Cœurs (Dédiés ou partagés optimisés) \\
-Mémoire Vive (RAM) & 16 Go DDR4 \\
-Espace de Stockage & 40 Go -- 80 Go NVMe SSD \\
-Moteur de Conteneurisation & Docker Engine v26.x avec Docker Compose v2.x \\
-Proxy Inverse \& TLS & Nginx 1.25+ avec Certbot (Client ACME) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Configuration de l'Orchestration des Conteneurs}
-Le cycle de vie, les liaisons réseau internes et l'injection des variables d'environnement des microservices sont codifiés au sein d'un fichier de configuration unique. Le Listing~\ref{lst:dockercompose} illustre le modèle d'orchestration global mis en production.
-
-\begin{lstlisting}[style=dockercompose, language=sh, caption={Plan d'Orchestration de Production (\texttt{docker-compose.yml})}, label={lst:dockercompose}]
-version: '3.8'
-
-networks:
-  guidni-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
-
-services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: guidni-db
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: guidni_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - guidni-network
-
-  nextapp:
-    build:
-      context: ./main-web-app
-      dockerfile: Dockerfile
-    container_name: guidni-next
-    restart: always
-    environment:
-      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/guidni_db
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
-      BETTER_AUTH_URL: https://${DOMAIN}
-      PLANNER_API_URL: http://planner-agent:8000
-      BRAIN_API_URL: http://brain-engine:8001
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-    networks:
-      - guidni-network
-
-  planner-agent:
-    build:
-      context: ./planner-agent
-      dockerfile: Dockerfile
-    container_name: guidni-planner
-    restart: always
-    environment:
-      DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@postgres:5432/guidni_db
-      GROQ_API_KEY: ${GROQ_API_KEY}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-    depends_on:
-      - postgres
-    networks:
-      - guidni-network
-\end{lstlisting}
 
 \section{Pipeline de Déploiement Séquentiel}
-La mise en œuvre pratique et le déploiement opérationnel suivent un protocole strict et séquencé afin de garantir des migrations de base de données sans perte de données et une continuité de service :
+La mise en oeuvre pratique et le déploiement opérationnel suivent un protocole strict et séquencé afin de garantir des migrations de base de données sans perte de données et une continuité de service :
 
 \begin{enumerate}
     \item \textbf{Préparation de l'environnement :} Les mises à jour du système sont appliquées sur le VPS, puis les démons Docker et Nginx sont initialisés. Les identifiants sensibles (clés d'API, mots de passe de base de données) sont structurés de manière isolée dans un fichier masqué \texttt{.env}.
@@ -147,17 +63,17 @@ La mise en œuvre pratique et le déploiement opérationnel suivent un protocole
     \begin{verbatim}
     docker-compose up --build -d
     \end{verbatim}
-    \item \textbf{Migration du schéma de base de données :} Les transitions structurelles de la base de données sont appliquées de manière sécurisée sans interrompre le trafic réseau existant :
+    \item \textbf{Migration du schéma de base de données :} Les transitions structurelles de la base de données relationnelle sont appliquées de manière sécurisée sans interrompre le trafic réseau existant :
     \begin{verbatim}
     docker exec -it guidni-next npx prisma migrate deploy
     \end{verbatim}
     \item \textbf{Configuration du routage et chiffrement :} Nginx est configuré pour rediriger le trafic HTTP externe vers le port conteneurisé 3000, puis Certbot valide les défis ACME afin d'obtenir et d'installer les certificats TLS SHA-256.
 \end{enumerate}
 
-\section*{Conclusion du chapitre}
-\addcontentsline{toc}{section}{Conclusion du chapitre}
-Le choix d'une architecture découplée et conteneurisée via Docker et orchestrée par Docker Compose confère à la plateforme \textit{Guidni} une modularité et une flexibilité d'évolution maximales. Cette topologie d'isolation réseau protège efficacement les couches sensibles comme la base de données PostgreSQL tout en assurant un routage TLS/SSL fluide et hautement sécurisé via le reverse proxy Nginx. L'externalisation initiale de l'inférence des modèles de langage vers des APIs cloud performantes minimise les coûts opérationnels et les exigences matérielles de l'infrastructure de production au lancement.
-
-Par ailleurs, cette architecture pose des bases robustes pour les évolutions à court et moyen terme, notamment la migration de l'agent planificateur vers un serveur dédié à l'hébergement de LLMs locaux auto-hébergés ou le passage à une base de données cloud hautement distribuée. 
-
-Le chapitre suivant conclut le rapport de projet de fin d'études en synthétisant l'ensemble de nos contributions techniques, en analysant les perspectives d'évolution future et en dressant un bilan global de ce travail.
+\section{Conclusion}
+Le choix d'une architecture découplée avec un conteneur dédié par service offre à la plateforme \textit{Guidni} une 
+flexibilité d'évolution maximale. Cette configuration minimise les coûts opérationnels au lancement grâce à l'usage 
+ciblé des API de LLM distantes, tout en maintenant localement l'infrastructure vectorielle Qdrant indispensable à 
+l'expérience temps réel. Elle pose également les fondations techniques indispensables pour migrer ultérieurement 
+l'agent planificateur vers un serveur d'inférence LLM local auto-hébergé, ou pour externaliser la persistance vers 
+un service managé distribué au fur et à mesure de la croissance du nombre de voyageurs sur la plateforme.

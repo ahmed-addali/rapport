@@ -5,30 +5,29 @@ skinparam defaultFontName "Arial"
 title Flux d'exécution de l'outil create_plan_structure
 
 participant "THINK Node" as Think
-participant "AIMessage tool_calls" as AIMsg
+participant "LLM Provider" as LLM
 participant "EXECUTE_TOOL Node" as Exec
-participant "create_plan_structure()" as Tool
 participant "AgentState" as State
 
-Think -> AIMsg : LLM retourne tool_calls=[{name:"create_plan_structure",args:{plan_json:"..."}}]
+' AIMessage هو الرد اللي يجي من الـ LLM موش Participant
+Think -> LLM : Requête de génération de plan
+LLM --> Think : AIMessage(tool_calls=[{name:"create_plan_structure", args:{plan_json:"..."}}])
+
 Think -> Exec : _should_continue → "execute_tool"
 
-Exec -> Exec : Extraction tool call
-Exec -> Tool : ainvoke({plan_json})
+' الدالة create_plan_structure هي استدعاء داخلي في العقدة المُنفذة للأدوات
+Exec -> Exec : create_plan_structure(plan_json)
 
-Tool -> Tool : Validation structure JSON
-
+Exec -> Exec : Validation structure JSON
 
 alt Plan valide
-  Tool --> Exec : {valid: true, plan: {...}}
   Exec -> State : is_plan_ready = True
   Exec -> State : current_plan = plan
   Exec -> State : thinking_steps += "✅ create_plan_structure completed"
 
-  Exec --> Think : État mis à jour (Retour au nœud principal)
+  Exec --> Think : État mis à jour (Retour au noeud principal)
 
 else Plan invalide
-  Tool --> Exec : {valid: false, errors: [...]}
   Exec -> State : thinking_steps += "❌ create_plan_structure failed"
 
   Exec --> Think : Erreur interceptée (Retour au LLM)

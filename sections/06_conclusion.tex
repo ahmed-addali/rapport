@@ -6,103 +6,112 @@
 \section*{Bilan des contributions}
 \addcontentsline{toc}{section}{Bilan des contributions}
 
-La première contribution majeure de ce projet est l'agent planificateur IA Guidni~: un agent
-conversationnel basé sur LangGraph avec des outils appelables par le LLM, un pipeline RAG
-multilingue utilisant les embeddings denses BAAI/bge-m3 (FR/EN/AR), une abstraction de
-fournisseur LLM supportant Ollama, Groq et Google Gemini, une boucle de validation garantissant
-la correction structurelle des plans, et un système de mémoire supportant les conversations
-longues par résumé automatique à 8~messages. Le cycle de raisonnement LangGraph en quatre
-nœuds (THINK → EXECUTE\_TOOL → VALIDATE → RESPOND) constitue une implémentation concrète du
-paradigme ReAct appliqué à la planification de voyage. Ce travail constitue le premier agent
-de planification de voyage conversationnel spécifiquement conçu pour le marché touristique de
-Djerba avec un support multilingue complet français, anglais et arabe.
+La première contribution majeure est l'agent planificateur IA Guidni~: 
+un agent conversationnel basé sur LangGraph avec des outils appelables 
+par le LLM, un pipeline RAG multilingue (français, anglais, arabe), 
+une abstraction de fournisseur LLM permettant le remplacement 
+transparent du modèle sous-jacent, une boucle de validation 
+garantissant la correction structurelle des plans, et un système de 
+mémoire supportant les conversations longues par résumé automatique. 
+Le cycle de raisonnement LangGraph constitue une implémentation 
+concrète du paradigme ReAct appliqué à la planification de voyage. 
+Ce travail constitue le premier agent de planification de voyage 
+conversationnel spécifiquement conçu pour le marché touristique de 
+Djerba avec un support multilingue complet.
 
-La deuxième contribution est le moteur de recommandation Hybrid LinUCB~: un bandit
-multi-bras contextuel avec un vecteur de caractéristiques Kronecker de 360~dimensions
-($\phi = x_{user}(9) \otimes x_{tags}(40)$), une unique matrice globale $A$ partagée entre
-toutes les annonces, un pipeline de classement post-traitement en 10~étapes, un mécanisme
-de récompenses delta par session empêchant l'inflation des signaux, et une réinitialisation
-partielle pour la dérive conceptuelle ($\lambda = 0.7$ tous les 90~jours ou plus). La vérification
-d'intégrité par hachage SHA-256 du vocabulaire de tags garantit que la matrice apprise ne
-devient jamais incohérente après une mise à jour du vocabulaire. Combinés, ces éléments
-constituent un moteur de recommandation de qualité production adapté aux contraintes d'une
-place de marché touristique~: apprentissage en ligne, données rares pour les nouvelles
-annonces, et préférences contextuelles fortes liées aux saisons et types de voyage.
+La deuxième contribution est le moteur de recommandation Hybrid 
+LinUCB~: un bandit multi-bras contextuel dont le vecteur de contexte 
+croise les caractéristiques utilisateur et les tags des annonces, 
+avec une matrice d'apprentissage globale partagée entre toutes les 
+annonces, un pipeline de post-traitement séquentiel, un mécanisme 
+de récompenses delta empêchant l'inflation des signaux, et une 
+réinitialisation partielle progressive pour la gestion de la dérive 
+conceptuelle. La vérification d'intégrité du vocabulaire de tags au 
+démarrage garantit que les structures apprises ne deviennent jamais 
+incohérentes après une mise à jour. Ces éléments combinés constituent 
+un moteur de recommandation de qualité production adapté aux 
+contraintes d'une place de marché touristique~: apprentissage en 
+ligne, données rares pour les nouvelles annonces, et préférences 
+contextuelles fortes liées aux saisons et aux types de voyage.
 
-La troisième contribution est l'intégration système~: les deux sous-systèmes partagent une
-base de données PostgreSQL sans conflit grâce à une partition claire entre tables en lecture
-seule (les ~tables miroirs du frontend Prisma/Next.js) et tables gérées par l'IA
-(planificateur +  recommandation). La réindexation RAG incrémentale via des triggers SQL 
-maintient l'index vectoriel toujours à jour sans intervention manuelle. Le tracker JavaScript relie le comportement client aux
-mises à jour matricielles côté serveur de manière transparente, avec un mécanisme beacon
-garantissant la capture des événements même à la fermeture de page. APScheduler exécute
-tous les jobs de maintenance avec une planification timezone-aware (\texttt{Africa/Tunis})
-et une protection contre les exécutions chevauchantes (\texttt{max\_instances=1}).
+La troisième contribution est l'intégration système~: les deux 
+sous-systèmes partagent une base de données PostgreSQL sans conflit 
+grâce à une partition claire entre les tables en lecture seule et 
+les tables gérées par l'IA. La réindexation RAG incrémentale via 
+des triggers SQL maintient l'index vectoriel toujours à jour sans 
+intervention manuelle. Le tracker JavaScript relie le comportement 
+client aux mises à jour des structures d'apprentissage côté serveur, 
+avec un mécanisme garantissant la capture des événements même à la 
+fermeture de page. Le planificateur de tâches exécute tous les jobs 
+de maintenance avec une gestion rigoureuse des fuseaux horaires et 
+une protection contre les exécutions chevauchantes.
 
-La quatrième contribution est la qualité d'ingénierie~: la base de code démontre plusieurs
-pratiques d'ingénierie avancées. L'abstraction des fournisseurs LLM via une factory
-uniforme (\texttt{get\_llm()}) permet le remplacement transparent du modèle sous-jacent.
-La détection de changements par hachage MD5 dans le pipeline RAG évite les
-recalculs d'embeddings inutiles, réduisant le coût de réindexation de 60\% dans les
-scénarios de mise à jour par lots. Le cache matriciel en RAM avec verrou threading garantit
-à la fois la performance (scoring $< 1$\,ms) et la sécurité thread. La limitation de
-débit sur le traitement d'événements prévient la corruption des matrices par des scripts
-automatisés. La journalisation structurée à plusieurs niveaux de verbosité facilite le
-débogage et le monitoring en production.
+La quatrième contribution est la qualité d'ingénierie~: la base de 
+code démontre plusieurs pratiques avancées. L'abstraction des 
+fournisseurs LLM permet le remplacement transparent du modèle 
+sous-jacent. La détection de changements dans le pipeline RAG évite 
+les recalculs d'embeddings inutiles, réduisant significativement le 
+coût de réindexation dans les scénarios de mise à jour par lots. Le 
+cache matriciel en mémoire avec contrôle de concurrence garantit à 
+la fois la performance et la sécurité d'accès concurrent. La 
+limitation de débit sur le traitement d'événements prévient toute 
+corruption des structures apprises par des scripts automatisés. La 
+journalisation structurée à plusieurs niveaux de verbosité facilite 
+le débogage et le monitoring en production.
 
 
 % ────────────────────────────────────────────────────────────────
 \section*{Perspectives et travaux futurs}
 \addcontentsline{toc}{section}{Perspectives et travaux futurs}
 
-La première perspective concerne l'affinage d'un LLM local sur les données du tourisme
-tunisien. L'historique de conversations stocké dans la table \texttt{PlannerMessage}
-constitue un corpus d'entraînement naturel~: paires (requête utilisateur, plan généré validé)
-avec les métadonnées associées (outils utilisés, nombre d'itérations, score de validation).
-Un fine-tuning supervisé ou par renforcement (RLHF) sur ce corpus produirait un modèle
-domaine-spécifique comprenant la géographie locale (Houmt Souk, Midoun, Aghir, Er Riadh),
-la culture tunisienne (Eid, été, hivernage), et les niveaux de prix réalistes de Djerba,
-sans nécessiter d'appels API externes. Ce modèle local réduirait à la fois la latence
-(pas de round-trip réseau) et le coût opérationnel (pas de facture API par requête).
+La première perspective concerne l'affinage d'un LLM local sur les 
+données du tourisme tunisien. L'historique de conversations accumulé 
+constitue un corpus d'entraînement naturel de paires requête-plan 
+validé. Un fine-tuning sur ce corpus produirait un modèle 
+domaine-spécifique comprenant la géographie locale, la culture 
+tunisienne et les niveaux de prix réalistes de Djerba, sans 
+nécessiter d'appels API externes   réduisant à la fois la latence 
+et le coût opérationnel.
 
-La deuxième perspective est le remplacement du LinUCB linéaire par un bandit contextuel
-neuronal. Le modèle de récompense linéaire $r = \theta^\top \phi$ ne peut pas capturer les
-interactions non linéaires complexes (par exemple~: un spa est excellent pour les couples
-en soirée en hiver, mais peu adapté aux familles en après-midi en été). Des architectures
-comme Neural UCB ou les Generative Recommendations modélisent ces effets par un réseau de
-neurones dont la dernière couche linéaire conserve la propriété UCB. Le coût est une
-complexité accrue et des besoins en données d'entraînement plus élevés, mais le gain en
-précision de recommandation justifie cet investissement une fois que la plateforme dispose
-d'un historique d'interactions suffisant (typiquement $> 10\,000$ sessions).
+La deuxième perspective est le remplacement du modèle de recommandation 
+linéaire par un bandit contextuel neuronal. Le modèle actuel ne peut 
+pas capturer les interactions non linéaires complexes~: par exemple, 
+un spa est excellent pour les couples en soirée en hiver, mais peu 
+adapté aux familles en après-midi en été. Des architectures neuronales 
+conservant la propriété d'exploration UCB permettraient de modéliser 
+ces effets, au prix d'une complexité accrue et de besoins en données 
+plus élevés   un investissement justifié une fois que la plateforme 
+dispose d'un historique d'interactions suffisant.
 
-La troisième perspective est la construction d'une infrastructure d'expérimentation A/B.
-L'architecture actuelle ne permet pas de mesurer l'impact causal de changements
-algorithmiques sur les métriques métier réelles (taux de conversion, revenu par session,
-durée de session). Un framework d'expérimentation assigne les utilisateurs à des groupes
-traitement/contrôle, enregistre les métriques pour chaque groupe de manière indépendante,
-et applique des tests statistiques (test-t, test séquentiel) pour détecter les
-améliorations significatives. Ce framework permettrait de valider empiriquement les
-hypothèses d'amélioration (nouvel algorithme, nouveau prompt, nouveaux tags) avant tout
-déploiement en production.
+La troisième perspective est la construction d'une infrastructure 
+d'expérimentation A/B. L'architecture actuelle ne permet pas de 
+mesurer l'impact causal de changements algorithmiques sur les 
+métriques métier réelles (taux de conversion, revenu par session). 
+Un framework d'expérimentation assignerait les utilisateurs à des 
+groupes traitement/contrôle et appliquerait des tests statistiques 
+pour détecter les améliorations significatives, permettant de valider 
+empiriquement toute hypothèse d'amélioration avant déploiement en 
+production.
 
-La quatrième perspective est l'extension multi-régions. Le champ \texttt{locationZone}
-dans la table \texttt{BanditArmUCB} est déjà conçu pour supporter plusieurs zones
-géographiques~; l'extension du système à Hammamet, Sousse, Tunis et d'autres destinations
-tunisiennes ne nécessite que l'ajout de nouvelles données d'annonces et l'initialisation
-des bras correspondants. Le même algorithme d'apprentissage s'applique à chaque zone. La
-question ouverte est le choix entre des matrices $A$ et $b$ partagées globalement (transfert
-de connaissances entre destinations, mais risque de confusion) ou par zone (isolation
-complète, mais démarrage à froid pour les nouvelles destinations). Une approche hybride avec
-matrices par zone et régularisation croisée est envisageable.
+La quatrième perspective est l'extension multi-régions. L'architecture 
+actuelle est déjà conçue pour supporter plusieurs zones géographiques~; 
+l'extension à d'autres destinations tunisiennes (Hammamet, Sousse, 
+Tunis) ne nécessite que l'ajout des données correspondantes. La 
+question ouverte est le choix entre des structures d'apprentissage 
+partagées globalement   favorisant le transfert de connaissances 
+entre destinations   ou isolées par zone   garantissant une 
+spécialisation complète. Une approche hybride combinant les deux 
+niveaux est envisageable.
 
-La cinquième perspective est l'interface vocale et multimodale. L'intégration de la
-reconnaissance vocale arabe permettrait aux utilisateurs tunisiens préférant l'expression
-orale (notamment en darija tunisien) de planifier leur voyage sans saisie clavier. Côté
-multimodal, le pipeline RAG pourrait accepter des photos de lieux ou de plats téléversées
-par l'utilisateur comme requêtes visuelles, en utilisant des embeddings multimodaux (CLIP
-ou des modèles vision-langage récents) pour retrouver des annonces visuellement similaires.
-Ces extensions ouvriraient le système à une population d'utilisateurs plus large et
-offriraient une expérience de planification encore plus naturelle.
+La cinquième perspective est l'interface vocale et multimodale. 
+L'intégration de la reconnaissance vocale en arabe, notamment en 
+darija tunisien, permettrait aux utilisateurs préférant l'expression 
+orale de planifier leur voyage sans saisie clavier. Côté multimodal, 
+le pipeline RAG pourrait accepter des photos de lieux ou de plats 
+comme requêtes visuelles, en utilisant des embeddings multimodaux 
+pour retrouver des annonces visuellement similaires   ouvrant le 
+système à une population d'utilisateurs plus large et offrant une 
+expérience de planification encore plus naturelle.
 
 
 % ────────────────────────────────────────────────────────────────
@@ -115,7 +124,7 @@ touristiques intelligentes~: simultanément personnalisées, adaptatives, et anc
 données réelles. L'agent planificateur Guidni montre qu'un LLM équipé d'outils bien conçus
 et guidé par un prompt système rigoureux peut produire des plans de voyage cohérents,
 multilingues et culturellement appropriés pour un marché spécifique. Le moteur LinUCB montre
-qu'un algorithme relativement simple --- quelques centaines de lignes de Python NumPy ---
+qu'un algorithme relativement simple   quelques centaines de lignes de Python NumPy  
 peut apprendre des préférences contextuelles en temps réel et dépasser des baselines naïves
 avec seulement quelques centaines de sessions d'apprentissage. Le système Guidni est une
 preuve de concept opérationnelle démontrant que cette combinaison est non seulement

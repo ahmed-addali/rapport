@@ -3,7 +3,7 @@ skinparam backgroundColor #FEFEFE
 
 skinparam defaultFontName "Arial"
 
-title Schéma ER du sous-système agent planificateur
+title Schéma ER du sous-système agent planificateur (Cohérent)
 
 !define table entity
 
@@ -43,7 +43,6 @@ entity "GeneratedPlan" as GP {
   * id : UUID <<PK>>
   --
   * conversationId : UUID <<FK>>
-  * userId : UUID <<FK>>
   * planData : JSON
   * version : INT
   * isActive : BOOLEAN
@@ -53,12 +52,15 @@ entity "GeneratedPlan" as GP {
 entity "Activity" as Activity {
   * id : UUID <<PK>>
   --
+  * slug : VARCHAR
   * title : VARCHAR
   * category : VARCHAR
   * price : DECIMAL
   * region : VARCHAR
   * duration : INT
   * capacity : INT
+  * destinationId : UUID <<FK>>
+  * businessProfileId : UUID <<FK>>
 }
 
 entity "ActivityIntelligence" as AI {
@@ -69,10 +71,9 @@ entity "ActivityIntelligence" as AI {
   * updatedAt : TIMESTAMP
 }
 
-User ||--o{ PC : "1..*"
-PC ||--o{ PM : "1..*"
-PC ||--o{ GP : "1..*"
-Activity ||--|| AI : "1..1"
-
+User ||--o{ PC : "possède"
+PC ||--o{ PM : "contient"
+PC ||--o{ GP : "génère"
+Activity ||--|| AI : "enrichit"
 
 @enduml

@@ -8,7 +8,7 @@
 % ─────────────────────────────────────────────────────────────────────────────
 
 Le vocabulaire de tags \texttt{TAG\_VOCAB} est une liste fixe de \textbf{40~tags} en ordre
-alphabétique strict, définie dans \texttt{app/reco/context.py}. La position de chaque tag
+alphabétique strict, définie dans \texttt{app/reco/context.py}, comme le montre le tableau~\ref{tab:tagvocab}. La position de chaque tag
 dans cette liste est critique~: elle détermine son index dans le vecteur binaire $x_{tags}$
 et, par produit de Kronecker, ses lignes correspondantes dans la matrice $A$ ($360 \times 360$).
 Toute modification de ce vocabulaire après le premier déploiement (ajout, suppression, ou
@@ -97,7 +97,7 @@ Guidni d'un agent générique~: la détection automatique de langue, la désambi
 stricte des types d'entités, la règle des 4--5 activités par jour, les garde-fous de
 raisonnement contre les hallucinations, et le format de sortie structuré. Ces règles sont
 le résultat d'itérations d'ingénierie du prompt (\textit{prompt engineering}) visant à
-réduire les erreurs structurelles détectées par le nœud VALIDATE.
+réduire les erreurs structurelles détectées par le noeud VALIDATE.
 
 \textbf{Extrait 1 — Identité et détection de langue automatique~:}
 
@@ -294,7 +294,7 @@ model RecommendationEventUCB {
 % ─────────────────────────────────────────────────────────────────────────────
 
 Les captures d'écran suivantes illustrent les interfaces principales et les réponses API
-du système Guidni dans son état opérationnel. Elles documentent visuellement les composants
+du système Guidni dans son état opérationnel et correspondent aux figures~\ref{fig:A1_chat}, \ref{fig:A2_plan}, \ref{fig:A3_health}, \ref{fig:A4_rebuild}, \ref{fig:A5_docs} et \ref{fig:A6_scores}. Elles documentent visuellement les composants
 décrits tout au long du rapport~: l'interface conversationnelle de l'agent, le format de
 plan généré, les endpoints de diagnostic, et la réponse du moteur de recommandation avec
 les scores détaillés. Ces captures constituent une référence pour la validation fonctionnelle

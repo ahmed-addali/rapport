@@ -12,7 +12,6 @@ state THINK {
 }
 
 THINK --> EXECUTE_TOOL : tool_calls dans AIMessage
-THINK --> RESPOND : needs_more_info=True
 THINK --> VALIDATE : is_plan_ready=True et current_plan existe
 THINK --> RESPOND : [défaut / max_iterations]
 

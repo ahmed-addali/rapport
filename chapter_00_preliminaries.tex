@@ -16,6 +16,17 @@
     \end{tikzpicture}
 \end{titlepage}
 
+\begin{titlepage}
+    % Cette commande dit à LaTeX d'ignorer toutes les marges et de centrer sur la page physique
+    \begin{tikzpicture}[remember picture, overlay]
+        \node at (current page.center) {%
+            % Remplacement de .png par .pdf ici
+            \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{images/Page de Garde DNI 2024.pdf}%
+        };
+    \end{tikzpicture}
+\end{titlepage}
+
+
 
 % ────────────────────────────────────────────────────────────────────────────
 % PAGE 2 — DÉDICACE
@@ -54,7 +65,7 @@ constants ont toujours été pour moi les plus précieux.
 Enfin, je dédie ce travail à moi-même, en reconnaissance de mon engagement, de ma détermination et de ma persévérance.
 
 \setlength{\parskip}{12pt}
-Je vous adresse mes vœux les plus chaleureux pour un avenir radieux, rempli de bonheur et de succès.
+Je vous adresse mes voeux les plus chaleureux pour un avenir radieux, rempli de bonheur et de succès.
 
 }
 \end{large}
@@ -78,11 +89,11 @@ Je commence par exprimer ma profonde gratitude et mes sincères remerciements à
 Au terme de ce travail, je tiens à adresser mes remerciements les plus sincères à :
 
 \begin{flushleft}
-\textbf{Madame Nadra Benromdhan}, pour sa considération, sa patience et sa bienveillance tout au long de la réalisation de ce projet. Ses encouragements et ses conseils lucides et pertinents ont été d'une grande valeur pour moi.
+\textbf{Madame Nadra Ben romdhane}, pour sa considération, sa patience et sa bienveillance tout au long de la réalisation de ce projet. Ses encouragements et ses conseils lucides et pertinents ont été d'une grande valeur pour moi.
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{M. Nizar Tenzekhti}, le Directeur Général de Tenovate Services, pour son accueil chaleureux et la confiance qu'il m'a accordée dès mon arrivée dans l'entreprise. Sa collaboration et son soutien ont été précieux tout au long de cette expérience.
+\textbf{M. Nizar Tenzekhti}, pour son accueil chaleureux et la confiance qu'il m'a accordée dès mon arrivée dans l'entreprise. Sa collaboration et son soutien ont été précieux tout au long de cette expérience.
 \end{flushleft}
 
 Enfin, je tiens également à exprimer mes plus sincères remerciements aux membres du jury pour avoir accepté d'évaluer ce modeste travail. Leur expertise et leurs commentaires constructifs ont contribué à améliorer ce projet.
@@ -102,13 +113,13 @@ de planification intelligents capables de combiner la génération automatique
 d'itinéraires multi-journées avec des recommandations personnalisées en temps
 réel. Les plateformes existantes se limitent soit à des moteurs de recherche
 par filtres statiques, soit à des systèmes de recommandation collaboratifs qui
-ignorent le contexte immédiat du voyageur --- son budget, ses contraintes
+ignorent le contexte immédiat du voyageur   son budget, ses contraintes
 temporelles, sa localisation et ses préférences linguistiques.
 
 Ce travail propose \textbf{Guidni}, une plateforme de planification de voyage
 articulée autour de deux sous-systèmes complémentaires. Le premier est un
 \textbf{agent planificateur conversationnel} construit sur une machine à états
-LangGraph comportant quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
+LangGraph comportant quatre noeuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
 et disposant des outils appelables par le LLM, couvrant la gestion
 du profil utilisateur, la recherche d'activités, les données météorologiques
 via Open-Meteo, la géolocalisation par Nominatim et Haversine, ainsi qu'un
@@ -117,9 +128,7 @@ embeddings denses BAAI/bge-m3 et un ré-ordonnancement par cross-encoder
 BAAI/bge-reranker-v2-m3. Le second sous-système est un \textbf{moteur de
 recommandation hybride LinUCB} exploitant un vecteur de caractéristiques
 construit par produit de Kronecker ($\phi = x_{\text{user}} \otimes
-x_{\text{tags}}$, dimension~360), un pipeline de classement en dix étapes
-intégrant des filtres de diversité et d'exploration, et un apprentissage en
-ligne à partir de huit signaux comportementaux collectés en temps réel.
+x_{\text{tags}}$, dimension~360).
 
 Les résultats obtenus attestent d'un planificateur conversationnel de bout en
 bout opérant en trois langues, d'une latence de scoring inférieure à 100\,ms
@@ -146,7 +155,7 @@ Tourists visiting the island of Djerba lack intelligent planning tools that
 seamlessly combine multi-day itinerary generation with real-time personalised
 recommendations. Existing platforms are limited to either static filter-based
 search engines or collaborative recommendation systems that disregard the
-traveller's immediate context --- budget constraints, temporal availability,
+traveller's immediate context   budget constraints, temporal availability,
 geolocation and language preferences.
 
 This work introduces \textbf{Guidni}, a travel planning platform built
@@ -214,10 +223,10 @@ Contextual Bandit, Personalised Recommendation.
 % Chapitre 4 — Implémentation de l'agent planificateur
 %   4.1 Introduction ...................................................... pp
 %   4.2 Machine à états LangGraph ......................................... pp
-%   4.3 Nœud THINK — raisonnement du LLM .................................. pp
+%   4.3 Noeud THINK — raisonnement du LLM .................................. pp
 %   4.4 Les outils LLM-callable ........................................ pp
-%   4.5 Nœud VALIDATE — validation des sorties ............................ pp
-%   4.6 Nœud RESPOND — génération de la réponse ........................... pp
+%   4.5 Noeud VALIDATE — validation des sorties ............................ pp
+%   4.6 Noeud RESPOND — génération de la réponse ........................... pp
 %   4.7 Pipeline RAG multilingue .......................................... pp
 %   4.8 Système de mémoire conversationnelle ............................... pp
 %   4.9 Pipeline rapide et abstraction LLM ................................. pp
@@ -291,7 +300,6 @@ Contextual Bandit, Personalised Recommendation.
     FK          & Foreign Key (Clé étrangère) \\[3pt]
     FR          & Français \\[3pt]
     HTTP        & HyperText Transfer Protocol \\[3pt]
-    IPS         & Inverse Propensity Scoring \\[3pt]
     JSON        & JavaScript Object Notation \\[3pt]
     LLM         & Large Language Model (Grand modèle de langage) \\[3pt]
     MAB         & Multi-Armed Bandit (Bandit multi-bras) \\[3pt]

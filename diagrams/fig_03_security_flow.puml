@@ -1,6 +1,5 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-
 skinparam defaultFontName "Arial"
 
 title Flux de sécurité et de validation dans l'endpoint /chat
@@ -8,7 +7,9 @@ title Flux de sécurité et de validation dans l'endpoint /chat
 actor "Client" as Client
 participant "FastAPI POST /chat" as FastAPI
 participant "PostgreSQL User table" as DB
-participant "run_agent()" as Agent
+
+' تم إصلاح الخطأ هنا: تعويض اسم الدالة باسم المكون الفعلي
+participant "Agent LangGraph" as Agent
 participant "LLM Provider" as LLM
 
 Client -> FastAPI : POST /chat {user_id, message, model?}
@@ -22,10 +23,10 @@ else Utilisateur trouvé
 
   FastAPI -> FastAPI : parse model_id si fourni ("groq/llama-3.3-70b")
 
+  ' run_agent() هي الرسالة التي تُرسل للمكون Agent
   FastAPI -> Agent : run_agent(state)
 
   Agent -> LLM : System prompt + contexte + tool results
-
 
   LLM --> Agent : Réponse AIMessage
   Agent --> FastAPI : PlannerResponse

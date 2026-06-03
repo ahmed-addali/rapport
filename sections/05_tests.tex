@@ -23,14 +23,14 @@ métriques quantitatives (latence, précision, récompense cumulée) et des anal
 % ────────────────────────────────────────────────────────────────
 
 L'évaluation d'un système d'intelligence artificielle requiert plus que la simple vérification
-de son exécution --- elle nécessite la validation de la correction mathématique au niveau des
+de son exécution   elle nécessite la validation de la correction mathématique au niveau des
 composants, la justesse fonctionnelle au niveau de l'intégration, et la qualité comportementale
 au niveau des scénarios. Chaque niveau capture une classe distincte de défauts qui échapperait
 aux autres. Cette stratégie à trois niveaux a été choisie car les deux sous-systèmes
 présentent des modes de défaillance fondamentalement différents (erreurs mathématiques
 pour le LinUCB contre erreurs de raisonnement pour l'agent LLM).
 
-La pyramide de tests adoptée comprend trois niveaux. Les tests unitaires vérifient la
+La pyramide de tests adoptée comprend trois niveaux, comme le résume le tableau~\ref{tab:test_coverage}. Les tests unitaires vérifient la
 correction mathématique des composants individuels~: le module d'ingénierie des caractéristiques (forme du vecteur
 $\phi$, résilience aux NaN/inf, encodage cyclique), le moteur de scoring LinUCB (scoring UCB,
 règle de mise à jour, calcul de récompenses, santé matricielle), et le pipeline de classement
@@ -91,7 +91,7 @@ Six scénarios de test ont été définis pour couvrir les cas d'usage principau
 planificateur. Chaque scénario spécifie un contexte utilisateur (type de voyage, durée,
 budget), des contraintes spécifiques, le fournisseur LLM utilisé, et le résultat attendu.
 Les scénarios couvrent la gamme complète des fonctionnalités~: génération simple, planification
-longue, modification de plan existant, multilinguisme, et gestion des requêtes incomplètes.
+longue, modification de plan existant, multilinguisme, et gestion des requêtes incomplètes, comme le montre le tableau~\ref{tab:test_scenarios}.
 
 Les scénarios SC-04 et SC-05 testent spécifiquement la capacité multilingue de l'agent~:
 le prompt système instruite l'agent de détecter automatiquement la langue de l'utilisateur et
@@ -132,17 +132,17 @@ scénarios standard. Le nombre d'itérations varie selon la complexité~: les re
 (SC-01) se résolvent en 3 à 5~itérations, tandis que les plans longs de 7~jours (SC-02)
 nécessitent 6 à 9~itérations pour collecter suffisamment de données via les outils de
 recherche. Le seuil de sécurité de 15~itérations (force-stop) n'a jamais été déclenché dans
-les scénarios de test normaux, confirmant que ce seuil est approprié.
+les scénarios de test normaux, confirmant que ce seuil est approprié, comme l'illustrent la figure~\ref{fig:thinking_steps} et le tableau~\ref{tab:agent_results}.
 
 La latence varie significativement selon le fournisseur. Groq est le plus rapide (8 à 12~s
 pour les plans simples) grâce à son infrastructure d'inférence optimisée. Gemini offre une
 latence modérée (15 à 22~s) avec une qualité de raisonnement élevée. Ollama est le plus
 lent (30 à 50~s) mais fonctionne entièrement hors ligne, ce qui est essentiel pour le
 développement et les environnements sans connectivité cloud. Tous les fournisseurs ont
-produit des plans structurellement valides passant la validation du nœud VALIDATE.
+produit des plans structurellement valides passant la validation du noeud VALIDATE.
 
 L'efficacité de la boucle de validation a été démontrée empiriquement~: dans 3~exécutions
-sur 20, le nœud VALIDATE a détecté des doublons d'identifiants d'activités, et l'agent a
+sur 20, le noeud VALIDATE a détecté des doublons d'identifiants d'activités, et l'agent a
 corrigé le plan avec succès lors du réessai. Sans validation, environ 15\% des plans auraient
 contenu des erreurs structurelles livrées à l'utilisateur final.
 
@@ -190,7 +190,7 @@ La méthodologie d'évaluation repose sur 20~requêtes de test formulées en fra
 et arabe à travers les quatre types d'entités (activités, hébergements, restaurants,
 attractions). Pour chaque requête, un évaluateur humain a jugé les 5~premiers résultats
 comme pertinents ou non pertinents. La métrique Precision@5 est calculée comme le rapport
-du nombre de résultats pertinents dans le top-5 sur 5.
+du nombre de résultats pertinents dans le top-5 sur 5, comme le montre le tableau~\ref{tab:rag_precision}.
 
 Les requêtes couvrent un spectre de spécificité allant du concret (\og{}villa avec piscine
 à Midoun\fg{}) à l'abstrait (\og{}quelque chose de romantique pour un anniversaire\fg{}) en
@@ -279,7 +279,7 @@ investit dans l'exploration (bonus UCB élevé pour les bras sous-exposés). À 
 session~80, le LinUCB dépasse la baseline de popularité car les coefficients $\theta$
 appris reflètent les véritables préférences contextuelles. À la session~500, le LinUCB
 atteint une récompense cumulée 18\% supérieure à la baseline de popularité et 45\%
-supérieure à la baseline aléatoire.
+supérieure à la baseline aléatoire, comme le montre la figure~\ref{fig:cumulative_reward}.
 
 L'efficacité du bonus de sous-exposition a été confirmée~: les annonces avec moins de
 50~impressions qui n'étaient jamais montrées par la baseline de popularité ont reçu de
@@ -300,7 +300,7 @@ confirmant la valeur de l'exploration structurée par rapport à l'exploitation 
 Les mesures de latence du scoring LinUCB ont été effectuées en fonction du nombre de bras
 candidats pour évaluer la scalabilité du système. Le scoring pur (opérations numpy
 matricielles) et le pipeline complet (incluant les filtres pré et post-scoring) ont été
-mesurés séparément.
+mesurés séparément, comme le synthétise le tableau~\ref{tab:scoring_latency}.
 
 Le cache des bras de 30~secondes garantit que la requête de récupération des bras (la requête
 de base de données complexe avec JOIN multi-tables) s'exécute au maximum 2~fois par minute
@@ -344,7 +344,7 @@ fenêtre de 30~secondes.
 % ────────────────────────────────────────────────────────────────
 
 Les performances globales du système ont été mesurées sur les principaux endpoints en
-conditions de charge réalistes. L'endpoint \texttt{POST /chat} présente la latence la
+conditions de charge réalistes, comme le synthétise le tableau~\ref{tab:system_perf}. L'endpoint \texttt{POST /chat} présente la latence la
 plus élevée car il implique plusieurs appels LLM séquentiels, l'exécution d'outils, et
 potentiellement une boucle de validation. Les endpoints de recommandation sont
 significativement plus rapides car ils n'impliquent que des opérations numpy en RAM.
@@ -354,7 +354,7 @@ pipeline de recommandation (p95 $< 100$\,ms) et le traitement d'événements
 (p95 $< 50$\,ms) respectent les cibles de latence pour une expérience utilisateur
 interactive. L'endpoint de conversation accepte une latence plus élevée (15 à 30~s)
 car il correspond à une interaction de planification délibérée où l'utilisateur attend
-une réponse réfléchie.
+une réponse réfléchie, comme le montre la figure~\ref{fig:health_endpoint}.
 
 \begin{table}[H]
     \centering
@@ -394,7 +394,7 @@ principales directions pour les travaux futurs.
 \textbf{Risque d'hallucination LLM.} Malgré le pipeline RAG et l'instruction explicite
 \og{}ne jamais inventer de données\fg{} dans le prompt système, des cas limites existent
 où le LLM produit des détails plausibles mais incorrects (prix, horaires d'ouverture).
-L'atténuation actuelle repose sur le nœud VALIDATE pour les erreurs structurelles
+L'atténuation actuelle repose sur le noeud VALIDATE pour les erreurs structurelles
 (doublons, dépassement de créneaux), mais la vérification factuelle des données textuelles
 n'est pas implémentée. Un travail futur devrait ajouter des contrôles d'ancrage factuel
 comparant les prix et horaires mentionnés dans la réponse avec les données de la base.

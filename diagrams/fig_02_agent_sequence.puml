@@ -5,8 +5,8 @@ skinparam defaultFontName "Arial"
 actor "Utilisateur" as User
 participant "Frontend Next.js" as Frontend
 participant "main.py FastAPI" as FastAPI
-participant "load_context()" as Context
-participant "run_agent() LangGraph" as Agent
+' تم حذف load_context كخط حياة وتغيير اسم الـ Agent ليكون مكوناً (Component)
+participant "Agent LangGraph" as Agent
 participant "THINK Node" as Think
 participant "LLM Provider" as LLM
 participant "EXECUTE_TOOL Node" as Exec
@@ -16,13 +16,16 @@ participant "PostgreSQL" as DB
 
 User -> Frontend : Message de planification
 Frontend -> FastAPI : POST /chat
-FastAPI -> Context : load_context(user_id, conv_id)
-Context -> DB : SELECT last 8 messages
-DB --> Context : messages[]
-Context -> DB : SELECT active plan
-DB --> Context : current_plan
-Context --> FastAPI : AgentState initialisé
 
+' load_context() أصبحت دالة داخل الـ FastAPI (Self-Call)
+FastAPI -> FastAPI : load_context(user_id, conv_id)
+FastAPI -> DB : SELECT last 8 messages
+DB --> FastAPI : messages[]
+FastAPI -> DB : SELECT active plan
+DB --> FastAPI : current_plan
+' الـ FastAPI أصبح يملك الـ AgentState الآن
+
+' run_agent() أصبحت رسالة (Message) متجهة نحو الكائن Agent
 FastAPI -> Agent : run_agent(state)
 Agent -> Think : _should_continue → "think"
 
@@ -32,7 +35,7 @@ LLM --> Think : AIMessage(tool_calls=[...])
 
 Think -> Agent : _should_continue → "execute_tool"
 Agent -> Exec : Exécute outils
-Exec -> DB : search_activities, get_weather, etc.
+Exec -> DB : search_activities, etc.
 DB --> Exec : résultats
 Exec -> Exec : Crée ToolMessages
 Exec -> Agent : _after_tool_execution → "think"

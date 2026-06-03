@@ -1,69 +1,94 @@
-@startuml
-skinparam backgroundColor #FFFFFF
-skinparam defaultFontName "Arial"
-skinparam componentStyle rectangle
-skinparam roundcorner 8
-skinparam linetype ortho
+@startuml Guidni_Deployment_Diagram
 
-title Architecture de Déploiement et Topologie Réseau (Production)
+skinparam shadow depth 1
+skinparam backgroundColor white
+skinparam componentStyle uml2
 
-actor "Touriste / Voyageur" as User
+skinparam node {
+    BackgroundColor #F5F5F5
+    BorderColor #333333
+}
 
-node "Serveur VPS (Ubuntu 24.04 LTS)" as VPS #F5F7F8 {
+skinparam cloud {
+    BackgroundColor #E8F4F8
+    BorderColor #2B7A9B
+}
 
-    component "Proxy Inverse\n[Nginx]" as Nginx #E8F5E9-D0E9D4 {
-        portin "Port 80\n(HTTP)" as P80
-        portin "Port 443\n(HTTPS)" as P443
+skinparam database {
+    BackgroundColor #EFEFEF
+    BorderColor #333333
+}
+
+title __Diagramme de Déploiement Physique - Plateforme Guidni__\n
+
+client . [Navigateur Web / Mobile] : "Utilisateurs (Voyageurs)"
+
+cloud "Internet Public" {
+    [HTTPS (Port 443)] as Internet
+}
+
+node "Serveur Privé Virtuel (VPS) d'Hébergement" <<Ubuntu LTS>> {
+    
+    node "Serveur Web Hôte" {
+        [Nginx (Reverse Proxy & SSL)] as nginx #D4EDDA
     }
-
-    rectangle "Réseau Docker Privé (Bridge: guidni-network)" #E3F2FD {
+    
+    node "Réseau Virtuel Interne Docker" <<bridge: guidni-network>> #FCF8E3 {
         
-        component "Couche Présentation\n[Next.js App]" as NextApp #FFF9C4-FFF59D {
-            portin "Port 3000" as P3000
+        node "Conteneur Presentation" <<Next.js (React 19)>> {
+            [Application Web (guidni-next)] as nextapp #D1ECF1
         }
         
-        component "Agent Planificateur AI\n[FastAPI / LangGraph]" as Planner #E3F2FD-BBDEFB {
-            portin "Port 8000" as P8000
+        node "Conteneur Agent Planificateur" <<FastAPI (Asynchrone)>> {
+            [Planner Agent (guidni-planner)] as planner #D1ECF1
         }
         
-        component "Moteur de Recommandation\n[FastAPI / LinUCB / NumPy]" as Reco #ECEFF1-CFD8DC {
-            portin "Port 8001" as P8001
+        node "Conteneur Moteur de Recommandation" <<FastAPI>> {
+            [Brain Engine (guidni-brain)] as brain #D1ECF1
         }
         
-        database "Persistance Relationnelle\n[PostgreSQL 16]" as Postgres #FFE082-FFD54F {
-            portin "Port 5432\n(Isolé)" as P5432
+        node "Conteneur Base Vectorielle" <<Qdrant (RAG Engine)>> {
+            database "Index Vectoriels (Qdrant)" as qdrant_db #E8F4F8
+        }
+        
+        node "Conteneur Base Relationnelle" <<PostgreSQL>> {
+            database "guidni_db (Postgres)" as db
+        }
+        
+        node "Volumes Persistants" {
+            storage "postgres_data" as vol_pg #E2E3E5
+            storage "qdrant_data" as vol_qd #E2E3E5
         }
     }
 }
 
-cloud "Autorité de Certification" as CA #ECEFF1 {
-    component "Let's Encrypt\n(SSL/TLS Automatisé)" as LE
+cloud "Fournisseurs Cloud AI Externes" <<Services Managés>> #F8D7DA {
+    [API LLM (Groq / Anthropic / Gemini)] as cloud_ai
 }
 
-cloud "Inférence LLM & APIs Cloud" as CloudAPIs #ECEFF1 {
-    component "API Gateway Externe\n(Groq, Anthropic, Gemini)" as LLMs
-}
+' ---- Liaisons ----
 
-' --- Flux utilisateur ---
-User --> P80 : "Accès HTTP"
-User --> P443 : "Requêtes HTTPS\nChiffrement SSL"
+[Navigateur Web / Mobile] --> Internet : " Requêtes HTTP/HTTPS"
+Internet --> nginx : " Traversée du Firewall"
+nginx --> nextapp : " proxy_pass (Port 3000)"
 
-' --- Certificats ACME ---
-Nginx <--> LE : "Renouvellement ACME"
+' Communications Applicatives Inter-conteneurs
+nextapp --> planner : " REST API (Port 8000)"
+nextapp --> brain : " REST API (Port 8001)"
 
-' --- Routage Nginx ---
-Nginx --> P3000 : "Proxy Pass (Routage trafic)"
+' Accès Vectoriel Qdrant par le Planner
+planner --> qdrant_db : " Requêtes de Similarité\n(Port 6333)"
 
-' --- Next.js app communication ---
-NextApp --> P8000 : "Planification conversationnelle"
-NextApp --> P8001 : "Requêtes de recommandation"
-NextApp --> P5432 : "Prisma ORM (CRUD)"
+' Accès SQL PostgreSQL
+nextapp --> db : " Prisma Client (Port 5432)"
+planner --> db : " asyncpg (Port 5432)"
+brain --> db : " psycopg2 (Port 5432)"
 
-' --- AI Planner & Recommender db connection ---
-Planner --> P5432 : "SQLAlchemy (Async)"
-Reco --> P5432 : "Connexions Synchrone"
+' Association de persistance volumes
+db -- vol_pg
+qdrant_db -- vol_qd
 
-' --- External services connectivity ---
-Planner --> LLMs : "Appels API LLM (HTTPS Tunnel)"
+' Appel Cloud LLM Externe
+planner --> cloud_ai : " Inférence HTTPS (Clé API)"
 
 @enduml

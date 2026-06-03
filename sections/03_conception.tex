@@ -12,39 +12,39 @@ le pipeline RAG qui ancre les réponses dans des données factuelles vérifiées
 gestion de la mémoire conversationnelle qui assure la cohérence multi-tour.
 
 La présentation suit le flux d'exécution naturel d'une requête utilisateur~: le message entre
-dans le graphe via le nœud THINK, les outils sont exécutés par le nœud EXECUTE\_TOOL, le plan
-est validé par le nœud VALIDATE, et la réponse finale est formatée et persistée par le nœud
+dans le graphe via le noeud THINK, les outils sont exécutés par le noeud EXECUTE\_TOOL, le plan
+est validé par le noeud VALIDATE, et la réponse finale est formatée et persistée par le noeud
 RESPOND. Pour chaque composant, les choix d'implémentation sont justifiés par les contraintes
 du domaine touristique et les spécificités du marché de Djerba.
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Le graphe LangGraph~: machine à états}
+\section{graphe LangGraph~: machine à états}
 % ────────────────────────────────────────────────────────────────
 
-\subsection{L'AgentState TypedDict}
+\subsection{AgentState TypedDict}
 
 Le \texttt{TypedDict} Python est une structure de dictionnaire avec des clés et des types
 déclarés statiquement, offrant les bénéfices d'un objet fortement typé tout en restant
 compatible avec l'écosystème de sérialisation JSON. LangGraph utilise ce patron pour définir
-l'état qui circule entre tous les nœuds du graphe~: chaque nœud reçoit l'état courant, effectue
+l'état qui circule entre tous les noeuds du graphe~: chaque noeud reçoit l'état courant, effectue
 son traitement, et retourne un dictionnaire partiel contenant uniquement les champs modifiés.
 Le framework fusionne automatiquement ces mises à jour partielles dans l'état global.
 
 Les champs de l'\texttt{AgentState} sont divisés en deux catégories de comportement. Les champs
 \textbf{accumulateurs} utilisent l'annotation \texttt{Annotated[list, operator.add]}, ce qui
-signifie que chaque nœud \emph{ajoute} ses éléments à la liste existante plutôt que de la
+signifie que chaque noeud \emph{ajoute} ses éléments à la liste existante plutôt que de la
 remplacer. Deux champs utilisent ce mécanisme~: \texttt{messages} (la liste complète des messages
 LangChain) et \texttt{thinking\_steps} (les étapes de réflexion affichées dans l'interface
 utilisateur). Les champs \textbf{à écrasement} (tous les autres) sont remplacés par la dernière
-valeur fournie par un nœud, selon le comportement par défaut de LangGraph.
+valeur fournie par un noeud, selon le comportement par défaut de LangGraph.
 
 Les champs sont regroupés en cinq familles fonctionnelles~: les champs d'identité
 conversationnelle, qui identifient le contexte de la requête~; les champs de données peuplés
 par les outils, qui stockent les résultats intermédiaires collectés au fil du raisonnement~;
 les drapeaux de contrôle de flux, qui orientent le routage conditionnel vers la validation,
 la réponse ou la poursuite du raisonnement~; les champs de sélection du fournisseur LLM, qui
-permettent le choix du modèle par requête~; et les champs de sortie, définis par le nœud
+permettent le choix du modèle par requête~; et les champs de sortie, définis par le noeud
 RESPOND, qui contiennent la réponse finale et le plan structuré. Le tableau~\ref{tab:agent_state}
 documente chaque champ individuellement.
 
@@ -87,26 +87,27 @@ documente chaque champ individuellement.
 
 \subsection{Fonctions de routage conditionnel}
 
-La fonction de routage post-THINK détermine le nœud suivant après la phase de réflexion. Elle
+La fonction de routage post-THINK détermine le noeud suivant après la phase de réflexion, comme le résume la figure~\ref{fig:langgraph_routing}. Elle
 évalue quatre conditions dans un ordre de priorité strict. Premièrement, si le compteur
 d'itérations atteint le seuil maximal, le routage force la réponse pour empêcher les boucles
 infinies~: sans ce garde-fou, un outil défaillant ou un LLM confus pourrait boucler
 indéfiniment, consommant des tokens et des crédits API. Deuxièmement, si le LLM a émis un
-appel d'outil, le routage envoie vers le nœud d'exécution pour traiter la requête instrumentale~:
+appel d'outil, le routage envoie vers le noeud d'exécution pour traiter la requête instrumentale~:
 cela inclut le cas où l'agent souhaite interroger l'utilisateur via l'outil \texttt{ask\_user},
 qui est traité comme n'importe quel autre outil. Troisièmement, si un plan structuré est prêt
-pour validation, le routage envoie vers le nœud de validation pour vérifier la cohérence du plan.
-Quatrièmement, par défaut (réponse textuelle), le routage envoie vers le nœud de réponse.
+pour validation, le routage envoie vers le noeud de validation pour vérifier la cohérence du plan.
+Quatrièmement, par défaut (réponse textuelle), le routage envoie vers le noeud de réponse.
 
-La fonction de routage post-EXECUTE\_TOOL détermine le nœud suivant après l'exécution des
-outils. Le routage renvoie vers le nœud de réflexion pour que le LLM réévalue la situation
+La fonction de routage post-EXECUTE\_TOOL détermine le noeud suivant après l'exécution des
+outils. Le routage renvoie vers le noeud de réflexion pour que le LLM réévalue la situation
 avec les résultats d'outils reçus, sauf si le compteur d'itérations est épuisé, auquel cas
-le routage force la réponse.
+le routage force la réponse. Si l'agent a besoin de poser une question (needs\_more\_info),
+le routage l'envoie également vers le noeud de réponse.
 
-La fonction de routage post-VALIDATE détermine le nœud suivant après la validation. Si le
+La fonction de routage post-VALIDATE détermine le noeud suivant après la validation. Si le
 plan a été invalidé et qu'il reste des itérations disponibles, le routage renvoie vers le
-nœud de réflexion pour permettre au LLM de corriger les erreurs identifiées. Sinon, le routage
-envoie vers le nœud de réponse (soit la validation a réussi, soit les itérations sont épuisées).
+noeud de réflexion pour permettre au LLM de corriger les erreurs identifiées. Sinon, le routage
+envoie vers le noeud de réponse (soit la validation a réussi, soit les itérations sont épuisées).
 
 \begin{figure}[H]
     \centering
@@ -117,7 +118,7 @@ envoie vers le nœud de réponse (soit la validation a réussi, soit les itérat
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Le nœud THINK}
+\section{noeud THINK}
 % ────────────────────────────────────────────────────────────────
 
 \subsection{Construction du prompt système}
@@ -148,7 +149,7 @@ attraction à visiter dans la journée.
 
 \subsection{Injection du contexte dynamique}
 
-Avant chaque appel au LLM, le nœud THINK construit un message de contexte à partir de l'état
+Avant chaque appel au LLM, le noeud THINK construit un message de contexte à partir de l'état
 courant. Si \texttt{user\_profile} existe, un résumé du profil est ajouté. Si
 \texttt{current\_plan} existe, l'information \og{}version X avec N jours\fg{} est ajoutée. Si
 \texttt{weather} existe, les prévisions météorologiques sont incluses. Ce contexte est injecté 
@@ -165,7 +166,7 @@ déjà d'un contexte suffisant, réduisant la latence et la consommation de toke
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Les outils LLM}
+\section{outils LLM}
 % ────────────────────────────────────────────────────────────────
 
 \subsection{Vue d'ensemble et registre des outils}
@@ -174,7 +175,7 @@ La planification de voyage exige l'accès à sept domaines distincts de données
 l'historique de l'utilisateur, le catalogue d'activités, les conditions météorologiques, la
 géolocalisation, les hébergements, la restauration, et la construction structurée de plans.
 Aucun outil unique ne peut couvrir l'ensemble de ces domaines, ce qui justifie la nécessité
-des outils spécialisés. Le regroupement par domaine fonctionnel garantit que chaque
+des outils spécialisés, comme le récapitule le tableau~\ref{tab:tools_catalog}. Le regroupement par domaine fonctionnel garantit que chaque
 outil reste focalisé sur une responsabilité unique, facilitant le test et la maintenance
 indépendants.
 
@@ -186,7 +187,7 @@ ensuite ces schémas au LLM pour que le modèle puisse émettre des appels d'out
 
 Le registre central défini dans \texttt{registry.py} exporte la fonction
 \texttt{get\_all\_tools()} qui retourne les outils dans un ordre fixe. Lors de l'exécution,
-le nœud EXECUTE\_TOOL construit un dictionnaire de correspondance
+le noeud EXECUTE\_TOOL construit un dictionnaire de correspondance
 \texttt{\{tool.name: tool\}} pour dispatcher les appels par nom. 
 
 La gestion des erreurs suit un patron uniforme~: chaque outil encapsule ses requêtes de base
@@ -252,9 +253,9 @@ adaptation empêche le sur-échantillonnage pour les voyages courts et le sous-�
 pour les voyages longs.
 
 Le résultat retourné contient un champ \texttt{WARNING} proéminent~: \og{}stays are
-ACCOMMODATION --- suggest as overnight stay ONLY, NEVER place them as daytime activities\fg{}.
+ACCOMMODATION   suggest as overnight stay ONLY, NEVER place them as daytime activities\fg{}.
 Ce garde-fou textuel injecté dans la réponse de l'outil empêche le LLM de commettre l'erreur
-de placer un hôtel dans un créneau d'activité diurne --- un problème récurrent lors des phases
+de placer un hôtel dans un créneau d'activité diurne   un problème récurrent lors des phases
 de test qui corrompait les plans générés.
 
 
@@ -263,18 +264,18 @@ de test qui corrompait les plans générés.
 % ============================================================================
 
 % ────────────────────────────────────────────────────────────────
-\section{Le nœud EXECUTE\_TOOL}
+\section{noeud EXECUTE\_TOOL}
 % ────────────────────────────────────────────────────────────────
 
-Le nœud d'exécution des outils constitue le pont entre les décisions du LLM et les systèmes
+Le noeud d'exécution des outils constitue le pont entre les décisions du LLM et les systèmes
 de données. Il récupère l'ensemble des appels d'outils demandés par le LLM dans le dernier
 message, dispatche chacun vers la fonction correspondante du registre d'outils, et encapsule
 chaque résultat dans un message que le LLM peut exploiter lors de l'étape de raisonnement
-suivante.
+suivante, comme le montre la figure~\ref{fig:tool_exec_flow}.
 
 Certains résultats d'outils déclenchent des transitions d'état spécifiques. Lorsqu'une
-structure de plan est validée avec succès, le routage vers le nœud de validation est activé.
-Lorsqu'une demande de clarification est formulée, le routage direct vers le nœud de réponse
+structure de plan est validée avec succès, le routage vers le noeud de validation est activé.
+Lorsqu'une demande de clarification est formulée, le routage direct vers le noeud de réponse
 est activé. Dans le cas de la recherche
 multi-types, les quatre sous-listes thématiques sont aplaties en une liste unique.
 
@@ -292,7 +293,7 @@ plutôt que de provoquer un arrêt brutal du graphe.
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Le nœud VALIDATE}
+\section{noeud VALIDATE}
 % ────────────────────────────────────────────────────────────────
 
 Le module de validation implémente les garde-fous qui empêchent la livraison de plans
@@ -304,7 +305,7 @@ d'activité ne doit apparaître plus d'une fois dans l'ensemble du plan (détect
 Si des erreurs de validation sont détectées, un message d'erreur décrivant les problèmes
 spécifiques identifiés est injecté comme instruction système de haute priorité, provoquant
 la remise à zéro de l'indicateur de plan prêt. La fonction de routage post-validation renvoie
-alors l'agent au nœud de réflexion, où le LLM lit le message d'erreur et corrige le plan lors
+alors l'agent au noeud de réflexion, où le LLM lit le message d'erreur et corrige le plan lors
 de son prochain appel d'outil.
 
 Le choix d'injecter les erreurs comme message système plutôt que comme résultat d'outil est
@@ -315,10 +316,10 @@ prend les erreurs de validation au sérieux et les corrige effectivement.
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Le nœud RESPOND et la persistance}
+\section{noeud RESPOND et la persistance}
 % ────────────────────────────────────────────────────────────────
 
-Le nœud de réponse détermine le type de réponse à partir de quatre états mutuellement
+Le noeud de réponse détermine le type de réponse à partir de quatre états mutuellement
 exclusifs~: une question de clarification en attente, une modification de plan existant, un
 nouveau plan complet, ou une réponse conversationnelle simple.
 
@@ -332,7 +333,7 @@ des étapes de réflexion à partir de l'historique de conversation sans réexé
 
 
 % ────────────────────────────────────────────────────────────────
-\section{Le pipeline RAG}
+\section{pipeline RAG}
 % ────────────────────────────────────────────────────────────────
 
 L'architecture RAG a été présentée en détail au chapitre~1. Cette section se concentre sur les
@@ -359,7 +360,7 @@ le ré-ordonnancement (\textit{reranking}). Le système soumet ces résultats fi
 Cross-Encoder \texttt{BAAI/bge-reranker-v2-m3}. Contrairement à l'indexation vectorielle qui compare des vecteurs 
 pré-calculés de manière isolée, le Cross-Encoder traite la requête et le document simultanément, générant un score de 
 pertinence fin. Seuls les \texttt{top\_k} documents ayant obtenu les meilleurs scores après ce processus rigoureux sont 
-finalement conservés et transmis au LLM.
+finalement conservés et transmis au LLM, comme l'illustre la figure~\ref{fig:rag_results}.
 
 \begin{figure}[H]
     \centering
@@ -400,7 +401,7 @@ redondants.
 
 Le résumé est produit par un appel LLM dédié à basse température qui retourne un objet JSON
 structuré capturant l'aperçu général du voyage, les préférences et contraintes confirmées, les
-modifications demandées et les notes importantes~--- un format plus exploitable par l'agent
+modifications demandées et les notes importantes~  un format plus exploitable par l'agent
 qu'un résumé en texte libre.
 
 En cas d'échec de l'appel LLM (réseau, quota, JSON invalide), un résumé de base est construit
@@ -415,8 +416,8 @@ L'outil \texttt{get\_user\_profile} agit comme une interface de lecture rapide e
 Afin de garantir des temps de réponse minimaux et d'éviter les calculs redondants, cet outil 
 ne recalcule pas l'historique à la volée. Il interroge directement la table \texttt{UserProfile} pour 
 récupérer les métriques comportementales pré-calculées et consolidées par le traitement par lot nocturne 
-(Job Cron, voir Section 4.8.1). En appliquant le principe du \textit{Single Source of Truth} (source de vérité unique), 
-le nœud THINK accède instantanément à des données prêtes à l'emploi~: la fréquence par catégorie 
+(Job Cron, voir Section 4.7.3). En appliquant le principe du \textit{Single Source of Truth} (source de vérité unique), 
+le noeud THINK accède instantanément à des données prêtes à l'emploi~: la fréquence par catégorie 
 (\texttt{favorite\_categories}), les dépenses totales et moyennes, ainsi que les éléments de la liste de souhaits. 
 Ces informations composent un dictionnaire de profil riche que le système injecte dans le contexte du LLM.
 
@@ -424,7 +425,7 @@ Ce profil influence directement la qualité des recommandations de l'agent~: le 
 de générer un plan que cet utilisateur a réservé des sports nautiques 5~fois, dépense en
 moyenne 80~TND par jour, possède 3~activités spa dans sa liste de souhaits, et attribue des
 notes de 5~étoiles aux tours culturels. Cette connaissance du profil permet des recommandations
-véritablement personnalisées sans recours au moteur LinUCB --- l'agent adapte son raisonnement
+véritablement personnalisées sans recours au moteur LinUCB   l'agent adapte son raisonnement
 à l'historique comportemental de chaque utilisateur.
 
 
@@ -449,7 +450,7 @@ Le compromis est explicite~: le pipeline rapide sacrifie la profondeur conversat
 boucle de validation de l'agent complet au profit de la vitesse . Il est approprié pour les utilisateurs
 expérimentés qui fournissent des informations
 complètes dès le départ, tandis que l'agent complet est préférable pour les conversations
-exploratoires où les besoins de l'utilisateur se précisent progressivement.
+exploratoires où les besoins de l'utilisateur se précisent progressivement, comme le montrent les figures~\ref{fig:fast_pipeline} et \ref{fig:chat_output}.
 
 \begin{figure}[H]
     \centering
@@ -471,7 +472,7 @@ exploratoires où les besoins de l'utilisateur se précisent progressivement.
 \addcontentsline{toc}{section}{Conclusion du chapitre}
 
 Ce chapitre a présenté l'implémentation complète de l'agent planificateur IA du système Guidni.
-La machine à états LangGraph avec ses quatre nœuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
+La machine à états LangGraph avec ses quatre noeuds (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND)
 et ses trois fonctions de routage conditionnel a été détaillée, incluant les mécanismes de
 sécurité . Les outils ont été catalogués et les plus complexes décrits en profondeur~:
 l'outil de recherche RAG multi-types avec ses quatre recherches parallèles et son garde-fou de
@@ -481,4 +482,4 @@ rapide de génération de plans en trois phases ont complété la présentation.
 
 Le chapitre suivant présente l'implémentation du second sous-système~: le moteur de
 recommandation Hybrid LinUCB, avec son ingénierie des caractéristiques, son cycle
-d'apprentissage en ligne, et son pipeline de classement en dix étapes.
+d'apprentissage en ligne.

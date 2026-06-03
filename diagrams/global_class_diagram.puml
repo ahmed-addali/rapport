@@ -16,9 +16,13 @@ class Activity {
     +UUID id
     +String slug
     +String title
+    +String category
+    +Decimal price
+    +String region
+    +Int duration
+    +Int capacity
     --
-    +destination
-    +businessProfile
+    +businessProfileId
     +images[]
     +reservations[]
     +attractions[]
@@ -29,9 +33,12 @@ class Stay {
     +UUID id
     +String slug
     +String title
+    +String type
+    +Decimal pricePerNight
+    +String region
+    +Int capacity
     --
-    +destination
-    +businessProfile
+    +businessProfileId
     +images[]
     +reservations[]
     +blockedDates[]
@@ -41,9 +48,12 @@ class Restaurant {
     +UUID id
     +String slug
     +String name
+    +String cuisine
+    +String priceRange
+    +String region
+    +Int capacity
     --
-    +destination
-    +businessProfile
+    +businessProfileId
     +images[]
     +menu[]
     +hours[]
@@ -54,9 +64,12 @@ class Rental {
     +UUID id
     +String slug
     +String title
+    +String type
+    +Decimal pricePerDay
+    +String region
+    +Int capacity
     --
-    +destination
-    +businessProfile
+    +businessProfileId
     +images[]
     +reservations[]
     +blockedDates[]
@@ -66,9 +79,12 @@ class Transfer {
     +UUID id
     +String slug
     +String title
+    +String type
+    +Decimal price
+    +String region
+    +Int capacity
     --
-    +destination
-    +businessProfile
+    +businessProfileId
     +images[]
     +reservations[]
     +blockedDates[]
@@ -78,8 +94,9 @@ class Attraction {
     +UUID id
     +String title
     +String slug
+    +String category
+    +String region
     --
-    +destination
     +images[]
     +activities[]
 }
@@ -94,6 +111,7 @@ class User {
     +String email
     +String country
     +String city
+    +DateTime createdAt
     --
     +plans[]
     +planConversations[]
@@ -108,8 +126,12 @@ class User {
 class PlannerConversation {
     +UUID id
     +String title
+    +JSON contextSummary
+    +Boolean isActive
+    +DateTime createdAt
+    +DateTime updatedAt
     --
-    +user
+    +userId
     +messages[]
     +plans[]
 }
@@ -118,25 +140,34 @@ class PlannerMessage {
     +UUID id
     +String role
     +String content
+    +String messageType
+    +JSON metadata
+    +DateTime createdAt
     --
-    +conversation
+    +conversationId
 }
 
 class GeneratedPlan {
     +UUID id
     +JSON planData
+    +Int version
+    +Boolean isActive
+    +DateTime createdAt
     --
-    +conversation
+    +conversationId
+    +userId
 }
 
 class ActivityIntelligence {
     +UUID id
-    +String activityId
     +JSON enrichmentData
+    +DateTime updatedAt
+    --
+    +activityId
 }
 
 ' ============================================================
-' RECOMMENDATION SYSTEM (NEW TABLES)
+' RECOMMENDATION SYSTEM
 ' ============================================================
 
 class BanditArmUCB {
@@ -163,6 +194,7 @@ class LinUCBGlobal {
     +Int d
     +String vocabHash
     +Int nUpdates
+    +DateTime updatedAt
 }
 
 class SystemConfig {
@@ -180,17 +212,19 @@ class ListingTag {
 }
 
 class UserProfile {
-    +UUID userid
+    +UUID userId
     +Json tagAffinity
     +Float avgBookingPrice
+    +Float priceStdDev
     +String dominantTripType
     +Int totalBookings
+    +DateTime updatedAt
 }
 
 class UserSession {
     +UUID id
     +UUID sessionId
-    +UUID userid
+    +UUID userId
     +Float locationLat
     +Float locationLon
     +String deviceType
@@ -209,7 +243,7 @@ class RecommendationEventUCB {
     +String eventType
     +UUID listingId
     +String listingType
-    +UUID userid
+    +UUID userId
     +UUID sessionId
     +String locationZone
     +Float reward
@@ -223,18 +257,11 @@ class RecommendationEventUCB {
 ' RELATIONSHIPS
 ' ============================================================
 
-' Core listings to destinations/business
-Activity "*" -- "0..1" Destination 
-Stay "*" -- "0..1" Destination 
-Restaurant "*" -- "0..1" Destination 
-Rental "*" -- "0..1" Destination 
-Transfer "*" -- "0..1" Destination 
-Attraction "*" -- "0..1" Destination 
+
 
 ' User relationships
 User "1" -- "*" PlannerConversation 
 User "1" -- "*" PlannerMessage 
-
 
 ' Planner flow
 PlannerConversation "1" -- "*" PlannerMessage 

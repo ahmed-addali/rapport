@@ -61,6 +61,108 @@
       \verb 10.1145/3292500.3330744
       \endverb
     \endentry
+    \entry{bouneffouf2014context}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=6a62a9293dc6af7cd5cc47528fb22735}{%
+           family={Bouneffouf},
+           familyi={B\bibinitperiod},
+           given={Djallel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=5c39ce657e669ea9609fc11b24ee232a}{%
+           family={Bouzeghoub},
+           familyi={B\bibinitperiod},
+           given={Amel},
+           giveni={A\bibinitperiod}}}%
+        {{hash=702118efda2a35d432a39bfb752b6c20}{%
+           family={Gançarski},
+           familyi={G\bibinitperiod},
+           given={Alda\bibnamedelima Lopes},
+           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Kuching, Malaysia}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{fullhash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{fullhashraw}{06f766927b242a3283a1e6711d746dd3}
+      \strng{bibnamehash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{authorbibnamehash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{authornamehash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{authorfullhash}{06f766927b242a3283a1e6711d746dd3}
+      \strng{authorfullhashraw}{06f766927b242a3283a1e6711d746dd3}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 21st International Conference on Neural Information Processing (ICONIP)}
+      \field{title}{A Contextual-Bandit Algorithm for Mobile Context-Aware Recommender System}
+      \field{year}{2014}
+      \field{pages}{324\bibrangedash 331}
+      \range{pages}{8}
+      \verb{urlraw}
+      \verb https://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System
+      \endverb
+      \verb{url}
+      \verb https://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System
+      \endverb
+    \endentry
+    \entry{jiang2019trip}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=d36a247d8d0be079fef626c8a54ef7df}{%
+           family={Jiang},
+           familyi={J\bibinitperiod},
+           given={Shu},
+           giveni={S\bibinitperiod}}}%
+        {{hash=c3d53dfafdafcb1c1d60a571bd9cd35c}{%
+           family={Qian},
+           familyi={Q\bibinitperiod},
+           given={Xueming},
+           giveni={X\bibinitperiod}}}%
+        {{hash=64ebb6bff42b6888138f6e6132d1ae4f}{%
+           family={Shen},
+           familyi={S\bibinitperiod},
+           given={Jialie},
+           giveni={J\bibinitperiod}}}%
+        {{hash=af5bb174cec505de4887d6186d3823ae}{%
+           family={Fu},
+           familyi={F\bibinitperiod},
+           given={Yun},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=de1c1ab4ad3b6904d54368d83000758c}{%
+           family={Mei},
+           familyi={M\bibinitperiod},
+           given={Tao},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{2361fa00b27d6a680bb8feab66e834b6}
+      \strng{fullhash}{15c1b08c9716f755749b267832adb9e2}
+      \strng{fullhashraw}{15c1b08c9716f755749b267832adb9e2}
+      \strng{bibnamehash}{2361fa00b27d6a680bb8feab66e834b6}
+      \strng{authorbibnamehash}{2361fa00b27d6a680bb8feab66e834b6}
+      \strng{authornamehash}{2361fa00b27d6a680bb8feab66e834b6}
+      \strng{authorfullhash}{15c1b08c9716f755749b267832adb9e2}
+      \strng{authorfullhashraw}{15c1b08c9716f755749b267832adb9e2}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2019 IEEE Transactions on Multimedia}
+      \field{number}{6}
+      \field{title}{Author Topic Model-Based Collaborative Filtering for Personalized {POI} Recommendations}
+      \field{volume}{17}
+      \field{year}{2019}
+      \field{pages}{907\bibrangedash 918}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/TMM.2015.2417506
+      \endverb
+    \endentry
     \entry{lewis2020rag}{inproceedings}{}{}
       \name{author}{12}{}{%
         {{hash=ecbe786a5668bf643d74bb24fe1c3cfe}{%
@@ -145,6 +247,12 @@
       \field{year}{2020}
       \field{pages}{9459\bibrangedash 9474}
       \range{pages}{16}
+      \verb{urlraw}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html
+      \endverb
+      \verb{url}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html
+      \endverb
     \endentry
     \entry{li2010linucb}{inproceedings}{}{}
       \name{author}{4}{}{%
@@ -194,6 +302,56 @@
       \range{pages}{10}
       \verb{doi}
       \verb 10.1145/1772690.1772758
+      \endverb
+    \endentry
+    \entry{lim2018personalized}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=a1bc2ab5fdb03d2fb5fe509446330286}{%
+           family={Lim},
+           familyi={L\bibinitperiod},
+           given={Kwan\bibnamedelima Hui},
+           giveni={K\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=3a44372af403ff14b04375352ba43087}{%
+           family={Chan},
+           familyi={C\bibinitperiod},
+           given={Jeffrey},
+           giveni={J\bibinitperiod}}}%
+        {{hash=a2e9731f57f67457354b0bf748912612}{%
+           family={Karunasekera},
+           familyi={K\bibinitperiod},
+           given={Shanika},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ca68b3ca9b0efe6a415326392e0e8920}{%
+           family={Leckie},
+           familyi={L\bibinitperiod},
+           given={Christopher},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Vancouver, BC, Canada}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{5da1de2439680720076bcaa16639a673}
+      \strng{fullhash}{d15dcf138b05cf875436636b41cbedb2}
+      \strng{fullhashraw}{d15dcf138b05cf875436636b41cbedb2}
+      \strng{bibnamehash}{5da1de2439680720076bcaa16639a673}
+      \strng{authorbibnamehash}{5da1de2439680720076bcaa16639a673}
+      \strng{authornamehash}{5da1de2439680720076bcaa16639a673}
+      \strng{authorfullhash}{d15dcf138b05cf875436636b41cbedb2}
+      \strng{authorfullhashraw}{d15dcf138b05cf875436636b41cbedb2}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 12th ACM Conference on Recommender Systems (RecSys)}
+      \field{title}{Towards Next Generation Touring: Personalized Group Tours}
+      \field{year}{2018}
+      \field{pages}{412\bibrangedash 416}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1145/3240323.3240365
       \endverb
     \endentry
     \entry{vaswani2017attention}{inproceedings}{}{}
@@ -258,6 +416,12 @@
       \field{title}{Attention Is All You Need}
       \field{volume}{30}
       \field{year}{2017}
+      \verb{urlraw}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf
+      \endverb
     \endentry
     \entry{yao2023react}{inproceedings}{}{}
       \name{author}{7}{}{%
@@ -315,6 +479,12 @@
       \field{booktitle}{Proceedings of the 11th International Conference on Learning Representations (ICLR)}
       \field{title}{{ReAct}: Synergizing Reasoning and Acting in Language Models}
       \field{year}{2023}
+      \verb{urlraw}
+      \verb https://arxiv.org/pdf/2210.03629
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/pdf/2210.03629
+      \endverb
     \endentry
   \enddatalist
 \endrefsection

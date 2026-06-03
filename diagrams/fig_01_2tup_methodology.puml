@@ -1,22 +1,29 @@
 @startuml
 skinparam backgroundColor #FEFEFE
-
 skinparam defaultFontName "Arial"
 
 title Processus 2TUP appliqué au projet Guidni
 
 |#LightBlue|Branche Fonctionnelle|
 start
-:Capture des besoins;
-:Modèle du domaine;
-:Cas d'utilisation;
-:Scénarios utilisateur;
 
-|#LightGreen|Branche Technique|
-:Contraintes techniques;
-:Architecture logicielle;
-:Prototypes (LangGraph, LinUCB);
-:Infrastructure BD;
+' Début de l'exécution en parallèle
+fork
+  :Capture des besoins;
+  :Modèle du domaine;
+  :Cas d'utilisation;
+  :Scénarios utilisateur;
+
+' Deuxième branche parallèle
+fork again
+  |#LightGreen|Branche Technique|
+  :Contraintes techniques;
+  :Architecture logicielle;
+  :Prototypes (LangGraph, LinUCB);
+  :Infrastructure BD;
+
+' Synchronisation des deux branches avant la convergence
+end fork
 
 |#LightYellow|Convergence|
 :Conception préliminaire;

@@ -6,12 +6,15 @@ title Architecture du pipeline RAG avec réindexation automatique
 
 !define RECTANGLE class
 
-package "Phase d'Indexation (Startup)" {
+package "Phase d'Indexation Initiale (Startup)" {
   rectangle "PostgreSQL(Activity, Stay, Restaurant, Attraction, Rental, Transfer)" as PG1 #LightBlue
   rectangle "Document Builders(_activity_to_document, _stay_to_document, etc.)" as Builders #LightGreen
   rectangle "BAAI/bge-m3 Embeddings " as Embed #LightYellow
   rectangle "VectorStoreIndex (LlamaIndex)" as Index #LightCoral
   rectangle "Qdrant Database" as Storage #LightGray
+}
+
+package "Synchronisation Incrémentale (Runtime)" {
   rectangle "Trigger Events" as Events #LightBlue
 }
 
@@ -27,12 +30,15 @@ package "Phase de Requête (Runtime)" {
   rectangle "Résultats top-k (entity_id, title, score, snippet)" as Results #LightBlue
 }
 
-' --- Flux de la Phase d'Indexation ---
+' --- Flux de la Phase d'Indexation (Bulk) ---
 PG1 --> Builders : Ligne ORM
 Builders --> Embed : Texte + metadata
 Embed --> Index : Vecteurs 1024-d
 Index --> Storage : Persistance
-Events --> Index : upsert_entity() after_insert/update/delete
+
+' --- Flux des Triggers (Runtime) ---
+PG1 -.-> Events : Détecte (Insert/Update/Delete)
+Events --> Index : upsert_entity() pour Insert/Update\ndelete_entity() pour Delete
 
 ' --- Flux de la Phase de Requête ---
 Query --> Filters : Requête + params

@@ -3,7 +3,7 @@ skinparam backgroundColor #FEFEFE
 
 skinparam defaultFontName "Arial"
 
-title Schéma ER du sous-système de recommandation LinUCB
+title Schéma ER du sous-système de recommandation LinUCB (Cohérent)
 
 !define table entity
 
@@ -89,7 +89,7 @@ entity "ListingTag" as LT {
   * listingId : UUID
   * listingType : VARCHAR
   * tags : JSON
-  * confidence : Float
+  * confidence : FLOAT
   --
   <<UQ>> (listingId, listingType)
 }
@@ -101,22 +101,13 @@ entity "SystemConfig" as SC {
   * updatedAt : TIMESTAMP
 }
 
-
-
 ' ============================================================
 ' RELATIONS (VISUELLES)
 ' ============================================================
 
-' Un UserProfile peut avoir plusieurs UserSessions (1 à N)
 UP ||--o{ US : "possède"
-
-' Une UserSession génère plusieurs RecommendationEvents (1 à N)
 US ||--o{ RE : "génère"
-
-' Un BanditArm est lié à plusieurs RecommendationEvents (1 à N)
 BA ||--o{ RE : "est recommandé dans"
-
-' Un ListingTag est utilisé par plusieurs BanditArms (1 à N)
 LT ||--o{ BA : "catégorise"
 
 @enduml

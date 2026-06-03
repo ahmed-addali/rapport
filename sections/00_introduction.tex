@@ -14,7 +14,7 @@ touristique, un secteur intrinsèquement dépendant de la personnalisation et de
 contraintes multidimensionnelles.
 
 L'île de Djerba, inscrite au patrimoine mondial de l'UNESCO depuis 2023, constitue l'une des
-destinations touristiques les plus emblématiques de la Tunisie. Avec environ 1,12~millions de
+destinations touristiques les plus emblématiques de la Tunisie, comme l'illustre la figure~\ref{fig:djerba_tourism}. Avec environ 1,12~million de
 visiteurs annuels, cette île méditerranéenne offre un tissu touristique d'une richesse exceptionnelle~:
 stations balnéaires bordant des plages de sable fin, héritage culturel amazigh préservé dans les
 villages traditionnels, médinas historiques, et une gastronomie méditerranéenne authentique. 
@@ -25,13 +25,13 @@ complexes pour le visiteur néophyte, confronté à une offre abondante mais fra
 L'état actuel des outils de planification touristique révèle des lacunes structurelles significatives.
 Les moteurs de recherche traditionnels retournent des listes d'établissements classés par popularité
 ou par note, sans composer un itinéraire cohérent. Les plateformes de réservation traitent chaque
-prestation de manière isolée~--- hébergement, activités, restauration~--- sans orchestrer ces éléments
+prestation de manière isolée~  hébergement, activités, restauration~  sans orchestrer ces éléments
 en un plan multi-journées adapté aux contraintes spécifiques du voyageur~: son budget, la composition
 de son groupe, les conditions météorologiques en temps réel, les distances entre les sites, et les
 horaires d'ouverture des établissements. Aucun outil existant ne propose une expérience
 conversationnelle capable de raisonner simultanément sur l'ensemble de ces dimensions.
 
-Force est de constater qu'aucun outil existant --- ni TripAdvisor, ni Booking, ni Google Maps ---
+Force est de constater qu'aucun outil existant   ni TripAdvisor, ni Booking, ni Google Maps  
 ne couvre à lui seul l'intégralité de ce besoin~: chacun excelle sur un aspect isolé du voyage mais
 échoue à fournir une solution unifiée. Répondre à cette lacune suppose de combiner deux capacités
 fondamentalement distinctes~: d'une part, une planification intelligente capable de raisonner en
@@ -45,14 +45,14 @@ compromis optimal entre exploration de nouveaux contenus et exploitation des pr�
 C'est dans ce contexte que s'inscrit le présent projet de fin d'études, qui propose \textbf{Guidni},
 une plateforme de planification de voyage intelligente articulée autour de deux sous-systèmes
 complémentaires. Le premier, l'\textbf{Agent Planificateur}, est un agent conversationnel construit
-sur une machine à états LangGraph à quatre nœuds, disposant des outils appelables par le LLM
+sur une machine à états LangGraph à quatre noeuds, disposant des outils appelables par le LLM
 et d'un pipeline RAG multilingue pour la recherche sémantique. Le second, le \textbf{Moteur de
 Recommandation Hybride LinUCB}, exploite un bandit contextuel avec un vecteur de caractéristiques
 de dimension~360 pour recommander des contenus touristiques en temps réel, en apprenant continuellement
 à partir des signaux comportementaux des utilisateurs. Ces deux sous-systèmes partagent la même base
 de données PostgreSQL et opèrent de manière indépendante et complémentaire.
 
-% --- Figure placeholder ---
+%   Figure placeholder  
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/carte-djerba.jpg}
@@ -95,12 +95,12 @@ la profondeur de défilement, le parcours de la galerie photographique, l'ajout 
 souhaits, ou la sortie rapide de la page. Ces signaux comportementaux constituent pourtant des
 indicateurs d'intérêt extrêmement informatifs.
 
-Par ailleurs, le marché touristique de Djerba est fondamentalement trilingue~--- français, anglais et
-arabe~--- ce qui impose à tout système basé sur le traitement du langage naturel de gérer ces trois
+Par ailleurs, le marché touristique de Djerba est fondamentalement trilingue~  français, anglais et
+arabe~  ce qui impose à tout système basé sur le traitement du langage naturel de gérer ces trois
 langues de manière transparente, tant au niveau de la compréhension des requêtes utilisateur qu'au
 niveau de l'indexation et de la recherche sémantique dans le corpus documentaire.
 
-% --- Problem statement callout ---
+%   Problem statement callout  
 \vspace{0.5cm}
 \noindent
 \fcolorbox{black}{blue!5}{%
@@ -142,7 +142,7 @@ correspond à une contribution technique mesurable et vérifiable.
     itinéraires de voyage multi-journées personnalisés en puisant directement dans les données réelles 
     de la plateforme (activités, restaurants, hôtels).
 
-    \item \textbf{Système de recommandation.} Mise en œuvre d'un moteur de recommandation 
+    \item \textbf{Système de recommandation.} Mise en oeuvre d'un moteur de recommandation 
     pour personnaliser les suggestions basées sur le comportement de l'utilisateur (clics, temps de consultation, 
     réservations).
 
@@ -155,7 +155,7 @@ La section suivante délimite le périmètre fonctionnel du projet au sein de l'
 \section{Cadre et périmètre du projet}
 
 Guidni est une place de marché touristique complète dédiée à l'île de Djerba, construite avec
-Next.js et Prisma côté frontend et gestion des données. La plateforme propose six catégories
+Next.js et Prisma côté frontend et gestion des données, comme l'illustre la figure~\ref{fig:guidni_overview}. La plateforme propose six catégories
 principales d'annonces~: les \textbf{Activités} (expériences payantes~: sports nautiques,
 promenades à dos de chameau, circuits culturels, soins spa), les \textbf{Hébergements}
 (\textit{Stays}~: hôtels, riads, villas, maisons d'hôtes avec processus d'approbation), les 
@@ -172,35 +172,20 @@ messages, plans générés et métadonnées d'intelligence. Le moteur de recomma
 également de ses tables dédiées pour les bras du bandit, les matrices globales LinUCB, les profils
 utilisateurs, les sessions, les événements de recommandation, et les tags des annonces.
 
-Le tableau~\ref{tab:scope} délimite précisément les fonctionnalités incluses dans le périmètre de
-ce projet et celles qui en sont exclues, afin de cadrer les attentes et de focaliser les efforts
-de développement sur les contributions techniques principales.
+La liste ci-dessous délimite précisément les fonctionnalités incluses dans le périmètre de ce projet, 
+afin de cadrer les attentes et de focaliser les efforts de développement sur les contributions techniques principales.
 
-\begin{table}[H]
-    \centering
-    \caption{Périmètre du projet~: fonctionnalités incluses et exclues}
-    \label{tab:scope}
-    \begin{tabular}{p{7.5cm} p{7.5cm}}
-        \toprule
-        \textbf{Inclus} & \textbf{Exclu} \\
-        \midrule
-        Génération de plusieurs jours &
-        Paiement et exécution des réservations \\[4pt]
-        Recherche sémantique RAG multilingue &
-        Application mobile native \\[4pt]
-        Intégration météo via Open-Meteo &
-        Framework de tests A/B en temps réel \\[4pt]
-        Apprentissage en ligne LinUCB &
-        LLM fine-tuné spécifique au domaine \\[4pt]
-        Tracker comportemental JavaScript &
-         \\[4pt]
-        Tâches nocturnes de maintenance &
-         \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+\textbf{Périmètre du projet~: fonctionnalités incluses}
+\begin{itemize}
+    \item Génération de plusieurs jours
+    \item Recherche sémantique RAG multilingue
+    \item Intégration météo via Open-Meteo
+    \item Apprentissage en ligne LinUCB
+    \item Tracker comportemental JavaScript
+    \item Tâches nocturnes de maintenance
+\end{itemize}
 
-% --- Figure placeholder ---
+%   Figure placeholder  
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/fig_01_guidni_platform_overview.png}
@@ -214,37 +199,15 @@ La section suivante présente la méthodologie adoptée pour conduire ce projet 
 % ────────────────────────────────────────────────────────────────
 \section{Méthodologie~: 2TUP (Two-Track Unified Process)}
 
-Le choix de la méthodologie de développement constitue une décision structurante pour tout projet
-d'ingénierie logicielle. Pour le projet Guidni, la méthodologie \textbf{2TUP} (Two-Track Unified
-Process) a été retenue en raison de sa capacité à séparer la complexité fonctionnelle
---- \textit{ce que le système doit faire} --- de la complexité technique --- \textit{comment il est
-construit} --- en deux branches parallèles qui convergent lors de la phase de conception détaillée
-et d'implémentation. Cette séparation est particulièrement pertinente pour ce projet, car la branche
-fonctionnelle (planification conversationnelle, logique de recommandation, cas d'utilisation
-touristiques) et la branche technique (machines à états LangGraph, algèbre matricielle LinUCB,
-indexation vectorielle, gestion de mémoire conversationnelle) présentent des courbes d'apprentissage
-et des chronologies très différentes.
+Le choix de la méthodologie de développement constitue une décision structurante pour tout projet d'ingénierie logicielle. Pour le projet Guidni, la méthodologie \textbf{2TUP} (Two-Track Unified Process) a été retenue en raison de sa capacité à séparer la complexité fonctionnelle   \textit{ce que le système doit faire}   de la complexité technique   \textit{comment il est construit}   en deux branches parallèles qui convergent dès la phase de conception préliminaire, comme l'illustre la figure~\ref{fig:2tup}. Cette séparation est particulièrement pertinente pour ce projet, car la branche fonctionnelle (planification conversationnelle, logique de recommandation, cas d'utilisation touristiques) et la branche technique (machines à états LangGraph, algèbre matricielle LinUCB, indexation vectorielle, gestion de mémoire conversationnelle) présentent des courbes d'apprentissage et des chronologies très différentes.
 
-La \textbf{branche fonctionnelle} débute par la capture des besoins utilisateurs sous forme de
-\textit{user stories} et du modèle de domaine, identifiant les entités clés~: touriste, annonce,
-conversation, plan, événement comportemental. Elle produit ensuite les diagrammes de cas
-d'utilisation UML et les diagrammes de classes du domaine, avant de détailler les spécifications
-fonctionnelles de chaque sous-système. Cette branche permet de s'assurer que le système répond
-aux besoins réels des utilisateurs avant toute considération technologique.
+La \textbf{branche fonctionnelle} débute par la capture des besoins utilisateurs. Elle se poursuit par l'élaboration du modèle du domaine, identifiant les entités clés (touriste, annonce, conversation, plan, événement comportemental). Elle produit ensuite les diagrammes de cas d'utilisation, avant de détailler les scénarios utilisateur. Cette branche permet de s'assurer que le système répond aux besoins réels des utilisateurs avant toute considération technologique.
 
-La \textbf{branche technique} commence par des expérimentations ciblées (\textit{technology spikes})~:
-validation du routage LangGraph entre les nœuds, mesure de la latence des différents fournisseurs
-LLM, vérification de la stabilité numérique de l'algèbre matricielle LinUCB, et test de
-l'indexation vectorielle avec les embeddings BAAI/bge-m3. Cette branche produit l'architecture
-d'infrastructure, les contrats d'API, et les schémas de données, en s'appuyant sur des prototypes
-fonctionnels validés.
+La \textbf{branche technique} commence par l'analyse des contraintes techniques, suivie par la définition de l'architecture logicielle. Elle s'appuie ensuite sur des expérimentations ciblées à travers des prototypes (LangGraph, LinUCB) (validation du routage, mesure de la latence des différents fournisseurs LLM, vérification de la stabilité numérique, test de l'indexation vectorielle). Cette branche se termine par la définition de l'infrastructure BD (Base de Données).
 
-La \textbf{phase de convergence} réunit les deux branches lors de la conception détaillée, où les
-diagrammes de classes, les diagrammes de séquence et les schémas de base de données sont finalisés
-en intégrant simultanément les exigences fonctionnelles et les contraintes techniques. Cette phase
-précède directement l'implémentation, les tests d'intégration et le déploiement.
+La \textbf{phase de convergence} réunit les deux branches de manière synchrone. Elle débute par la conception préliminaire, suivie de la conception détaillée, où les exigences fonctionnelles et les contraintes techniques sont fusionnées (finalisation des diagrammes de classes, de séquence et schémas de base de données). Cette phase s'achève par la réalisation concrète du système à travers les étapes d'implémentation, suivies des tests et intégration, pour aboutir finalement au déploiement de la solution Guidn
 
-% --- PlantUML diagram placeholder ---
+%   PlantUML diagram placeholder  
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/fig_01_2tup_methodology.png}
@@ -259,16 +222,10 @@ La section suivante présente la planification temporelle du projet selon cette 
 \section{Planification du projet}
 
 Le projet Guidni s'étend sur une durée approximative de quatre mois, de février 2026 à juin 2026. 
-Les deux sous-systèmes ont été développés partiellement en parallèle : l'agent planificateur a démarré en premier, 
-lors de la phase d'implémentation fin mars / début avril, tandis que le moteur de recommandation a été initié en avril également, 
-avec un chevauchement significatif durant la période d'avril à mai. Cette parallélisation a été rendue possible par 
-l'indépendance architecturale des deux sous-systèmes, qui partagent la base de données mais n'ont aucune dépendance de
- code directe.
-La rédaction du rapport a été conduite en parallèle avec l'implémentation à partir de mi-avril 2026, permettant 
-de documenter les choix de conception au moment où ils étaient les plus frais. Le diagramme de Gantt de l
+Les deux sous-systèmes ont été développés partiellement en parallèle. Le diagramme de Gantt de l
 a figure~\ref{fig:gantt} illustre la distribution temporelle des différentes tâches et leurs chevauchements.
 
-% --- PlantUML Gantt diagram placeholder ---
+%   PlantUML Gantt diagram placeholder  
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/fig_01_gantt.png}
@@ -294,7 +251,7 @@ expose l'architecture globale du système incluant le diagramme entité-relation
 données, et spécifie les contrats d'API des deux sous-systèmes.
 
 Le \textbf{chapitre~3} détaille l'implémentation de l'agent planificateur IA. Il couvre les quatre
-nœuds de la machine à états LangGraph (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND), les 
+noeuds de la machine à états LangGraph (THINK, EXECUTE\_TOOL, VALIDATE, RESPOND), les 
 outils mis à disposition du LLM, le pipeline RAG multilingue avec ré-ordonnancement par
 cross-encoder, et le système de mémoire conversationnelle avec résumé automatique.
 

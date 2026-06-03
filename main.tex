@@ -3,7 +3,7 @@
 % --- Packages ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[french,english]{babel}    % English needed for the Abstract page
+\usepackage[english,french]{babel}    % English needed for the Abstract page
 \usepackage{csquotes}                 % Required by biblatex with babel
 \usepackage{graphicx}
 \usepackage{float}
@@ -22,6 +22,7 @@
 \usepackage{enumitem}                 % For customized lists
 \usepackage{listings}                 % For code listings (system prompt, schema)
 \usepackage{caption}                  % Better caption control
+\usepackage[expansion=false]{microtype}
 
 % --- Listings style ---
 \lstset{
@@ -53,17 +54,18 @@
 % --- Header/Footer ---
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{PFE Guidni}
+%\rhead{PFE Guidni}
 \lhead{\leftmark}
 \cfoot{\thepage}
 
 \begin{document}
+\sloppy
 
 % ====================================================================
 % FRONT MATTER — Preliminary pages (roman numerals)
 % ====================================================================
 \pagenumbering{roman}
-%\input{chapter_00_preliminaries}
+\input{chapter_00_preliminaries}
 
 % --- Auto-generated lists ---
 \newpage
@@ -82,11 +84,11 @@
 % ====================================================================
 \newpage
 \pagenumbering{arabic}
-
+\lhead{Introduction Générale}
 \chapter*{Introduction Générale}
 \addcontentsline{toc}{chapter}{Introduction Générale}
-%\input{sections/00_introduction}
-
+\input{sections/00_introduction}
+\lhead{\leftmark}
 \chapter{État de l'art et fondements théoriques}
 \input{sections/01_cadre_general}
 
@@ -101,11 +103,12 @@
 
 \chapter{Déploiement et architecture de production}
 \input{sections/05_deploiment}
-
 \chapter*{Conclusion et Perspectives}
 \addcontentsline{toc}{chapter}{Conclusion et Perspectives}
+\lhead{Conclusion et Perspectives}
 \input{sections/06_conclusion}
-
+\clearpage
+\lhead{\leftmark}
 % ====================================================================
 % BACK MATTER
 % ====================================================================
@@ -115,9 +118,9 @@
 % APPENDICES
 % ====================================================================
 \appendix
-\renewcommand{\chaptername}{Annexe}
-\chapter{Annexes}
-\addcontentsline{toc}{chapter}{Annexes}
+%\renewcommand{\chaptername}{Annexe}
+%\chapter{Annexes}
+%\addcontentsline{toc}{chapter}{Annexes}
 %\input{sections/07_appendices}
 
 \end{document}

@@ -24,11 +24,11 @@ considérations de sécurité et de gestion des données (section~2.8).
 
 \subsection{Identification des acteurs}
 
-Le \textbf{Touriste} constitue l'acteur principal du système. Le touriste interagit avec
+Le \textbf{Touriste} constitue l'acteur principal du système. il interagit avec
 l'interface pour formuler des demandes de planification de voyage, recevoir des itinéraires
 structurés, les modifier, et consulter l'historique de ses conversations.
-Son comportement de navigation --- clics, temps de consultation, profondeur de défilement, ajouts
-aux favoris --- est automatiquement capté par le tracker JavaScript pour alimenter le moteur de
+Son comportement de navigation   clics, temps de consultation, profondeur de défilement, ajouts
+aux favoris   est automatiquement capté par le tracker JavaScript pour alimenter le moteur de
 recommandation LinUCB.
 
 L'\textbf{Administrateur de la plateforme} est responsable de la supervision technique du système.
@@ -49,7 +49,7 @@ les matrices de recommandation en base de données toutes les deux minutes.
 
 \subsection{Diagramme des cas d'utilisation global}
 
-Le diagramme des cas d'utilisation ci-dessous présente une vue d'ensemble des interactions entre
+Le diagramme des cas d'utilisation ci-dessous~\ref{fig:use_case}, présente une vue d'ensemble des interactions entre
 les trois acteurs identifiés et les fonctionnalités principales du système Guidni. Les cas
 d'utilisation sont organisés en trois groupes~: les interactions conversationnelles du touriste
 avec l'agent planificateur, les opérations d'administration du système, et les processus
@@ -67,7 +67,7 @@ automatisés du sous-système de recommandation.
 \subsection{Description détaillée des cas d'utilisation principaux}
 
 Les trois cas d'utilisation les plus critiques du système sont décrits en détail dans les
-tableaux suivants. Chaque description spécifie l'acteur déclencheur, les préconditions
+tableaux suivants (\ref{tab:uc01}, \ref{tab:uc02} et \ref{tab:uc03}). Chaque description spécifie l'acteur déclencheur, les préconditions
 nécessaires, le flux principal d'exécution, les flux alternatifs possibles, et les
 postconditions garanties.
 
@@ -119,8 +119,7 @@ postconditions garanties.
         (3) Construction du contexte utilisateur à partir des paramètres de requête ;
         (4) Chargement des matrices de recommandation depuis le cache mémoire ;
         (5) Calcul du vecteur de caractéristiques par produit de Kronecker pour chaque annonce ;
-        (6) Exécution du pipeline de classement en 10~étapes ;
-        (7) Retour de la liste classée au frontend. \\[3pt]
+        (6) Retour de la liste classée au frontend. \\[3pt]
         Postcondition & Un événement d'impression est enregistré pour chaque annonce affichée \\
         \bottomrule
     \end{tabular}
@@ -159,11 +158,11 @@ La section suivante complète l'analyse en spécifiant les besoins non fonctionn
 \section{Besoins non fonctionnels}
 % ────────────────────────────────────────────────────────────────
 Les besoins non fonctionnels définissent les critères de qualité que le système doit respecter, 
-indépendamment de ses fonctionnalités de base. En s'inspirant des catégories de la norme 
+indépendamment de ses fonctionnalités de base. En s'inspirant partiellement des catégories de la norme 
 ISO~25010, ces exigences couvrent des aspects essentiels tels que la performance, la disponibilité, 
 la scalabilité, la maintenabilité, la sécurité et la confidentialité des données.
 
-Le tableau suivant synthétise ces besoins avec des objectifs globaux. Le but est de garantir 
+Le tableau~\ref{tab:nfr} synthétise ces besoins avec des objectifs globaux. Le but est de garantir
 une plateforme robuste et une expérience utilisateur fluide, tout en conservant une souplesse 
 d'implémentation.
 
@@ -207,8 +206,8 @@ touristiques (activités, hébergements, attractions, restaurants, locations, tr
 via les endpoints REST \texttt{/chat}, \texttt{/plan} et \texttt{/api/recommendations}.
 
 Le \textbf{backend IA} est une application FastAPI qui héberge les deux sous-systèmes
-intelligents~: l'agent planificateur LangGraph (8~endpoints REST) et le moteur de recommandation
-LinUCB (3~endpoints REST). Il possède en écriture les ~tables planificateur et 
+intelligents~: l'agent planificateur LangGraph et le moteur de recommandation
+LinUCB . Il possède en écriture les ~tables planificateur et 
 recommandation, et lit en lecture seule les tables Prisma du frontend. Le planificateur utilise
 un pilote de base de données asynchrone, tandis que le moteur de recommandation recourt à un pool
 de connexions synchrone threadé adapté à ses opérations matricielles en temps réel.
@@ -223,7 +222,7 @@ Le \textbf{tracker JavaScript} est un module JavaScript natif sans dépendance e
 les pages du frontend. Il collecte les événements comportementaux (clics, temps de consultation,
 défilement, ajout aux favoris, réservations) et les transmet par lots vers l'endpoint
 \texttt{POST /api/recommendations/events}. Il utilise l'API \texttt{navigator.sendBeacon()} pour
-garantir la transmission des événements même lors de la fermeture de la page.
+garantir la transmission des événements même lors de la fermeture de la page, comme le résume la figure~\ref{fig:global_arch}.
 
 \begin{figure}[H]
     \centering
@@ -236,7 +235,7 @@ garantir la transmission des événements même lors de la fermeture de la page.
 \subsection{Architecture en couches}
 
 Le choix d'une architecture en couches est directement motivé par la nature duale du système.
-Les deux sous-systèmes --- l'agent planificateur et le moteur de recommandation --- présentent
+Les deux sous-systèmes   l'agent planificateur et le moteur de recommandation   présentent
 des caractéristiques d'exécution fondamentalement différentes~: le premier repose sur des appels
 asynchrones vers des fournisseurs LLM et des APIs externes, tandis que le second effectue des
 opérations matricielles synchrones en temps réel. La séparation en couches permet à chacun
@@ -246,8 +245,8 @@ La \textbf{couche de présentation} comprend les endpoints FastAPI, les schémas
 Pydantic pour les requêtes et les réponses, le middleware CORS configuré pour la communication
 frontend-backend, et la génération automatique de documentation OpenAPI.
 
-La \textbf{couche de logique métier} contient le cœur intelligent du système~: l'agent LangGraph
-avec sa machine à états à quatre nœuds et ses outils appelables, le moteur de classement
+La \textbf{couche de logique métier} contient le coeur intelligent du système~: l'agent LangGraph
+avec sa machine à états à quatre noeuds et ses outils appelables, le moteur de classement
 LinUCB avec son pipeline en 10~étapes, le moteur de requête RAG avec recherche sémantique et
 reranking par cross-encoder, et le système de mémoire conversationnelle (chargement des 8~derniers
 messages, résumé automatique au seuil de 8~messages, construction du profil utilisateur).
@@ -270,7 +269,7 @@ La section suivante présente la modélisation structurelle globale des objets m
 \section{Modélisation structurelle globale}
 % ────────────────────────────────────────────────────────────────
 
-Le diagramme de classes global offre une vue statique complète du système Guidni, intégrant
+Le diagramme de classes global \ref{fig:global_class_diagram} offre une vue statique complète du système Guidni, intégrant
 les entités fondamentales du domaine touristique ainsi que les structures de données
 nécessaires aux deux sous-systèmes intelligents (l'agent planificateur et le moteur de 
 recommandation). Cette modélisation unifiée garantit la cohérence des données manipulées 
@@ -302,8 +301,8 @@ base de données relationnelle présentée dans la section suivante.
 
 Le système Guidni adopte un patron de base de données partagée~: la même instance PostgreSQL~15
 est utilisée simultanément par le frontend Next.js/Prisma et par le backend IA FastAPI. Le
-backend IA lit les ~tables d'entités gérées par l'ORM du frontend en mode lecture seule.
-et possède en écriture les ~tables planificateur et recommandation. Cette architecture
+backend IA accède aux ~tables d'entités gérées par l'ORM du frontend en mode lecture seule.
+et possède en écriture les ~tables planificateur et recommandation (les figures~\ref{fig:er_planner} et \ref{fig:er_recommender}). Cette architecture
 évite la duplication des données tout en maintenant des frontières de propriété claires entre
 les deux systèmes.
 
@@ -331,8 +330,8 @@ antérieures si nécessaire.
 
 \subsection{Description des tables clés}
 
-Le tableau suivant récapitule les tables détenues par le backend IA, en précisant leur rôle
-fonctionnel, les composants qui y écrivent et ceux qui les lisent. Cette matrice de
+Le tableau suivant \ref{tab:ai_tables} récapitule les tables détenues par le backend IA, en précisant leur rôle
+fonctionnel. Cette matrice de
 responsabilité permet de comprendre les flux de données entre les différents composants du
 système.
 
@@ -375,11 +374,11 @@ en cas de données invalides.
 La documentation OpenAPI est générée automatiquement par FastAPI et accessible via l'endpoint
 \texttt{/docs}. Elle décrit l'ensemble des endpoints, leurs paramètres, les schémas de requête
 et de réponse, et les codes d'erreur possibles. Les deux tableaux suivants spécifient les
-contrats API pour chacun des deux sous-systèmes.
+contrats API pour chacun des deux sous-systèmes, comme le résument les tableaux~\ref{tab:api_planner} et \ref{tab:api_reco}.
 
 \begin{table}[H]
     \centering
-    \caption{Contrat API --- Sous-système Agent Planificateur}
+    \caption{Contrat API   Sous-système Agent Planificateur}
     \label{tab:api_planner}
     \footnotesize
     \begin{tabular}{p{2cm} p{6.5cm} p{6cm} }
@@ -400,7 +399,7 @@ contrats API pour chacun des deux sous-systèmes.
 
 \begin{table}[H]
     \centering
-    \caption{Contrat API --- Sous-système de Recommandation}
+    \caption{Contrat API   Sous-système de Recommandation}
     \label{tab:api_reco}
     \footnotesize
     \begin{tabular}{p{2cm} p{6.5cm} p{5cm} }
@@ -427,17 +426,17 @@ non autorisées.
 La validation de l'utilisateur est effectuée sur chaque requête entrante. Avant tout traitement,
 le \texttt{user\_id} fourni dans la requête est vérifié par une requête
 \texttt{SELECT} sur la table \texttt{"User"}. Si l'utilisateur n'est pas trouvé, une erreur
-HTTP~404 est retournée immédiatement avec un message explicite. Cette vérification systématique
+HTTP~404 est retournée immédiatement avec un message explicite voir la figure~\ref{fig:security_flow}. Cette vérification systématique
 empêche tout traitement pour des identifiants inexistants ou forgés.
 
 Le moteur de recommandation implémente une limitation de débit en mémoire pour prévenir les
 abus~: un maximum de 10~événements par annonce et par session, et 100~événements au total par
 session. Les sessions inactives depuis plus de 2~heures sont automatiquement nettoyées du cache
-mémoire pour éviter les fuites de mémoire. Ces seuils sont appliqués avant tout calcul de
+mémoire pour éviter les fuites. Ces seuils sont appliqués avant tout calcul de
 récompense.
 
 La confidentialité des données est assurée par plusieurs mécanismes~: les résultats des outils
-transmis au LLM externe ne contiennent aucune donnée personnelle identifiable (PII) --- seuls
+transmis au LLM externe ne contiennent aucune donnée personnelle identifiable (PII)   seuls
 les identifiants, catégories et caractéristiques anonymisées sont envoyés. Le fournisseur Ollama
 local offre une option de souveraineté complète pour les déploiements sensibles, car aucune
 donnée ne quitte le serveur. Les vecteurs de caractéristiques du moteur LinUCB sont construits
@@ -464,7 +463,7 @@ recommandations personnalisées, et le suivi des événements comportementaux. L
 fonctionnels ont été classifiés selon la norme ISO~25010, l'architecture globale a été conçue
 en couches avec une séparation claire des responsabilités, la structure des entités a été 
 modélisée via un diagramme de classes global, le schéma de base de données partagé
-a été spécifié avec ses 11~tables AI-owned, et les contrats API REST ont été formalisés.
+a été spécifié avec ses tables AI-owned, et les contrats API REST ont été formalisés.
 
 Le chapitre suivant présentera l'implémentation détaillée de l'agent planificateur IA, en
 décrivant le graphe LangGraph, les outils appelables, le pipeline RAG, et le système de
